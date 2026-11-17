@@ -27,3 +27,8 @@ Also: `exposed_fields.sensitive_snapshot`, `criteria.method` and `criteria.sourc
 
 ## Testing locally
 `tests/run_local.sh` rebuilds a throwaway local database and runs `tests/02_attack_suite.sql`. That covers the RLS attack tests, the full incident lifecycle, the 10 assessment scenarios and the 20 deadline times. The `tests/` files are for local testing only and must never be run on Supabase.
+
+## Live project
+- Supabase project `pdpa-tracker` (ref `tfflrmmmtgikhakqcgiy`), region ap-southeast-1 (Singapore), created 17 Nov 2026.
+- Migrations 01 to 07 applied on 17 Nov 2026. Vault secret `pdpa_enc_key` created inside the database (the value was never printed).
+- Security advisor: 23 "SECURITY DEFINER callable by authenticated" warnings. These are intended: they are the app's RPCs, and each one checks the caller's role.

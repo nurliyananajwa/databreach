@@ -116,6 +116,12 @@ select tests.check('Lead can read the decrypted description',
   (select description like 'A staff member attached%' from public.get_incident_text(:'inc1')));
 select tests.must_fail('Signed-in users cannot call the decrypt function directly',
   $q$select private.decrypt(description_enc) from public.incidents$q$);
+select tests.must_fail('Signed-in users cannot run internal deadline functions',
+  format($q$select private.refresh_deadlines(%L)$q$, :'inc1'));
+select tests.must_fail('Signed-in users cannot run the alert job', $q$select private.generate_alerts()$q$);
+commit;
+begin; set local role anon;
+select tests.must_fail('Anonymous cannot read the deadline view', 'select * from public.deadline_status');
 commit;
 
 -- ============================================================ 6. lifecycle (proposal example, 1,240 people)
