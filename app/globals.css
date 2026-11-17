@@ -42,8 +42,10 @@ body {
 :focus-visible {
   outline: 3px solid var(--color-ink);
   outline-offset: 3px;
-  border-radius: 2px;
 }
+/* on navy sections the outline turns white; white cards inside switch back */
+.on-dark :focus-visible { outline-color: #fff; }
+.on-dark .on-light :focus-visible { outline-color: var(--color-ink); }
 
 /* the response clock's stamp */
 @keyframes stamp-in {

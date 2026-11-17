@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import DataCloud, { type CloudHandle, type Kind } from "./DataCloud";
-import { BUSINESSES, SCENARIOS, assess, type BusinessId, type Field, type IncidentId, type Verdict } from "./scenarios";
+import DataCloud, { type CloudHandle, type Kind, type Target } from "./DataCloud";
+import { BUSINESSES, INCIDENTS as INCIDENT_IDS, SCENARIOS, assess, type BusinessId, type Field, type IncidentId, type Verdict } from "./scenarios";
 
 const icon = { fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 
@@ -47,7 +47,7 @@ function stepsFor(v: Verdict): Step[] {
     ...head,
     { title: "Notify the Commissioner", note: "draft waiting for manager approval", state: "now" },
     v === "both"
-      ? { title: "Notify the people affected", note: "within 7 days after", state: "next" }
+      ? { title: "Notify the people affected", note: "7 days after the Commissioner", state: "next" }
       : { title: "Keep in the breach register", note: "for 2 years", state: "next" },
   ];
 }
@@ -96,7 +96,12 @@ function CountUp({ to }: { to: number }) {
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [to]);
-  return <>{n.toLocaleString("en-MY")}</>;
+  return (
+    <>
+      <span aria-hidden="true">{n.toLocaleString("en-MY")}</span>
+      <span className="sr-only">{to.toLocaleString("en-MY")}</span>
+    </>
+  );
 }
 
 export default function Hero() {
@@ -110,6 +115,7 @@ export default function Hero() {
   const [startedAt, setStartedAt] = useState(0);
   const [landed, setLanded] = useState(0);
   const [why, setWhy] = useState(false);
+  const [said, setSaid] = useState("");
   const touched = useRef(false);
   const fallback = useRef<ReturnType<typeof setTimeout>>(undefined);
   const spilled = useRef(1);
@@ -130,11 +136,14 @@ export default function Hero() {
   }, []);
 
   // Leaked pieces fly into the "Data exposed" list, if it is on screen.
-  const target = useCallback(() => {
+  const target = useCallback((): Target | null => {
     const s = section.current?.getBoundingClientRect();
     const t = inbox.current?.getBoundingClientRect();
-    if (!s || !t || t.top > window.innerHeight - 20 || t.bottom < 0) return null;
-    return { x: t.left - s.left + 16, y: t.top - s.top + 14 };
+    const card = panel.current?.getBoundingClientRect();
+    if (!s || !t || !card || t.top > window.innerHeight - 20 || t.bottom < 0) return null;
+    const x = t.left - s.left + 16, y = t.top - s.top + 14;
+    // pass beside the card's left edge so pieces never cross the title
+    return { x, y, via: { x: Math.max(8, card.left - s.left - 160), y: y + 40 } };
   }, []);
 
   const run = (b: BusinessId, i: IncidentId) => {
@@ -149,10 +158,21 @@ export default function Hero() {
     fallback.current = setTimeout(() => setLanded((n) => Math.max(n, 99)), 2600);
   };
 
+  // one short message for screen readers, only after the visitor's own choice
+  const announce = (b: BusinessId, i: IncidentId) => {
+    const sc = SCENARIOS[b][i];
+    const v = assess(sc).verdict;
+    setSaid(
+      `Incident record opened. ${sc.people.toLocaleString("en-MY")} ${sc.people === 1 ? "person" : "people"} affected. ` +
+        (v === "register" ? "No notice needed, record it in the breach register." : "Notice needed. Notify the Commissioner within 72 hours."),
+    );
+  };
+
   const choose = (i: IncidentId) => {
     touched.current = true;
     setIncident(i);
     run(business, i);
+    announce(business, i);
     requestAnimationFrame(() => {
       const el = panel.current;
       if (el && window.innerWidth < 1024 && el.getBoundingClientRect().top > window.innerHeight * 0.6) {
@@ -161,23 +181,40 @@ export default function Hero() {
     });
   };
 
-  // Play one breach on its own so first-time visitors see what happens.
+  // Play one breach on its own, once the record area is on screen (on phones
+  // that is after scrolling), so first-time visitors see what happens.
   useEffect(() => {
-    const t = setTimeout(() => {
-      if (touched.current) return;
-      setIncident("hack");
-      run("shop", "hack");
-    }, 1400);
-    return () => { clearTimeout(t); clearTimeout(fallback.current); };
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const el = panel.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        t = setTimeout(() => {
+          if (touched.current) return;
+          setIncident("hack");
+          run("shop", "hack");
+        }, 900);
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    return () => { io.disconnect(); clearTimeout(t); clearTimeout(fallback.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const shown = scenario ? (reduce ? scenario.fields.length : Math.min(scenario.fields.length, Math.ceil((landed * scenario.fields.length) / spilled.current))) : 0;
   const biz = BUSINESSES.find((b) => b.id === business)!;
+  // same format the real system gives (INC-001, INC-002 ...), varied per example
+  const code = incident
+    ? `INC-${String(3 + BUSINESSES.findIndex((b) => b.id === business) * 4 + INCIDENT_IDS.findIndex((x) => x.id === incident)).padStart(3, "0")}`
+    : "";
 
   return (
-    <section ref={section} id="try" className="relative isolate overflow-hidden bg-ink text-white">
+    <section ref={section} id="try" className="on-dark relative isolate overflow-hidden bg-ink text-white">
+      <p className="sr-only" aria-live="polite">{said}</p>
       <DataCloud ref={cloud} anchor={anchor} className="absolute inset-0 -z-10 size-full" frontClassName="pointer-events-none absolute inset-0 z-20 size-full" />
 
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-28 sm:px-8 lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,34rem)] lg:items-center lg:gap-14 lg:pb-14">
@@ -200,7 +237,7 @@ export default function Hero() {
                 onClick={() => {
                   touched.current = true;
                   setBusiness(b.id);
-                  if (incident) run(b.id, incident);
+                  if (incident) { run(b.id, incident); announce(b.id, incident); }
                 }}
                 className={`rounded-md border px-3 py-1.5 text-[0.95rem] transition-colors ${
                   b.id === business ? "border-white bg-white text-ink" : "border-white/25 text-white/85 hover:border-white"
@@ -248,9 +285,9 @@ export default function Hero() {
 
           <div ref={panel} className="relative scroll-mt-6">
             {scenario && result ? (
-              <article key={`${business}-${incident}`} className="panel-in overflow-hidden rounded-xl bg-white text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]" aria-live="polite" aria-label="Incident record preview">
+              <article key={`${business}-${incident}`} className="on-light panel-in overflow-hidden rounded-xl bg-white text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]" aria-label="Incident record preview">
                 <header className="flex items-center gap-3 border-b border-rule bg-paper px-5 py-2.5 text-sm">
-                  <span className="font-bold">INC-0042</span>
+                  <span className="font-bold">{code}</span>
                   <span className="text-muted">{biz.label}</span>
                   <span className={`ml-auto rounded px-2 py-0.5 text-xs font-bold ${STATUS[result.verdict].tone}`}>{STATUS[result.verdict].label}</span>
                 </header>
@@ -270,7 +307,7 @@ export default function Hero() {
                             {f.name}
                           </li>
                         ))}
-                        {shown < scenario.fields.length && <li className="rounded border border-dashed border-rule px-2 py-0.5 text-sm text-muted">checking…</li>}
+                        {shown < scenario.fields.length && <li className="rounded border border-dashed border-rule px-2 py-0.5 text-sm text-muted" aria-hidden="true">checking…</li>}
                       </ul>
                       <button type="button" onClick={() => setWhy((w) => !w)} aria-expanded={why} className="mt-2 text-sm font-bold underline decoration-rule decoration-2 underline-offset-4 hover:decoration-ink">
                         {why ? "Hide the rules" : "Why? See the rules"}

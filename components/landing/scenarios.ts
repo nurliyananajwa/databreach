@@ -115,7 +115,7 @@ export function assess(s: Scenario): { rules: RuleResult[]; verdict: Verdict } {
 export const VERDICT_TEXT: Record<Verdict, { title: string; body: string }> = {
   both: {
     title: "Tell the Commissioner and the people affected",
-    body: "Commissioner within 72 hours, then the affected people within 7 days.",
+    body: "Commissioner within 72 hours, then the affected people within 7 days after that.",
   },
   commissioner: {
     title: "Tell the Commissioner",

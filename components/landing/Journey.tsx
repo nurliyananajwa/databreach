@@ -9,7 +9,7 @@ const STAGES = [
   { when: "0 h", what: "Report the breach" },
   { when: "First hours", what: "Assess it" },
   { when: "Within 72 h", what: "Notify the Commissioner", key: true },
-  { when: "Within 7 days", what: "Notify the people affected" },
+  { when: "7 days after", what: "Notify the people affected" },
   { when: "2 years", what: "Keep the record" },
 ];
 
@@ -18,7 +18,7 @@ const LANES: Lane[] = [
   { id: "staff", who: "Staff", acts: [null, "Reports what happened in a short form", null, "Does the tasks given, like changing passwords", null, null] },
   { id: "lead", who: "Data protection lead", acts: ["Lists where personal data is kept", null, "Confirms what was exposed and checks the rules", "Drafts the notice", "Drafts the notice to people", "Closes the incident"] },
   { id: "manager", who: "Manager", acts: ["Invites the team", null, null, "Approves the notice", "Approves the notice", null] },
-  { id: "tracker", who: "The tracker", acts: [null, "Starts the 72-hour clock", "Shows each rule as met or not met", "Alerts 24 h and 6 h before the deadline", "Counts the 7 days", "Keeps a locked record and audit trail"] },
+  { id: "tracker", who: "The tracker", acts: [null, "Starts the 72-hour clock", "Shows each rule as met or not met", "Alerts 24 h and 6 h before the deadline", "Counts 7 days from the Commissioner notice", "Keeps a locked record and audit trail"] },
 ];
 
 export default function Journey() {

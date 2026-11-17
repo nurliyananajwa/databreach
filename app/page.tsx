@@ -21,7 +21,7 @@ export default function LandingPage() {
         Skip to content
       </a>
 
-      <header className="absolute inset-x-0 top-0 z-40 text-white">
+      <header className="on-dark absolute inset-x-0 top-0 z-40 text-white">
         <nav aria-label="Main" className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-4 sm:gap-8 sm:px-8">
           <Link href="/" className="mr-auto flex items-center gap-2.5 font-bold leading-tight">
             <Mark />
@@ -83,7 +83,7 @@ export default function LandingPage() {
         </section>
 
         {/* Closing */}
-        <section className="bg-ink text-white">
+        <section className="on-dark bg-ink text-white">
           <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
             <h2 className="max-w-3xl font-bold leading-[1.0] tracking-[-0.03em]" style={{ fontSize: "clamp(2.4rem, 5.4vw, 4.8rem)" }}>
               Be ready before the next breach.

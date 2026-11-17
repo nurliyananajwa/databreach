@@ -11,8 +11,10 @@ export type Kind = "name" | "phone" | "email" | "address" | "ic" | "bank" | "sal
 // target: where leaked pieces fly to (canvas px), or null to let them fall.
 // onArrive: called once per piece that lands in the target.
 export type CloudHandle = {
-  expose: (kinds: Kind[], spill: number, target: () => { x: number; y: number } | null, onArrive: () => void) => void;
+  // via: a point beside the record the pieces pass through, so they enter from the side
+  expose: (kinds: Kind[], spill: number, target: () => Target | null, onArrive: () => void) => void;
 };
+export type Target = { x: number; y: number; via: { x: number; y: number } };
 type Anchor = () => { x: number; y: number; r: number } | null;
 
 // --- fictional sample text, generated (never real people) -------------------
@@ -89,7 +91,7 @@ const DataCloud = forwardRef<CloudHandle, { className?: string; frontClassName?:
   const kick = useRef<() => void>(() => {});
   const anchorRef = useRef(anchor);
   anchorRef.current = anchor;
-  const flight = useRef<{ target: () => { x: number; y: number } | null; onArrive: () => void } | null>(null);
+  const flight = useRef<{ target: () => Target | null; onArrive: () => void } | null>(null);
 
   useImperativeHandle(ref, () => ({
     expose(kinds, spill, target, onArrive) {
@@ -144,13 +146,16 @@ const DataCloud = forwardRef<CloudHandle, { className?: string; frontClassName?:
 
     let mx = -9999, my = -9999, tiltX = 0, tiltY = 0, angle = 0.6;
     const onMove = (e: PointerEvent) => {
+      active = performance.now();
+      if (!raf) start();
       const b = cv.getBoundingClientRect();
       mx = e.clientX - b.left; my = e.clientY - b.top;
       tiltY = (mx / w - 0.5) * 0.5; tiltX = (my / h - 0.5) * 0.3;
     };
     const onLeave = () => { mx = my = -9999; };
 
-    let visible = true, raf = 0, last = performance.now();
+    // after 20 s with no pointer movement the cloud rests on its last frame (saves battery)
+    let visible = true, raf = 0, last = performance.now(), active = performance.now();
 
     const frame = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
@@ -200,12 +205,12 @@ const DataCloud = forwardRef<CloudHandle, { className?: string; frontClassName?:
           if (u < 0) {
             sp.x0 = sx; sp.y0 = sy; // waits in place, already red
           } else if (sp.fly && tgt && !reduce) {
-            // curve out of the cloud, then into the record
-            const e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-            const c1x = sp.x0 + (sp.x0 - cx) * 0.35, c1y = sp.y0 - 70;
-            const k = Math.min(1, e);
-            sx = (1 - k) * (1 - k) * sp.x0 + 2 * (1 - k) * k * c1x + k * k * tgt.x;
-            sy = (1 - k) * (1 - k) * sp.y0 + 2 * (1 - k) * k * c1y + k * k * tgt.y;
+            // lift out of the cloud, swing round the side of the record, land in the list
+            const k = Math.min(1, u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+            const m = 1 - k;
+            const b0 = m * m * m, b1 = 3 * m * m * k, b2 = 3 * m * k * k, b3 = k * k * k;
+            sx = b0 * sp.x0 + b1 * sp.x0 + b2 * tgt.via.x + b3 * tgt.x;
+            sy = b0 * sp.y0 + b1 * (sp.y0 - 70) + b2 * tgt.via.y + b3 * tgt.y;
             if (u >= 1) {
               fl?.onArrive();
               p.spill = null; p.fade = 0; p.text = p.kind ? sample(p.kind) : ""; p.sprite = null;
@@ -281,13 +286,15 @@ const DataCloud = forwardRef<CloudHandle, { className?: string; frontClassName?:
       ctx.globalAlpha = 1;
       fctx.globalAlpha = 1;
 
-      if (visible && !reduce) raf = requestAnimationFrame(frame);
+      const busy = parts.current.some((q) => q.spill) || parts.current.some((q) => Math.abs(q.ox) + Math.abs(q.oy) > 0.5);
+      if (visible && !reduce && (busy || now - active < 20000)) raf = requestAnimationFrame(frame);
+      else raf = 0;
     };
 
     const start = () => {
       if (!raf && visible) { last = performance.now(); raf = requestAnimationFrame(frame); }
     };
-    kick.current = () => { if (reduce) frame(performance.now()); else start(); };
+    kick.current = () => { active = performance.now(); if (reduce) frame(performance.now()); else start(); };
 
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting && !document.hidden;
