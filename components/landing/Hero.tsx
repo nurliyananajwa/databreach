@@ -120,6 +120,10 @@ export default function Hero() {
   // The cloud sits where the empty slot is in the layout.
   const anchor = useCallback(() => {
     const s = section.current?.getBoundingClientRect();
+    if (s && s.width < 1024) {
+      // smaller screens: a faint backdrop behind the headline, no slot of its own
+      return { x: s.width * 0.62, y: Math.min(300, s.width * 0.55), r: Math.min(s.width * 0.34, 260) };
+    }
     const c = cloudSpot.current?.getBoundingClientRect();
     if (!s || !c || c.width === 0) return null;
     return { x: c.left - s.left + c.width / 2, y: c.top - s.top + c.height / 2, r: Math.min(c.width / 2.6, c.height / 1.4) };
@@ -240,9 +244,9 @@ export default function Hero() {
 
         {/* right: the cloud above, the record below */}
         <div className="relative">
-          <div ref={cloudSpot} className="pointer-events-none h-44 lg:h-60" aria-hidden="true" />
+          <div ref={cloudSpot} className="pointer-events-none hidden lg:block lg:h-60" aria-hidden="true" />
 
-          <div ref={panel} className="relative scroll-mt-6 max-lg:mt-2">
+          <div ref={panel} className="relative scroll-mt-6">
             {scenario && result ? (
               <article key={`${business}-${incident}`} className="panel-in overflow-hidden rounded-xl bg-white text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]" aria-live="polite" aria-label="Incident record preview">
                 <header className="flex items-center gap-3 border-b border-rule bg-paper px-5 py-2.5 text-sm">

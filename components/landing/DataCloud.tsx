@@ -112,7 +112,7 @@ const DataCloud = forwardRef<CloudHandle, { className?: string; frontClassName?:
     const fv = front.current!;
     const fctx = fv.getContext("2d")!;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const small = window.innerWidth < 768;
+    let small = window.innerWidth < 1024;
     const nText = small ? 45 : 90;
     const nDots = small ? 450 : 1100;
 
@@ -134,6 +134,7 @@ const DataCloud = forwardRef<CloudHandle, { className?: string; frontClassName?:
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       w = cv.clientWidth; h = cv.clientHeight;
+      small = w < 1024;
       cv.width = fv.width = Math.round(w * dpr); cv.height = fv.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -241,7 +242,7 @@ const DataCloud = forwardRef<CloudHandle, { className?: string; frontClassName?:
         p.vis += ((hit ? 0 : 1) - p.vis) * Math.min(1, dt * 6);
       }
 
-      const dim = small ? 0.8 : 1;
+      const dim = small ? 0.5 : 1; // behind text on smaller screens, keep it quiet
       ctx.fillStyle = "#ffffff";
       for (const { p, sx, sy, s, d } of drawn) {
         const depth = Math.max(0, Math.min(1, (1.6 - d) / 3));
