@@ -57,3 +57,70 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .stamp-in { animation: none; transform: rotate(-8deg); }
 }
+
+/* ---------------------------------------------------------------- landing v2 */
+
+/* soft hallway of arches (CSS 3D) */
+.hall {
+  perspective: 900px;
+  perspective-origin: 50% 42%;
+  background: linear-gradient(180deg, #e9eef3 0%, #f3f6f8 55%, #e4eaef 100%);
+}
+.hall-wall {
+  position: absolute;
+  top: -10%;
+  height: 120%;
+  width: 160vw;
+  /* white arches on a pale wall, repeating into the distance */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='600' viewBox='0 0 220 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%23c9d3dd'/%3E%3Cstop offset='1' stop-color='%23fbfcfd'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='220' height='600' fill='%23d5dde5'/%3E%3Cpath d='M40 600V230a70 70 0 0 1 140 0v370z' fill='url(%23g)'/%3E%3C/svg%3E");
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.95;
+}
+.hall-left { left: 0; transform-origin: left center; transform: rotateY(68deg); }
+.hall-right { right: 0; transform-origin: right center; transform: rotateY(-68deg); }
+.hall-floor {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: -40%;
+  height: 90%;
+  transform-origin: top center;
+  transform: rotateX(82deg);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+  background:
+    repeating-linear-gradient(90deg, rgba(23, 33, 58, 0.05) 0 1px, transparent 1px 120px),
+    linear-gradient(180deg, #e7ecf0, #dfe5eb);
+}
+.hall-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(42% 46% at 50% 44%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%);
+}
+
+/* simulator card: content plays in when a scenario is picked */
+@keyframes sim-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.sim-reveal > * { animation: sim-in 380ms ease-out both; }
+.sim-rule { animation: sim-in 320ms ease-out both; }
+.sim-verdict { animation: sim-in 420ms ease-out 760ms both; }
+
+/* board cards rest at a slight angle */
+.board-item > button { transform: rotate(var(--r, 0deg)); }
+.board-item > button:hover, .board-item > button[aria-expanded="true"] { transform: rotate(0deg) scale(1.05); }
+.board-viewport::-webkit-scrollbar { height: 0; width: 0; }
+.board-viewport { scrollbar-width: none; }
+
+/* one-time reveal on scroll */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.reveal.is-shown { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sim-reveal > *, .sim-rule, .sim-verdict { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* lenis smooth scroll */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
