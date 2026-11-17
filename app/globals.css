@@ -74,33 +74,16 @@ body {
   .reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* ---------------------------------------------------------------- playground */
-@keyframes obj-bob { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-12px) rotate(1.5deg); } }
-.obj-float { animation: obj-bob 5.5s ease-in-out infinite; will-change: transform; }
-.obj-float:hover, .obj-float:focus-visible { animation-play-state: paused; }
-
-@keyframes jolt {
-  0% { transform: scale(1, 1); }
-  20% { transform: scale(1.12, 0.86) translateY(8px); }
-  45% { transform: scale(0.92, 1.1) translateY(-18px) rotate(-4deg); }
-  70% { transform: scale(1.04, 0.97) rotate(2deg); }
-  100% { transform: scale(1, 1); }
-}
-.mascot-jolt { animation: jolt 620ms cubic-bezier(0.3, 1.4, 0.5, 1) both; }
-.mascot-pupil { transition: transform 120ms ease-out; }
-
-@keyframes burst {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
-  15% { opacity: 1; }
-  70% { opacity: 1; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(-6deg); }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) + 30px)) scale(0.9) rotate(4deg); }
-}
-.burst { animation: burst 1.3s cubic-bezier(0.2, 0.8, 0.3, 1) both; z-index: 20; }
-
-@keyframes pop { 0% { opacity: 0; transform: scale(0.92) translateY(6px); } 60% { transform: scale(1.02); } 100% { opacity: 1; transform: none; } }
-.bubble { animation: pop 380ms cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+/* ---------------------------------------------------------------- console */
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.console-in > p { animation: rise 320ms ease-out both; }
+.chip-in { animation: rise 280ms ease-out both; }
+.rule-in { animation: rise 300ms ease-out both; }
+.verdict-in { animation: rise 420ms ease-out 820ms both; }
+.ring-draw { transition: stroke-dashoffset 1s linear; }
+@keyframes ring-fill { from { stroke-dashoffset: 326.7; } }
+.verdict-in .ring-draw { animation: ring-fill 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 900ms both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .obj-float, .mascot-jolt, .burst, .bubble { animation: none; }
-  .burst { display: none; }
+  .console-in > p, .chip-in, .rule-in, .verdict-in, .verdict-in .ring-draw { animation: none; }
 }

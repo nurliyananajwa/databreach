@@ -17,13 +17,6 @@ const ITEMS = [
   { title: "Supplier invoices", where: "Accounts folder", fields: ["Contact name", "Bank account", "Phone"], x: 88, y: 90, tone: "c" },
 ];
 
-const TONE: Record<string, string> = {
-  a: "bg-[#ffe08a]",
-  b: "bg-[#cfe0ff]",
-  c: "bg-[#c9f1dc]",
-  d: "bg-[#ffd6e7]",
-};
-
 export default function DataBoard() {
   const viewport = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; sl: number; st: number; moved: boolean } | null>(null);
@@ -70,7 +63,7 @@ export default function DataBoard() {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className={`board-viewport h-[30rem] overflow-auto rounded-[2rem] border-[3px] border-ink bg-white bg-[radial-gradient(circle,_#cfd6de_1.5px,_transparent_1.5px)] [background-size:24px_24px] ${
+        className={`board-viewport h-[30rem] overflow-auto rounded-xl border border-rule bg-paper bg-[radial-gradient(circle,_#cfd6de_1px,_transparent_1px)] [background-size:22px_22px] ${
           dragging ? "cursor-grabbing select-none" : "cursor-grab"
         }`}
       >
@@ -89,7 +82,7 @@ export default function DataBoard() {
                   onClick={() => !dragging && setOpen(isOpen ? null : it.title)}
                   onMouseEnter={() => !dragging && setOpen(it.title)}
                   onMouseLeave={() => setOpen((o) => (o === it.title ? null : o))}
-                  className={`w-60 rounded-[1.5rem] border-[3px] border-ink p-4 text-left shadow-[5px_5px_0_#17213a] transition-transform duration-300 ${TONE[it.tone]}`}
+                  className={`w-60 rounded-lg border p-4 text-left transition-[transform,border-color,box-shadow] duration-300 ${isOpen ? "border-ink bg-white shadow-[0_16px_34px_-18px_rgba(23,33,58,0.55)]" : "border-rule bg-white"}`}
                 >
                   <span className="block text-lg font-bold">{it.title}</span>
                   <span className="block text-sm text-muted">{it.where}</span>
@@ -97,7 +90,7 @@ export default function DataBoard() {
                     <span className="overflow-hidden">
                       <span className="mt-3 flex flex-wrap gap-1.5">
                         {it.fields.map((fl) => (
-                          <span key={fl} className="rounded-full bg-ink px-2 py-0.5 text-xs text-white">
+                          <span key={fl} className="rounded border border-ink px-2 py-0.5 text-xs">
                             {fl}
                           </span>
                         ))}
