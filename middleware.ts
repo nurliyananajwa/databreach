@@ -11,6 +11,16 @@ function isPublic(pathname: string) {
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  // Public pages need no session, so they work even before setup is finished.
+  if (isPublic(request.nextUrl.pathname)) return response;
+
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
+    throw new Error(
+      "Supabase settings are missing. Put the .env.local file in the project folder " +
+        "(the same folder as package.json), then stop and restart `npm run dev`.",
+    );
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -34,8 +44,7 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-  if (!user && !isPublic(pathname)) {
+  if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
     url.search = "";
