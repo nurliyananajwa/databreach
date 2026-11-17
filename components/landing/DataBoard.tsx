@@ -18,10 +18,10 @@ const ITEMS = [
 ];
 
 const TONE: Record<string, string> = {
-  a: "bg-white",
-  b: "bg-[#eaf1fb]",
-  c: "bg-[#eef6f1]",
-  d: "bg-[#fdeeee]",
+  a: "bg-[#ffe08a]",
+  b: "bg-[#cfe0ff]",
+  c: "bg-[#c9f1dc]",
+  d: "bg-[#ffd6e7]",
 };
 
 export default function DataBoard() {
@@ -70,7 +70,7 @@ export default function DataBoard() {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className={`board-viewport h-[30rem] overflow-auto rounded-3xl border border-rule bg-[radial-gradient(circle,_#cfd6de_1px,_transparent_1px)] [background-size:22px_22px] ${
+        className={`board-viewport h-[30rem] overflow-auto rounded-[2rem] border-[3px] border-ink bg-white bg-[radial-gradient(circle,_#cfd6de_1.5px,_transparent_1.5px)] [background-size:24px_24px] ${
           dragging ? "cursor-grabbing select-none" : "cursor-grab"
         }`}
       >
@@ -89,9 +89,7 @@ export default function DataBoard() {
                   onClick={() => !dragging && setOpen(isOpen ? null : it.title)}
                   onMouseEnter={() => !dragging && setOpen(it.title)}
                   onMouseLeave={() => setOpen((o) => (o === it.title ? null : o))}
-                  className={`w-60 rounded-2xl border border-rule p-4 text-left shadow-[0_14px_30px_-18px_rgba(23,33,58,0.4)] transition-transform duration-300 ${TONE[it.tone]} ${
-                    isOpen ? "scale-105 border-ink" : ""
-                  }`}
+                  className={`w-60 rounded-[1.5rem] border-[3px] border-ink p-4 text-left shadow-[5px_5px_0_#17213a] transition-transform duration-300 ${TONE[it.tone]}`}
                 >
                   <span className="block text-lg font-bold">{it.title}</span>
                   <span className="block text-sm text-muted">{it.where}</span>

@@ -1,6 +1,5 @@
 import Link from "next/link";
-import Hall from "@/components/landing/Hall";
-import Simulator from "@/components/landing/Simulator";
+import Playground from "@/components/landing/Playground";
 import DataBoard from "@/components/landing/DataBoard";
 import Reveal from "@/components/landing/Reveal";
 
@@ -42,52 +41,34 @@ export default function LandingPage() {
         Skip to content
       </a>
 
-      <header className="fixed inset-x-0 top-0 z-40">
+      <header className="absolute inset-x-0 top-0 z-40">
         <nav aria-label="Main" className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-4 sm:gap-8 sm:px-8">
           <Link href="/" className="mr-auto flex items-center gap-2.5 font-bold leading-tight">
             <Mark />
             <span>PDPA Breach Response Tracker</span>
           </Link>
-          <ul className="hidden items-center gap-1 rounded-full border border-rule bg-white/90 p-1 text-[0.95rem] md:flex">
+          <ul className="hidden items-center gap-1 rounded-full border-[2.5px] border-ink bg-white p-1 text-[0.95rem] font-bold md:flex">
             {[
               ["#try", "Try it"],
               ["#data", "Your data"],
               ["#how", "How it works"],
             ].map(([href, label]) => (
               <li key={href}>
-                <a href={href} className="block rounded-full px-4 py-1.5 hover:bg-white">{label}</a>
+                <a href={href} className="block rounded-full px-4 py-1.5 hover:bg-[#ffe08a]">{label}</a>
               </li>
             ))}
           </ul>
-          <Link href="/sign-in" className="shrink-0 whitespace-nowrap rounded-full bg-ink px-5 py-2 text-[0.95rem] font-bold text-white hover:bg-[#25335a]">
+          <Link href="/sign-in" className="shrink-0 whitespace-nowrap rounded-full border-[2.5px] border-ink bg-ink px-5 py-2 text-[0.95rem] font-bold text-white shadow-[3px_3px_0_#ff7a6b] transition-transform hover:-translate-y-0.5">
             Sign in
           </Link>
         </nav>
       </header>
 
       <main id="main">
-        {/* Hero: the simulator */}
-        <section id="try" className="relative isolate overflow-hidden pb-20 pt-28 lg:flex lg:min-h-screen lg:items-center lg:pb-12">
-          <Hall />
-          <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8">
-            <Simulator
-              intro={
-                <div className="mb-2">
-                  <h1 className="font-bold leading-[1.0] tracking-[-0.03em]" style={{ fontSize: "clamp(2.5rem, 4.6vw, 4.4rem)" }}>
-                    A data breach just happened. What do you do?
-                  </h1>
-                  <p className="mt-5 max-w-lg text-lg text-muted">
-                    Pick a business and what went wrong. See in seconds what the law asks of you,
-                    and how this tracker helps you do it on time.
-                  </p>
-                </div>
-              }
-            />
-          </div>
-        </section>
+        <Playground />
 
         {/* Drag to explore */}
-        <section id="data" className="scroll-mt-20 border-t border-rule bg-sheet">
+        <section id="data" className="scroll-mt-20 border-t-[3px] border-ink bg-[#fff6dc]">
           <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
             <Reveal>
               <h2 className="max-w-3xl font-bold leading-[1.02] tracking-[-0.02em]" style={{ fontSize: "clamp(2.2rem, 5vw, 4.2rem)" }}>
@@ -105,7 +86,7 @@ export default function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section id="how" className="scroll-mt-20 border-t border-rule">
+        <section id="how" className="scroll-mt-20 border-t-[3px] border-ink bg-[#e3f5ea]">
           <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
             <Reveal>
               <h2 className="font-bold leading-[1.02] tracking-[-0.02em]" style={{ fontSize: "clamp(2.2rem, 5vw, 4.2rem)" }}>
@@ -116,7 +97,7 @@ export default function LandingPage() {
               {steps.map((s, i) => (
                 <li key={s.title}>
                   <Reveal delay={i * 110} className="h-full">
-                    <div className="h-full rounded-3xl border border-rule bg-sheet p-6 shadow-[0_24px_50px_-34px_rgba(23,33,58,0.45)]">
+                    <div className="h-full rounded-[1.75rem] border-[3px] border-ink bg-white p-6 shadow-[6px_6px_0_#17213a]">
                       <span className="grid size-10 place-items-center rounded-full bg-ink text-lg font-bold text-white tabular-nums">{i + 1}</span>
                       <h3 className="mt-5 text-xl font-bold">{s.title}</h3>
                       <p className="mt-2 text-muted">{s.body}</p>
@@ -127,7 +108,7 @@ export default function LandingPage() {
             </ol>
 
             <Reveal className="mt-14">
-              <div className="rounded-3xl border border-rule bg-sheet p-6 sm:p-8">
+              <div className="rounded-[1.75rem] border-[3px] border-ink bg-white p-6 shadow-[6px_6px_0_#17213a] sm:p-8">
                 <h3 className="text-lg font-bold">The deadlines the tracker counts for you</h3>
                 <ol className="relative mt-6 grid gap-6 md:grid-cols-4 md:gap-4">
                   <span className="absolute bottom-2 left-[7px] top-2 w-0.5 bg-rule md:bottom-auto md:left-2 md:right-2 md:top-[7px] md:h-0.5 md:w-auto" aria-hidden="true" />
@@ -149,7 +130,7 @@ export default function LandingPage() {
         </section>
 
         {/* Who uses it */}
-        <section className="border-t border-rule bg-sheet">
+        <section className="border-t-[3px] border-ink bg-[#ece8ff]">
           <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[1fr_2fr]">
             <Reveal>
               <h2 className="text-3xl font-bold tracking-[-0.01em] sm:text-4xl">Three roles. Each sees only what their job needs.</h2>
@@ -158,8 +139,8 @@ export default function LandingPage() {
               {roles.map((r, i) => (
                 <li key={r.who}>
                   <Reveal delay={i * 100}>
-                    <p className="border-t-2 border-ink pt-4 text-lg font-bold">{r.who}</p>
-                    <p className="mt-2 text-muted">{r.does}</p>
+                    <div className="rounded-[1.5rem] border-[3px] border-ink bg-white p-5 shadow-[5px_5px_0_#17213a]"><p className="text-lg font-bold">{r.who}</p>
+                    <p className="mt-2 text-muted">{r.does}</p></div>
                   </Reveal>
                 </li>
               ))}
@@ -168,7 +149,7 @@ export default function LandingPage() {
         </section>
 
         {/* Closing */}
-        <section className="relative isolate overflow-hidden border-t border-rule">
+        <section className="relative isolate overflow-hidden border-t-[3px] border-ink bg-[#ffe1e7]">
           <div className="mx-auto max-w-7xl px-5 py-28 text-center sm:px-8">
             <Reveal>
               <h2 className="mx-auto max-w-4xl font-bold leading-[1.0] tracking-[-0.03em]" style={{ fontSize: "clamp(2.4rem, 6vw, 5.4rem)" }}>
@@ -177,7 +158,7 @@ export default function LandingPage() {
               <p className="mx-auto mt-5 max-w-lg text-lg text-muted">
                 Sign in with the Google account your manager invited.
               </p>
-              <Link href="/sign-in" className="mt-9 inline-flex rounded-full bg-ink px-7 py-3.5 text-lg font-bold text-white hover:bg-[#25335a]">
+              <Link href="/sign-in" className="mt-9 inline-flex rounded-full border-[3px] border-ink bg-ink px-7 py-3.5 text-lg font-bold text-white shadow-[5px_5px_0_#ff7a6b] transition-transform hover:-translate-y-0.5">
                 Sign in with Google
               </Link>
             </Reveal>
@@ -185,7 +166,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-rule">
+      <footer className="border-t-[3px] border-ink bg-white">
         <div className="mx-auto max-w-7xl px-5 py-8 text-sm text-muted sm:px-8">
           <p className="max-w-3xl">
             Academic prototype for IMS568, Faculty of Information Science, UiTM Puncak Perdana. All
