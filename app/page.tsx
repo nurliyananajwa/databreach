@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Console from "@/components/landing/Console";
+import Hero from "@/components/landing/Hero";
 import DataBoard from "@/components/landing/DataBoard";
 import Reveal from "@/components/landing/Reveal";
 
@@ -41,7 +41,7 @@ export default function LandingPage() {
         Skip to content
       </a>
 
-      <header className="absolute inset-x-0 top-0 z-40 border-b border-rule bg-paper">
+      <header className="absolute inset-x-0 top-0 z-40 text-white">
         <nav aria-label="Main" className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-4 sm:gap-8 sm:px-8">
           <Link href="/" className="mr-auto flex items-center gap-2.5 font-bold leading-tight">
             <Mark />
@@ -54,22 +54,18 @@ export default function LandingPage() {
               ["#how", "How it works"],
             ].map(([href, label]) => (
               <li key={href}>
-                <a href={href} className="underline-offset-4 hover:underline">{label}</a>
+                <a href={href} className="text-white/80 underline-offset-4 hover:text-white hover:underline">{label}</a>
               </li>
             ))}
           </ul>
-          <Link href="/sign-in" className="shrink-0 whitespace-nowrap rounded-md bg-ink px-5 py-2 text-[0.95rem] font-bold text-white hover:bg-[#25335a]">
+          <Link href="/sign-in" className="shrink-0 whitespace-nowrap rounded-md bg-white px-5 py-2 text-[0.95rem] font-bold text-ink hover:bg-paper">
             Sign in
           </Link>
         </nav>
       </header>
 
       <main id="main">
-        <section id="try" className="relative bg-paper px-5 pb-20 pt-28 sm:px-8 lg:flex lg:min-h-screen lg:items-center lg:pb-12">
-          <div className="mx-auto w-full max-w-7xl">
-            <Console />
-          </div>
-        </section>
+        <Hero />
 
         {/* Drag to explore */}
         <section id="data" className="scroll-mt-20 border-t border-rule bg-sheet">
