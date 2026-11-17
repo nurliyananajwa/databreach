@@ -55,11 +55,11 @@ export default function LandingPage() {
                 You hold more personal data than you think.
               </h2>
               <p className="mt-5 text-lg text-muted">
-                Start by listing where it lives. When a breach happens, the incident record is
-                filled in from this list, so nobody has to guess what was exposed.
+                Start by listing where it lives. When a breach happens, the inventory suggests the
+                data involved. Your Compliance Officer confirms what was exposed.
               </p>
               <p className="mt-4 text-muted">
-                The tracker stores field names only, never the data itself.
+                The inventory stores field names only, never the customer values.
               </p>
             </div>
             <Inventory />
@@ -74,7 +74,7 @@ export default function LandingPage() {
             </h2>
             <p className="mt-5 max-w-2xl text-lg text-muted">
               Three roles share one record. Each person sees only what their job needs, and the
-              tracker keeps everyone on time.
+              tracker helps the team track its next steps.
             </p>
             <div className="mt-10">
               <Journey />
