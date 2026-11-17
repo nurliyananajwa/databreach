@@ -64,7 +64,16 @@ body {
 .hall {
   perspective: 900px;
   perspective-origin: 50% 42%;
+  contain: strict;
   background: linear-gradient(180deg, #e9eef3 0%, #f3f6f8 55%, #e4eaef 100%);
+}
+/* the whole scene shifts as one GPU layer: cheap to move */
+.hall-scene {
+  position: absolute;
+  inset: -4%;
+  transform-style: preserve-3d;
+  transform: translate3d(var(--hx, 0px), var(--hy, 0px), 0);
+  will-change: transform;
 }
 .hall-wall {
   position: absolute;
@@ -119,8 +128,3 @@ body {
   .sim-reveal > *, .sim-rule, .sim-verdict { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
-
-/* lenis smooth scroll */
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }

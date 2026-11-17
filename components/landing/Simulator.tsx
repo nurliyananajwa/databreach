@@ -36,7 +36,7 @@ function Pills<T extends string>({
               aria-pressed={on}
               onClick={() => onChange(o.id)}
               className={`rounded-full border px-4 py-1.5 text-[0.95rem] transition-colors ${
-                on ? "border-ink bg-ink text-white" : "border-rule bg-white/70 backdrop-blur hover:border-ink"
+                on ? "border-ink bg-ink text-white" : "border-rule bg-white hover:border-ink"
               }`}
             >
               {o.label}
@@ -84,14 +84,22 @@ export default function Simulator({ intro }: { intro?: React.ReactNode }) {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const el = card.current;
-    if (!el) return;
+    if (!el || window.matchMedia("(pointer: coarse)").matches) return;
+    let raf = 0, x = 0, y = 0;
     const onMove = (e: PointerEvent) => {
-      const x = e.clientX / window.innerWidth - 0.5;
-      const y = e.clientY / window.innerHeight - 0.5;
-      el.style.transform = `perspective(1200px) rotateY(${x * 7}deg) rotateX(${-y * 5}deg)`;
+      x = e.clientX / window.innerWidth - 0.5;
+      y = e.clientY / window.innerHeight - 0.5;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        el.style.transform = `perspective(1200px) rotateY(${x * 6}deg) rotateX(${-y * 4}deg)`;
+      });
     };
-    window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   const mood = verdict === "both" ? "worried" : verdict === "commissioner" ? "alert" : "calm";
@@ -115,7 +123,7 @@ export default function Simulator({ intro }: { intro?: React.ReactNode }) {
 
         <div
           ref={card}
-          className="sim-card relative rounded-2xl border border-white/80 bg-white/85 shadow-[0_30px_80px_-30px_rgba(23,33,58,0.45)] backdrop-blur-md transition-transform duration-200 ease-out will-change-transform"
+          className="sim-card relative rounded-2xl border border-white/80 bg-white shadow-[0_30px_80px_-30px_rgba(23,33,58,0.45)] transition-transform duration-300 ease-out"
           aria-live="polite"
         >
           <div key={key} className="sim-reveal p-6 sm:p-7">

@@ -3,7 +3,6 @@ import Hall from "@/components/landing/Hall";
 import Simulator from "@/components/landing/Simulator";
 import DataBoard from "@/components/landing/DataBoard";
 import Reveal from "@/components/landing/Reveal";
-import SmoothScroll from "@/components/landing/SmoothScroll";
 
 const steps = [
   { title: "Record your data", body: "List the personal data you hold, where it is kept and who can open it. Field names only, never the data itself." },
@@ -39,7 +38,6 @@ function Mark() {
 export default function LandingPage() {
   return (
     <>
-      <SmoothScroll />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-sheet focus:px-4 focus:py-2">
         Skip to content
       </a>
@@ -50,7 +48,7 @@ export default function LandingPage() {
             <Mark />
             <span>PDPA Breach Response Tracker</span>
           </Link>
-          <ul className="hidden items-center gap-1 rounded-full border border-white/70 bg-white/60 p-1 text-[0.95rem] backdrop-blur md:flex">
+          <ul className="hidden items-center gap-1 rounded-full border border-rule bg-white/90 p-1 text-[0.95rem] md:flex">
             {[
               ["#try", "Try it"],
               ["#data", "Your data"],
