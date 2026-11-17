@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DataCloud, { type CloudHandle, type Kind } from "./DataCloud";
-import { BUSINESSES, SCENARIOS, VERDICT_TEXT, assess, type BusinessId, type Field, type IncidentId } from "./scenarios";
+import { BUSINESSES, SCENARIOS, assess, type BusinessId, type Field, type IncidentId, type Verdict } from "./scenarios";
 
 const icon = { fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 
 const INCIDENTS: { id: IncidentId; label: string; svg: React.ReactNode }[] = [
-  { id: "laptop", label: "Laptop stolen", svg: <svg viewBox="0 0 32 32" className="size-6" {...icon}><rect x="6" y="7" width="20" height="13" rx="1.5" /><path d="M3 24h26l-2 2.5H5Z" /></svg> },
-  { id: "email", label: "Email to the wrong person", svg: <svg viewBox="0 0 32 32" className="size-6" {...icon}><rect x="4" y="8" width="24" height="17" rx="2" /><path d="m5 10 11 8 11-8" /></svg> },
-  { id: "hack", label: "Database hacked", svg: <svg viewBox="0 0 32 32" className="size-6" {...icon}><ellipse cx="16" cy="8" rx="10" ry="3.5" /><path d="M6 8v16c0 2 4.5 3.5 10 3.5s10-1.5 10-3.5V8M6 16c0 2 4.5 3.5 10 3.5s10-1.5 10-3.5" /></svg> },
-  { id: "whatsapp", label: "WhatsApp leak", svg: <svg viewBox="0 0 32 32" className="size-6" {...icon}><rect x="9" y="3.5" width="14" height="25" rx="2.5" /><path d="M13 9.5h6M13 13.5h4M13 17.5h6" /></svg> },
+  { id: "laptop", label: "Laptop stolen", svg: <svg viewBox="0 0 32 32" className="size-6 shrink-0" {...icon}><rect x="6" y="7" width="20" height="13" rx="1.5" /><path d="M3 24h26l-2 2.5H5Z" /></svg> },
+  { id: "email", label: "Email to the wrong person", svg: <svg viewBox="0 0 32 32" className="size-6 shrink-0" {...icon}><rect x="4" y="8" width="24" height="17" rx="2" /><path d="m5 10 11 8 11-8" /></svg> },
+  { id: "hack", label: "Database hacked", svg: <svg viewBox="0 0 32 32" className="size-6 shrink-0" {...icon}><ellipse cx="16" cy="8" rx="10" ry="3.5" /><path d="M6 8v16c0 2 4.5 3.5 10 3.5s10-1.5 10-3.5V8M6 16c0 2 4.5 3.5 10 3.5s10-1.5 10-3.5" /></svg> },
+  { id: "whatsapp", label: "WhatsApp leak", svg: <svg viewBox="0 0 32 32" className="size-6 shrink-0" {...icon}><rect x="9" y="3.5" width="14" height="25" rx="2.5" /><path d="M13 9.5h6M13 13.5h4M13 17.5h6" /></svg> },
 ];
 
 // Which cloud fragments light up for each exposed field.
@@ -30,7 +30,31 @@ function kindOf(f: Field): Kind {
   return "name";
 }
 
-function Ring({ startedAt, urgent }: { startedAt: number; urgent: boolean }) {
+const STATUS: Record<Verdict, { label: string; tone: string }> = {
+  both: { label: "Notice needed", tone: "bg-stamp text-white" },
+  commissioner: { label: "Notice needed", tone: "bg-ink text-white" },
+  register: { label: "Record only", tone: "border border-rule text-muted" },
+};
+
+type Step = { title: string; note?: string; state: "done" | "now" | "next" };
+function stepsFor(v: Verdict): Step[] {
+  const head: Step[] = [
+    { title: "Breach reported", note: "by staff, clock started", state: "done" },
+    { title: "Assessed against the rules", note: v === "register" ? "no notice needed" : "notice needed", state: "done" },
+  ];
+  if (v === "register") return [...head, { title: "Record in the breach register", note: "kept for 2 years", state: "now" }];
+  return [
+    ...head,
+    { title: "Notify the Commissioner", note: "draft waiting for manager approval", state: "now" },
+    v === "both"
+      ? { title: "Notify the people affected", note: "within 7 days after", state: "next" }
+      : { title: "Keep in the breach register", note: "for 2 years", state: "next" },
+  ];
+}
+
+const KL = new Intl.DateTimeFormat("en-MY", { timeZone: "Asia/Kuala_Lumpur", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false });
+
+function Clock({ startedAt, urgent }: { startedAt: number; urgent: boolean }) {
   const [now, setNow] = useState(startedAt);
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
@@ -41,35 +65,84 @@ function Ring({ startedAt, urgent }: { startedAt: number; urgent: boolean }) {
   const hms = [Math.floor(left / 3600), Math.floor((left % 3600) / 60), left % 60].map((n) => String(n).padStart(2, "0"));
   const C = 2 * Math.PI * 52;
   return (
-    <div className="relative size-32 shrink-0">
-      <svg viewBox="0 0 120 120" className="size-full -rotate-90" aria-hidden="true">
-        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--color-rule)" strokeWidth="6" />
-        <circle className="ring-draw" cx="60" cy="60" r="52" fill="none" stroke={urgent ? "var(--color-stamp)" : "var(--color-ink)"} strokeWidth="6" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - left / total)} />
-      </svg>
-      <div className="absolute inset-0 grid place-content-center text-center">
-        <span className="text-lg font-bold tabular-nums">{hms.join(":")}</span>
-        <span className="mx-auto max-w-[5.5rem] text-[0.7rem] leading-tight text-muted">left to notify</span>
+    <div className="flex items-center gap-3.5">
+      <div className="relative size-[5.5rem] shrink-0">
+        <svg viewBox="0 0 120 120" className="size-full -rotate-90" aria-hidden="true">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--color-rule)" strokeWidth="7" />
+          <circle className="ring-draw" cx="60" cy="60" r="52" fill="none" stroke={urgent ? "var(--color-stamp)" : "var(--color-ink)"} strokeWidth="7" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - left / total)} />
+        </svg>
+        <span className="absolute inset-0 grid place-content-center text-[0.85rem] font-bold tabular-nums">{hms.join(":")}</span>
+      </div>
+      <div>
+        <p className="text-sm text-muted">Commissioner deadline</p>
+        <p className="whitespace-nowrap font-bold">{KL.format(startedAt + total * 1000)}</p>
+        <p className="mt-0.5 text-sm text-muted">72 h from when you found out</p>
       </div>
     </div>
   );
 }
 
+function CountUp({ to }: { to: number }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setN(to); return; }
+    let raf = 0;
+    const t0 = performance.now();
+    const tick = (t: number) => {
+      const u = Math.min(1, (t - t0) / 1100);
+      setN(Math.round(to * (1 - Math.pow(1 - u, 3))));
+      if (u < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [to]);
+  return <>{n.toLocaleString("en-MY")}</>;
+}
+
 export default function Hero() {
-  const cloud = useRef<CloudHandle>(null);
+  const section = useRef<HTMLElement>(null);
+  const cloudSpot = useRef<HTMLDivElement>(null);
+  const inbox = useRef<HTMLUListElement>(null);
   const panel = useRef<HTMLDivElement>(null);
+  const cloud = useRef<CloudHandle>(null);
   const [business, setBusiness] = useState<BusinessId>("shop");
   const [incident, setIncident] = useState<IncidentId | null>(null);
   const [startedAt, setStartedAt] = useState(0);
+  const [landed, setLanded] = useState(0);
   const [why, setWhy] = useState(false);
   const touched = useRef(false);
+  const fallback = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const spilled = useRef(1);
 
   const scenario = incident ? SCENARIOS[business][incident] : null;
   const result = useMemo(() => (scenario ? assess(scenario) : null), [scenario]);
 
+  // The cloud sits where the empty slot is in the layout.
+  const anchor = useCallback(() => {
+    const s = section.current?.getBoundingClientRect();
+    const c = cloudSpot.current?.getBoundingClientRect();
+    if (!s || !c || c.width === 0) return null;
+    return { x: c.left - s.left + c.width / 2, y: c.top - s.top + c.height / 2, r: Math.min(c.width / 2.6, c.height / 1.4) };
+  }, []);
+
+  // Leaked pieces fly into the "Data exposed" list, if it is on screen.
+  const target = useCallback(() => {
+    const s = section.current?.getBoundingClientRect();
+    const t = inbox.current?.getBoundingClientRect();
+    if (!s || !t || t.top > window.innerHeight - 20 || t.bottom < 0) return null;
+    return { x: t.left - s.left + 16, y: t.top - s.top + 14 };
+  }, []);
+
   const run = (b: BusinessId, i: IncidentId) => {
     const sc = SCENARIOS[b][i];
-    cloud.current?.expose(sc.fields.map(kindOf), Math.min(26, 6 + Math.round(Math.log10(sc.people + 1) * 5)));
+    setLanded(0);
     setStartedAt(Date.now());
+    const spill = Math.max(sc.fields.length + 2, Math.min(16, 4 + Math.round(Math.log10(sc.people + 1) * 3)));
+    spilled.current = spill;
+    // wait one frame so the new record is on the page before pieces aim at it
+    requestAnimationFrame(() => cloud.current?.expose(sc.fields.map(kindOf), spill, target, () => setLanded((n) => n + 1)));
+    clearTimeout(fallback.current);
+    fallback.current = setTimeout(() => setLanded((n) => Math.max(n, 99)), 2600);
   };
 
   const choose = (i: IncidentId) => {
@@ -90,26 +163,28 @@ export default function Hero() {
       if (touched.current) return;
       setIncident("hack");
       run("shop", "hack");
-    }, 1600);
-    return () => clearTimeout(t);
+    }, 1400);
+    return () => { clearTimeout(t); clearTimeout(fallback.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const who = scenario && (scenario.people === 1 ? "1 person" : `${scenario.people.toLocaleString("en-MY")} people`);
+  const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const shown = scenario ? (reduce ? scenario.fields.length : Math.min(scenario.fields.length, Math.ceil((landed * scenario.fields.length) / spilled.current))) : 0;
+  const biz = BUSINESSES.find((b) => b.id === business)!;
 
   return (
-    <section id="try" className="relative isolate overflow-hidden bg-ink text-white">
-      <DataCloud ref={cloud} className="absolute inset-0 -z-10 size-full" />
-      {/* keeps the text side readable over the cloud */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,_#17213a_0%,_#17213a_34%,_rgba(23,33,58,0)_58%)]" aria-hidden="true" />
+    <section ref={section} id="try" className="relative isolate overflow-hidden bg-ink text-white">
+      <DataCloud ref={cloud} anchor={anchor} className="absolute inset-0 -z-10 size-full" frontClassName="pointer-events-none absolute inset-0 z-20 size-full" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-28 sm:px-8 lg:min-h-screen lg:content-center lg:pb-12">
-        <div className="max-w-xl">
-          <h1 className="font-bold leading-[1.0] tracking-[-0.03em]" style={{ fontSize: "clamp(2.5rem, 4.8vw, 4.4rem)" }}>
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-28 sm:px-8 lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,34rem)] lg:items-center lg:gap-14 lg:pb-14">
+        {/* left: the question and the controls */}
+        <div className="relative">
+          <h1 className="font-bold leading-[1.0] tracking-[-0.03em]" style={{ fontSize: "clamp(2.5rem, 4.6vw, 4.2rem)" }}>
             A data breach just happened. What do you do?
           </h1>
-          <p className="mt-5 text-lg text-white/70">
-            Every small business holds personal data. Choose a business and what went wrong, and
-            see what the law asks of you.
+          <p className="mt-5 max-w-lg text-lg text-white/70">
+            Pick a business and what went wrong. Watch the leaked data land in an incident record,
+            with the deadline and next steps the law asks for.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-1.5" role="group" aria-label="Business">
@@ -119,6 +194,7 @@ export default function Hero() {
                 type="button"
                 aria-pressed={b.id === business}
                 onClick={() => {
+                  touched.current = true;
                   setBusiness(b.id);
                   if (incident) run(b.id, incident);
                 }}
@@ -140,8 +216,8 @@ export default function Hero() {
                     type="button"
                     aria-pressed={on}
                     onClick={() => choose(it.id)}
-                    className={`flex w-full items-center gap-3 rounded-lg border p-3.5 text-left font-bold leading-snug transition-[transform,border-color,background-color] duration-200 ${
-                      on ? "border-stamp bg-stamp text-white" : "border-white/25 bg-white/[0.04] hover:-translate-y-0.5 hover:border-white"
+                    className={`flex h-full w-full items-center gap-3 rounded-lg border p-3.5 text-left font-bold leading-snug transition-[transform,border-color,background-color] duration-200 ${
+                      on ? "border-stamp bg-stamp text-white" : "border-white/25 bg-ink/60 hover:-translate-y-0.5 hover:border-white"
                     }`}
                   >
                     {it.svg}
@@ -151,53 +227,108 @@ export default function Hero() {
               );
             })}
           </ul>
+
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a href="#how" className="rounded-md bg-white px-5 py-3 font-bold text-ink hover:bg-paper">
+              See how the tracker works
+            </a>
+            <a href="#data" className="font-bold text-white/85 underline decoration-white/30 decoration-2 underline-offset-4 hover:text-white hover:decoration-white">
+              What data do you hold?
+            </a>
+          </div>
         </div>
 
-        <div ref={panel} className="scroll-mt-6 lg:absolute lg:bottom-10 lg:right-8 lg:w-[25rem]">
-          {scenario && result ? (
-            <div key={`${business}-${incident}`} className="panel-in rounded-xl bg-white p-6 text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]" aria-live="polite">
-              <p className="text-sm text-muted">{who} affected</p>
-              <p className="mt-1 text-xl font-bold leading-snug">{scenario.what}.</p>
-              <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Personal data exposed">
-                {scenario.fields.map((f) => (
-                  <li key={f.name} className={`rounded border px-2 py-0.5 text-sm ${f.category === "other" || f.category === "contact" ? "border-rule" : "border-stamp/40 text-stamp"}`}>
-                    {f.name}
-                  </li>
-                ))}
-              </ul>
-              <button type="button" onClick={() => setWhy((w) => !w)} aria-expanded={why} className="mt-3 text-sm font-bold underline decoration-rule decoration-2 underline-offset-4 hover:decoration-ink">
-                {why ? "Hide the rules" : "Why? See the rules"}
-              </button>
-              {why && <ul className="mt-3 grid gap-1.5 text-[0.95rem]">
-                {result.rules.map((r, i) => (
-                  <li key={r.code} className="rule-in flex items-center gap-2.5" style={{ animationDelay: `${200 + i * 80}ms` }}>
-                    <span className={`grid size-4 shrink-0 place-items-center rounded-full border text-[0.6rem] font-bold ${r.met === true ? "border-stamp bg-stamp text-white" : r.met === false ? "border-rule" : "border-dashed border-muted text-muted"}`} aria-hidden="true">
-                      {r.met === true ? "✓" : r.met === null ? "?" : ""}
-                    </span>
-                    <span className={r.met ? "font-bold" : "text-muted"}>{r.label}</span>
-                    <span className="sr-only">{r.met === true ? "met" : r.met === false ? "not met" : "needs judgement"}</span>
-                  </li>
-                ))}
-              </ul>}
-              <div className="verdict-in mt-4 flex items-center gap-4 border-t border-rule pt-4">
-                {result.verdict === "register" ? (
-                  <div className="grid size-32 shrink-0 place-content-center rounded-full border-[6px] border-rule text-center">
-                    <span className="text-sm font-bold">No notice</span>
-                    <span className="text-[0.7rem] text-muted">record only</span>
+        {/* right: the cloud above, the record below */}
+        <div className="relative">
+          <div ref={cloudSpot} className="pointer-events-none h-44 lg:h-60" aria-hidden="true" />
+
+          <div ref={panel} className="relative scroll-mt-6 max-lg:mt-2">
+            {scenario && result ? (
+              <article key={`${business}-${incident}`} className="panel-in overflow-hidden rounded-xl bg-white text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]" aria-live="polite" aria-label="Incident record preview">
+                <header className="flex items-center gap-3 border-b border-rule bg-paper px-5 py-2.5 text-sm">
+                  <span className="font-bold">INC-0042</span>
+                  <span className="text-muted">{biz.label}</span>
+                  <span className={`ml-auto rounded px-2 py-0.5 text-xs font-bold ${STATUS[result.verdict].tone}`}>{STATUS[result.verdict].label}</span>
+                </header>
+
+                <div className="px-5 pb-5 pt-4">
+                  <p className="text-xl font-bold leading-snug">{scenario.what}.</p>
+                  <p className="mt-0.5 text-sm text-muted">
+                    <CountUp key={startedAt} to={scenario.people} /> {scenario.people === 1 ? "person" : "people"} affected
+                  </p>
+
+                  <div className="mt-4 grid gap-5 sm:grid-cols-[minmax(0,1fr)_16rem]">
+                    <div>
+                      <p className="text-sm text-muted">Data exposed</p>
+                      <ul ref={inbox} className="mt-1.5 flex min-h-[4.25rem] flex-wrap content-start gap-1.5" aria-label="Personal data exposed">
+                        {scenario.fields.slice(0, shown).map((f) => (
+                          <li key={f.name} className={`chip-in rounded border px-2 py-0.5 text-sm ${f.category === "other" || f.category === "contact" ? "border-rule" : "border-stamp/40 text-stamp"}`}>
+                            {f.name}
+                          </li>
+                        ))}
+                        {shown < scenario.fields.length && <li className="rounded border border-dashed border-rule px-2 py-0.5 text-sm text-muted">checking…</li>}
+                      </ul>
+                      <button type="button" onClick={() => setWhy((w) => !w)} aria-expanded={why} className="mt-2 text-sm font-bold underline decoration-rule decoration-2 underline-offset-4 hover:decoration-ink">
+                        {why ? "Hide the rules" : "Why? See the rules"}
+                      </button>
+                    </div>
+
+                    <div>
+                      {result.verdict === "register" ? (
+                        <div>
+                          <p className="text-sm text-muted">Deadline</p>
+                          <p className="mt-1 font-bold">No notice needed</p>
+                          <p className="mt-0.5 text-sm text-muted">Every breach is still recorded and kept for 2 years.</p>
+                        </div>
+                      ) : (
+                        <Clock key={startedAt} startedAt={startedAt} urgent={result.verdict === "both"} />
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <Ring key={startedAt} startedAt={startedAt} urgent={result.verdict === "both"} />
-                )}
-                <div className="min-w-0">
-                  <p className={`font-bold leading-snug ${result.verdict === "both" ? "text-stamp" : ""}`}>{VERDICT_TEXT[result.verdict].title}</p>
-                  <p className="mt-1 text-sm text-muted">{VERDICT_TEXT[result.verdict].body}</p>
+
+                  {why && (
+                    <ul className="mt-4 grid gap-1.5 rounded-lg bg-paper p-3 text-[0.95rem]">
+                      {result.rules.map((r, i) => (
+                        <li key={r.code} className="rule-in flex items-start gap-2.5" style={{ animationDelay: `${i * 60}ms` }}>
+                          <span className={`mt-1 grid size-4 shrink-0 place-items-center rounded-full border text-[0.6rem] font-bold ${r.met === true ? "border-stamp bg-stamp text-white" : r.met === false ? "border-rule bg-white" : "border-dashed border-muted text-muted"}`} aria-hidden="true">
+                            {r.met === true ? "✓" : r.met === null ? "?" : ""}
+                          </span>
+                          <span>
+                            <span className={r.met ? "font-bold" : "text-muted"}>{r.label}</span>
+                            <span className="text-muted">, {r.why.charAt(0).toLowerCase() + r.why.slice(1)}</span>
+                          </span>
+                          <span className="sr-only">{r.met === true ? "met" : r.met === false ? "not met" : "needs judgement"}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  <ol className="verdict-in mt-5 grid gap-2.5 border-t border-rule pt-4">
+                    {stepsFor(result.verdict).map((st) => (
+                      <li key={st.title} className="flex items-start gap-3">
+                        <span
+                          className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[0.65rem] font-bold ${
+                            st.state === "done" ? "bg-ink text-white" : st.state === "now" ? "border-2 border-stamp" : "border-2 border-rule"
+                          }`}
+                          aria-hidden="true"
+                        >
+                          {st.state === "done" ? "✓" : ""}
+                        </span>
+                        <p className="leading-snug">
+                          <span className={st.state === "next" ? "text-muted" : "font-bold"}>{st.title}</span>
+                          {st.note && <span className="text-sm text-muted">, {st.note}</span>}
+                          <span className="sr-only">{st.state === "done" ? " (done)" : st.state === "now" ? " (current step)" : " (later)"}</span>
+                        </p>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-white/20 p-6 text-white/70">Choose what went wrong to see the answer.</div>
-          )}
-          <p className="mt-3 text-sm text-white/55">Fictional examples. In the real system, a person makes the final decision.</p>
+              </article>
+            ) : (
+              <div className="rounded-xl border border-white/20 bg-ink/60 p-6 text-white/70">Choose what went wrong to open an incident record.</div>
+            )}
+            <p className="mt-3 text-sm text-white/55">A preview of the tracker, with fictional data. In the real system, a person makes the final decision.</p>
+          </div>
         </div>
       </div>
     </section>
