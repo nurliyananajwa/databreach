@@ -62,17 +62,17 @@ export default function ResponseClock() {
   return (
     <figure className="relative rounded-md border border-rule bg-sheet shadow-[0_1px_0_var(--color-rule),0_18px_40px_-24px_rgba(23,33,58,0.35)]">
       <figcaption className="sr-only">
-        Example: a fictional breach at Kedai Runcit Maju. The Commissioner was notified 20 hours
+        Example: a breach at Greenleaf Family Clinic. The Commissioner was notified 20 hours
         15 minutes after the business became aware, with 51 hours 45 minutes to spare.
       </figcaption>
 
       <div className="flex items-baseline justify-between gap-4 border-b border-rule px-5 py-3 text-sm">
         <span className="font-bold">INC-007</span>
-        <span className="text-muted">Kedai Runcit Maju (fictional)</span>
+        <span className="text-muted">Greenleaf Family Clinic</span>
       </div>
 
       <div className="px-5 pt-5" aria-hidden="true">
-        <p className="text-sm text-muted">Customer list emailed to the wrong address</p>
+        <p className="text-sm text-muted">Patient contact list emailed to the wrong address</p>
         <p className="mt-4 text-sm">
           {done ? "Commissioner notified with time to spare" : "Time left to notify the Commissioner"}
         </p>
@@ -139,7 +139,7 @@ export default function ResponseClock() {
       )}
 
       <div className="flex items-center justify-between border-t border-rule px-5 py-3 text-sm">
-        <span className="text-muted">Example with fictional data, played fast</span>
+        <span className="text-muted">Example breach, played fast</span>
         <button
           type="button"
           onClick={play}

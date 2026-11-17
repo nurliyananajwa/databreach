@@ -235,9 +235,9 @@ export default function LandingPage() {
       <footer className="border-t border-rule">
         <div className="mx-auto max-w-6xl px-5 py-8 text-sm text-muted sm:px-8">
           <p className="max-w-3xl">
-            Academic prototype for IMS568, Faculty of Information Science, UiTM Puncak Perdana. It
-            uses fictional data only. It does not give legal advice and never sends notifications:
-            your business decides and sends them.
+            Academic prototype for IMS568, Faculty of Information Science, UiTM Puncak Perdana. All
+            businesses, people and data shown are fictional. It does not give legal advice and never
+            sends notifications: your business decides and sends them.
           </p>
         </div>
       </footer>

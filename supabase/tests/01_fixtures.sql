@@ -2,8 +2,8 @@
 -- (Real users join through Google sign-in + an invitation.)
 
 insert into public.organisations (id, name) values
- ('00000000-0000-0000-0000-0000000000a1', 'Kedai Runcit Maju (fictional)'),
- ('00000000-0000-0000-0000-0000000000b2', 'Other Business Sdn Bhd (fictional)');
+ ('00000000-0000-0000-0000-0000000000a1', 'Greenleaf Family Clinic'),
+ ('00000000-0000-0000-0000-0000000000b2', 'Harbour Logistics Sdn Bhd');
 
 insert into auth.users (id, email, raw_user_meta_data) values
  ('00000000-0000-0000-0000-000000000001', 'aisyah.manager@example.test', '{"full_name":"Aisyah (Manager)"}'),
