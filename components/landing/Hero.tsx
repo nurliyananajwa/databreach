@@ -31,23 +31,23 @@ function kindOf(f: Field): Kind {
 }
 
 const STATUS: Record<Verdict, { label: string; tone: string }> = {
-  both: { label: "Notice needed", tone: "bg-stamp text-white" },
-  commissioner: { label: "Notice needed", tone: "bg-ink text-white" },
-  register: { label: "Record only", tone: "border border-rule text-muted" },
+  both: { label: "Notify both · suggested", tone: "bg-stamp text-white" },
+  commissioner: { label: "Notify Commissioner · suggested", tone: "bg-ink text-white" },
+  register: { label: "Review before deciding", tone: "border border-rule text-muted" },
 };
 
 type Step = { title: string; note?: string; state: "done" | "now" | "next" };
 function stepsFor(v: Verdict): Step[] {
   const head: Step[] = [
-    { title: "Breach reported", note: "by staff, clock started", state: "done" },
-    { title: "Assessed against the rules", note: v === "register" ? "no notice needed" : "notice needed", state: "done" },
+    { title: "Breach reported", note: "fictional incident opened", state: "done" },
+    { title: "Compliance Officer review", note: "confirm the facts and notification decision", state: "now" },
   ];
-  if (v === "register") return [...head, { title: "Record in the breach register", note: "kept for 2 years", state: "now" }];
+  if (v === "register") return [...head, { title: "Record in the breach register", note: "record the reviewed decision and response", state: "next" }];
   return [
     ...head,
-    { title: "Notify the Commissioner", note: "draft waiting for manager approval", state: "now" },
+    { title: "Notify the Commissioner", note: "if confirmed, prepare a draft for manager review", state: "next" },
     v === "both"
-      ? { title: "Notify the people affected", note: "7 days after the Commissioner", state: "next" }
+      ? { title: "Notify the people affected", note: "if required after officer review", state: "next" }
       : { title: "Keep in the breach register", note: "for 2 years", state: "next" },
   ];
 }
@@ -74,9 +74,9 @@ function Clock({ startedAt, urgent }: { startedAt: number; urgent: boolean }) {
         <span className="absolute inset-0 grid place-content-center text-[0.85rem] font-bold tabular-nums">{hms.join(":")}</span>
       </div>
       <div>
-        <p className="text-sm text-muted">Commissioner deadline</p>
+        <p className="text-sm text-muted">Simulated Commissioner deadline</p>
         <p className="whitespace-nowrap font-bold">{KL.format(startedAt + total * 1000)}</p>
-        <p className="mt-0.5 text-sm text-muted">72 h from when you found out</p>
+        <p className="mt-0.5 text-sm text-muted">Demo clock · resets with each scenario</p>
       </div>
     </div>
   );
@@ -164,7 +164,7 @@ export default function Hero() {
     const v = assess(sc).verdict;
     setSaid(
       `Incident record opened. ${sc.people.toLocaleString("en-MY")} ${sc.people === 1 ? "person" : "people"} affected. ` +
-        (v === "register" ? "No notice needed, record it in the breach register." : "Notice needed. Notify the Commissioner within 72 hours."),
+        (v === "register" ? "Officer review needed before deciding whether to notify." : "Demo suggests notification. The Compliance Officer makes the final decision."),
     );
   };
 
@@ -224,8 +224,8 @@ export default function Hero() {
             A data breach just happened. What do you do?
           </h1>
           <p className="mt-5 max-w-lg text-lg text-white/70">
-            Pick a business and what went wrong. Watch the leaked data land in an incident record,
-            with the deadline and next steps the law asks for.
+            Pick a business and what went wrong. Explore the affected data types, a simulated
+            deadline and the steps your team would review.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-1.5" role="group" aria-label="Business">
@@ -284,6 +284,10 @@ export default function Hero() {
           <div ref={cloudSpot} className="pointer-events-none hidden lg:block lg:h-60" aria-hidden="true" />
 
           <div ref={panel} className="relative scroll-mt-6">
+            <p className="mb-3 flex flex-wrap items-center gap-2 text-sm font-bold text-white/85">
+              <span className="size-2 rounded-full bg-white/70" aria-hidden="true" />
+              Interactive demo · Fictional data
+            </p>
             {scenario && result ? (
               <article key={`${business}-${incident}`} className="on-light panel-in overflow-hidden rounded-xl bg-white text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]" aria-label="Incident record preview">
                 <header className="flex items-center gap-3 border-b border-rule bg-paper px-5 py-2.5 text-sm">
@@ -318,8 +322,8 @@ export default function Hero() {
                       {result.verdict === "register" ? (
                         <div>
                           <p className="text-sm text-muted">Deadline</p>
-                          <p className="mt-1 font-bold">No notice needed</p>
-                          <p className="mt-0.5 text-sm text-muted">Every breach is still recorded and kept for 2 years.</p>
+                          <p className="mt-1 font-bold">Decision pending review</p>
+                          <p className="mt-0.5 text-sm text-muted">These sample checks do not settle the decision. The officer reviews the context and records a reason.</p>
                         </div>
                       ) : (
                         <Clock key={startedAt} startedAt={startedAt} urgent={result.verdict === "both"} />
@@ -328,6 +332,8 @@ export default function Hero() {
                   </div>
 
                   {why && (
+                    <div>
+                    <p className="mt-4 text-sm text-muted">Illustrative checks, not a completed assessment. Data categories prompt review; unresolved questions remain for your Compliance Officer.</p>
                     <ul className="mt-4 grid gap-1.5 rounded-lg bg-paper p-3 text-[0.95rem]">
                       {result.rules.map((r, i) => (
                         <li key={r.code} className="rule-in flex items-start gap-2.5" style={{ animationDelay: `${i * 60}ms` }}>
@@ -338,10 +344,11 @@ export default function Hero() {
                             <span className={r.met ? "font-bold" : "text-muted"}>{r.label}</span>
                             <span className="text-muted">, {r.why.charAt(0).toLowerCase() + r.why.slice(1)}</span>
                           </span>
-                          <span className="sr-only">{r.met === true ? "met" : r.met === false ? "not met" : "needs judgement"}</span>
+                          <span className="ml-auto shrink-0 text-xs text-muted">{r.met === true ? "flagged" : r.met === false ? "not flagged" : "review needed"}</span>
                         </li>
                       ))}
                     </ul>
+                    </div>
                   )}
 
                   <ol className="verdict-in mt-5 grid gap-2.5 border-t border-rule pt-4">
@@ -368,7 +375,7 @@ export default function Hero() {
             ) : (
               <div className="rounded-xl border border-white/20 bg-ink/60 p-6 text-white/70">Choose what went wrong to open an incident record.</div>
             )}
-            <p className="mt-3 text-sm text-white/55">A preview of the tracker, with fictional data. In the real system, a person makes the final decision.</p>
+            <p className="mt-3 text-sm text-white/55">The Compliance Officer confirms exposure and records the final decision. This demo does not save a real incident or send any notification.</p>
           </div>
         </div>
       </div>

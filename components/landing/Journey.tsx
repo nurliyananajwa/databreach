@@ -1,101 +1,74 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
-// Who does what, and when: the whole breach response on one chart.
-// The tracker row shows what the system does on its own (it never decides).
-const STAGES = [
-  { when: "Before", what: "Record your data" },
-  { when: "0 h", what: "Report the breach" },
-  { when: "First hours", what: "Assess it" },
-  { when: "Within 72 h", what: "Notify the Commissioner", key: true },
-  { when: "7 days after", what: "Notify the people affected" },
-  { when: "2 years", what: "Keep the record" },
-];
-
-type Lane = { id: string; who: string; acts: (string | null)[] };
-const LANES: Lane[] = [
-  { id: "staff", who: "Staff", acts: [null, "Reports what happened in a short form", null, "Does the tasks given, like changing passwords", null, null] },
-  { id: "lead", who: "Data protection lead", acts: ["Lists where personal data is kept", null, "Confirms what was exposed and checks the rules", "Drafts the notice", "Drafts the notice to people", "Closes the incident"] },
-  { id: "manager", who: "Manager", acts: ["Invites the team", null, null, "Approves the notice", "Approves the notice", null] },
-  { id: "tracker", who: "The tracker", acts: [null, "Starts the 72-hour clock", "Shows each rule as met or not met", "Alerts 24 h and 6 h before the deadline", "Counts 7 days from the Commissioner notice", "Keeps a locked record and audit trail"] },
-];
+const ROLES = [
+  {
+    id: "staff", name: "Staff", summary: "Report what happened and help with the response.",
+    actions: [
+      { when: "When you notice an incident", title: "Report the suspected breach", detail: "Describe what happened and when you noticed it. You can follow the status of your own report." },
+      { when: "During the response", title: "Complete assigned tasks", detail: "Carry out the actions assigned to you, such as changing a password, and record the result." },
+      { when: "Throughout", title: "See the information you need", detail: "Access your own reports and assigned work without opening other staff members’ confidential cases." },
+    ],
+  },
+  {
+    id: "compliance", name: "Compliance Officer", summary: "Confirm the facts, explain the decision and coordinate the response.",
+    actions: [
+      { when: "Before and during an incident", title: "Maintain the inventory and confirm exposure", detail: "Record data categories and check which fields and people were actually affected. The inventory is a starting point for review." },
+      { when: "During assessment", title: "Review the criteria and record a decision", detail: "Consider the incident context, resolve unanswered questions and document the notification decision with a reason." },
+      { when: "During response and closure", title: "Coordinate tasks and prepare notification drafts", detail: "Assign response work, prepare drafts for manager review, record external sending and close the incident with its history." },
+    ],
+  },
+  {
+    id: "manager", name: "Manager", summary: "Give the team access, review drafts and oversee outstanding work.",
+    actions: [
+      { when: "Before an incident", title: "Invite the team", detail: "Give each invited colleague the appropriate role and manage their access." },
+      { when: "When a draft is ready", title: "Review the notification", detail: "Approve the draft or return it for revision. Approval does not send a notification or pause a deadline." },
+      { when: "Throughout the response", title: "Keep oversight", detail: "Review case progress, outstanding tasks, deadline escalations and the breach register." },
+    ],
+  },
+] as const;
 
 export default function Journey() {
-  const [lane, setLane] = useState<string | null>(null);
+  const [selected, setSelected] = useState<(typeof ROLES)[number]["id"]>("staff");
+  const id = useId();
+  const role = ROLES.find((item) => item.id === selected)!;
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Highlight a role">
-        <span className="mr-1 text-sm text-muted">Show</span>
-        {[{ id: null, who: "Everyone" }, ...LANES].map((l) => (
-          <button
-            key={l.who}
-            type="button"
-            aria-pressed={lane === l.id}
-            onClick={() => setLane(l.id)}
-            className={`rounded-md border px-3 py-1 text-sm transition-colors ${lane === l.id ? "border-ink bg-ink text-white" : "border-rule bg-white hover:border-ink"}`}
-          >
-            {l.who}
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Choose a role to explore">
+        {ROLES.map((item) => (
+          <button key={item.id} type="button" aria-pressed={selected === item.id} aria-controls={`${id}-panel`}
+            onClick={() => setSelected(item.id)}
+            className={`rounded-md border px-4 py-2 text-sm font-bold transition-colors ${selected === item.id ? "border-ink bg-ink text-white" : "border-rule bg-white hover:border-ink"}`}>
+            {item.name}
           </button>
         ))}
       </div>
 
-      {/* wide screens: one chart, stages across, roles down */}
-      <div className="mt-6 hidden overflow-hidden rounded-xl border border-rule bg-white lg:block">
-        <div className="grid grid-cols-[11rem_repeat(6,minmax(0,1fr))]">
-          <div className="border-b border-rule bg-paper" />
-          {STAGES.map((s) => (
-            <div key={s.what} className={`border-b border-l border-rule px-3 py-3 ${s.key ? "bg-stamp text-white" : "bg-paper"}`}>
-              <p className={`text-sm ${s.key ? "text-white/85" : "text-muted"}`}>{s.when}</p>
-              <p className="font-bold leading-snug">{s.what}</p>
-            </div>
-          ))}
-          {LANES.map((l, li) => {
-            const dim = lane !== null && lane !== l.id;
-            const last = li === LANES.length - 1;
-            return (
-              <div key={l.id} className={`contents transition-opacity`}>
-                <div className={`flex items-center px-4 py-4 font-bold transition-opacity duration-300 ${last ? "" : "border-b border-rule"} ${l.id === "tracker" ? "bg-ink text-white" : ""} ${dim ? "opacity-30" : ""}`}>
-                  {l.who}
-                </div>
-                {l.acts.map((a, i) => (
-                  <div key={i} className={`border-l border-rule px-3 py-4 text-[0.95rem] leading-snug transition-opacity duration-300 ${last ? "" : "border-b"} ${l.id === "tracker" ? "bg-ink/[0.04]" : ""} ${dim ? "opacity-30" : ""}`}>
-                    {a && (
-                      <span className="flex gap-2">
-                        <span className={`mt-1.5 size-2 shrink-0 rounded-full ${l.id === "tracker" ? "bg-ink" : STAGES[i].key ? "bg-stamp" : "border-2 border-ink"}`} aria-hidden="true" />
-                        {a}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            );
-          })}
+      <section id={`${id}-panel`} aria-labelledby={`${id}-title`} className="mt-6 overflow-hidden rounded-xl border border-rule bg-white">
+        <div className="border-b border-rule px-5 py-5 sm:px-6">
+          <h3 id={`${id}-title`} className="text-xl font-bold">{role.name}</h3>
+          <p className="mt-1 text-muted">{role.summary}</p>
         </div>
+        <ol className="grid gap-6 p-5 sm:p-6 lg:grid-cols-3">
+          {role.actions.map((action, index) => (
+            <li key={action.title}>
+              <span className="grid size-8 place-items-center rounded-full bg-paper text-sm font-bold" aria-hidden="true">{index + 1}</span>
+              <p className="mt-3 text-xs font-bold uppercase tracking-wide text-muted">{action.when}</p>
+              <h4 className="mt-1 font-bold leading-snug">{action.title}</h4>
+              <p className="mt-2 text-[0.95rem] text-muted">{action.detail}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <div className="mt-5 grid gap-4 border-t border-rule pt-5 sm:grid-cols-3" aria-label="How the tracker supports the team">
+        <div><p className="font-bold">Track time</p><p className="mt-1 text-sm text-muted">Keep applicable deadlines and approaching alerts visible.</p></div>
+        <div><p className="font-bold">Explain the checks</p><p className="mt-1 text-sm text-muted">Show the inputs, flagged criteria and questions still needing review.</p></div>
+        <div><p className="font-bold">Keep a history</p><p className="mt-1 text-sm text-muted">Record the team’s actions, decisions and response timeline.</p></div>
       </div>
-
-      {/* smaller screens: one stage at a time, top to bottom */}
-      <ol className="mt-6 grid gap-3 lg:hidden">
-        {STAGES.map((s, i) => (
-          <li key={s.what} className={`rounded-xl border p-4 ${s.key ? "border-stamp" : "border-rule"} bg-white`}>
-            <p className={`text-sm ${s.key ? "font-bold text-stamp" : "text-muted"}`}>{s.when}</p>
-            <p className="text-lg font-bold">{s.what}</p>
-            <ul className="mt-2 grid gap-1.5">
-              {LANES.filter((l) => l.acts[i]).map((l) => (
-                <li key={l.id} className={`text-[0.95rem] transition-opacity duration-300 ${lane !== null && lane !== l.id ? "opacity-30" : ""}`}>
-                  <span className="font-bold">{l.who}:</span> {l.acts[i]}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ol>
-
-      <p className="mt-4 max-w-3xl text-sm text-muted">
-        People make every decision; the tracker keeps time and keeps proof. Deadlines follow the
-        Personal Data Protection Guideline on Data Breach Notification (2025).
-      </p>
+      <p className="mt-5 max-w-3xl text-sm text-muted">People review and make decisions. The tracker helps coordinate the work and preserve the record; it never sends notifications on your behalf.</p>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // Example breaches for the landing page simulator. Illustrative only.
-// The rules below mirror run_assessment() in the database (proposal Table 24),
-// so the landing page and the real system always agree.
+// These simplified public-demo prompts do not replace the authenticated assessment.
+// No real case, database decision or notification is created here.
 
 export type Category = "identity" | "contact" | "financial" | "sensitive" | "other";
 export type Field = { name: string; category: Category };
@@ -97,14 +97,14 @@ export function assess(s: Scenario): { rules: RuleResult[]; verdict: Verdict } {
       why: `${s.people.toLocaleString("en-MY")} ${s.people === 1 ? "person" : "people"} affected`,
     },
     { code: "SENSITIVE", label: "Sensitive data", met: has("sensitive"), why: has("sensitive") ? "Health or other sensitive data" : "None exposed" },
-    { code: "FINANCIAL", label: "Could cause money loss", met: has("financial"), why: has("financial") ? "Bank, card or salary data" : "No financial data" },
+    { code: "FINANCIAL", label: "Financial data to review", met: has("financial"), why: has("financial") ? "Bank, card or salary data" : "No financial data" },
     {
       code: "IDENTITY",
-      label: "Could enable identity fraud",
+      label: "Identity information to review",
       met: identity && contactOrMoney,
-      why: identity ? (contactOrMoney ? "ID number with contact or money data" : "ID number alone") : "No ID number",
+      why: identity ? (contactOrMoney ? "ID number with contact or money data" : "An ID number still needs contextual review") : "No ID number in this sample; context still needs review",
     },
-    { code: "JUDGEMENT", label: "Physical harm or illegal misuse", met: null, why: "Your data protection lead decides" },
+    { code: "JUDGEMENT", label: "Physical harm or illegal misuse", met: null, why: "Your Compliance Officer reviews the context" },
   ];
 
   const harm = rules.some((r) => r.code !== "SCALE" && r.met === true);
@@ -115,14 +115,14 @@ export function assess(s: Scenario): { rules: RuleResult[]; verdict: Verdict } {
 export const VERDICT_TEXT: Record<Verdict, { title: string; body: string }> = {
   both: {
     title: "Tell the Commissioner and the people affected",
-    body: "Commissioner within 72 hours, then the affected people within 7 days after that.",
+    body: "This sample flags both notification routes. The Compliance Officer confirms the decision and applicable deadlines.",
   },
   commissioner: {
     title: "Tell the Commissioner",
-    body: "Within 72 hours. The affected people do not need a notice, but you may still tell them.",
+    body: "This sample flags the Commissioner route. Notification to affected people needs a separate review.",
   },
   register: {
     title: "Record it in your breach register",
-    body: "No notice needed, but every breach must be recorded and kept for two years.",
+    body: "The sample has no automatic flags. The Compliance Officer must still review the context and record the decision.",
   },
 };

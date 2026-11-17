@@ -39,16 +39,20 @@ const FILTERS: { id: Cat | "all"; label: string; noun: string }[] = [
 
 export default function Inventory() {
   const [filter, setFilter] = useState<Cat | "all">("all");
+  const [expanded, setExpanded] = useState(false);
   const match = (fields: string[]) => filter === "all" || fields.some((f) => cat(f) === filter);
   const count = PLACES.filter((p) => match(p.fields)).length;
   const noun = FILTERS.find((f) => f.id === filter)!.noun;
+  const ordered = filter === "all" ? PLACES : [...PLACES.filter((p) => match(p.fields)), ...PLACES.filter((p) => !match(p.fields))];
+  const visiblePlaces = expanded ? ordered : ordered.slice(0, 4);
 
   return (
     <div className="overflow-hidden rounded-xl border border-rule bg-white shadow-[0_30px_60px_-40px_rgba(23,33,58,0.45)]" aria-label="Data inventory preview">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-rule bg-paper px-5 py-3">
         <p className="font-bold">Data inventory</p>
         <p className="text-sm text-muted">{PLACES.length} places</p>
-        <div className="ml-auto flex flex-wrap gap-1.5" role="group" aria-label="Show places holding">
+        <div className="ml-auto flex flex-wrap gap-1.5" role="group" aria-label="Highlight data types">
+          <span className="self-center text-xs text-muted">Highlight data types</span>
           {FILTERS.map((f) => (
             <button
               key={f.id}
@@ -65,7 +69,7 @@ export default function Inventory() {
         </div>
       </div>
 
-      <table className="w-full text-left">
+      <table id="inventory-preview-table" className="w-full text-left">
         <thead className="sr-only sm:not-sr-only">
           <tr className="text-sm text-muted">
             <th scope="col" className="px-5 pb-1 pt-3 font-normal">Place</th>
@@ -74,7 +78,7 @@ export default function Inventory() {
           </tr>
         </thead>
         <tbody>
-          {PLACES.map((p) => {
+          {visiblePlaces.map((p) => {
             const on = match(p.fields);
             return (
               <tr key={p.place} className={`border-t border-rule transition-opacity duration-300 first:border-t-0 sm:first:border-t ${on ? "" : "opacity-30"}`}>
@@ -111,8 +115,14 @@ export default function Inventory() {
         <span className="font-bold">
           {count} of {PLACES.length} places
         </span>{" "}
-        hold {noun}. If one of them leaks, the tracker already knows what was inside.
+        hold {noun}. The inventory suggests the data involved; your Compliance Officer confirms exposure.
       </p>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-rule px-5 py-3">
+        <p className="text-sm text-muted" aria-live="polite">Showing {visiblePlaces.length} of {PLACES.length} fictional examples.</p>
+        <button type="button" aria-expanded={expanded} aria-controls="inventory-preview-table" onClick={() => setExpanded((value) => !value)} className="rounded-md border border-rule px-3 py-1.5 text-sm font-bold hover:border-ink">
+          {expanded ? "Show fewer examples" : "Show all 10 places"}
+        </button>
+      </div>
     </div>
   );
 }

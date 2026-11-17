@@ -17,31 +17,23 @@ export type CloudHandle = {
 export type Target = { x: number; y: number; via: { x: number; y: number } };
 type Anchor = () => { x: number; y: number; r: number } | null;
 
-// --- fictional sample text, generated (never real people) -------------------
-const FIRST = ["Aina", "Farid", "Siti", "Daniel", "Mei Ling", "Arjun", "Nurul", "Hafiz", "Priya", "Wei Jie", "Aisyah", "Kumar", "Liyana", "Ethan", "Zara", "Amir"];
-const LAST = ["Rahman", "Tan", "Abdullah", "Lim", "Subramaniam", "Ismail", "Wong", "Hassan", "Lee", "Yusof", "Raj", "Ong"];
-const STREET = ["Jalan Ampang", "Jalan Tun Razak", "Persiaran Gurney", "Jalan Kuching", "Jalan Ipoh", "Lorong Maarof", "Jalan SS2/24"];
-const HEALTH = ["Asthma", "Diabetes", "Blood test", "Allergy: penicillin", "X-ray", "MC: 2 days"];
-
+// Metadata labels only: the public demo never depicts customer values.
 const r = (n: number) => Math.floor(Math.random() * n);
 const pick = <T,>(a: readonly T[]) => a[r(a.length)];
-const digits = (n: number) => Array.from({ length: n }, () => r(10)).join("");
-
-function sample(kind: Kind): string {
-  switch (kind) {
-    case "name": return `${pick(FIRST)} ${pick(LAST)}`;
-    case "phone": return `01${r(10)}-${digits(3)} ${digits(4)}`;
-    case "email": return `${pick(FIRST).toLowerCase().replace(" ", "")}${r(90) + 10}@mail.com`;
-    case "address": return `${r(120) + 1}, ${pick(STREET)}`;
-    case "ic": return `${String(r(30) + 70).padStart(2, "0")}${String(r(12) + 1).padStart(2, "0")}${String(r(28) + 1).padStart(2, "0")}-${digits(2)}-${digits(4)}`;
-    case "bank": return `Acct ${digits(4)} ${digits(4)} ${digits(4)}`;
-    case "salary": return `RM ${(r(80) + 20) * 100}`;
-    case "card": return `•••• ${digits(4)}`;
-    case "health": return pick(HEALTH);
-    case "dob": return `${r(28) + 1}/${r(12) + 1}/${r(40) + 1960}`;
-    case "photo": return "IMG_" + digits(4) + ".jpg";
-  }
-}
+const LABELS: Record<Kind, readonly string[]> = {
+  name: ["Full name", "Contact name"],
+  phone: ["Phone number", "Contact number"],
+  email: ["Email address"],
+  address: ["Home address", "Delivery address"],
+  ic: ["IC number", "Identity document"],
+  bank: ["Bank account", "Payment details"],
+  salary: ["Salary", "Payroll information"],
+  card: ["Card details"],
+  health: ["Health information", "Medical history"],
+  dob: ["Date of birth"],
+  photo: ["Photograph", "Image field"],
+};
+function sample(kind: Kind): string { return pick(LABELS[kind]); }
 
 const KINDS: Kind[] = ["name", "name", "name", "phone", "phone", "email", "address", "ic", "bank", "salary", "card", "health", "dob", "photo"];
 
