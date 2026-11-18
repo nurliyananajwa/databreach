@@ -2,7 +2,7 @@ export type Role = "staff" | "dp_lead" | "manager";
 
 export const ROLE_LABEL: Record<Role, string> = {
   staff: "Staff",
-  dp_lead: "Data protection lead",
+  dp_lead: "Compliance Officer",
   manager: "Manager",
 };
 
