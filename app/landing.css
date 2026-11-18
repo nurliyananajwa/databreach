@@ -343,3 +343,31 @@
 @media(min-width:901px){.breach-landing .bl-team .bl-team-layout{grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);gap:96px}.breach-landing .bl-team .bl-role-nav button{padding-block:24px;min-height:96px}.breach-landing .bl-team .bl-role-nav button>span:nth-child(2){font-size:24px}.breach-landing .bl-team .bl-role-nav small{font-size:13px;margin-top:8px}}
 @media(min-width:901px) and (max-width:1100px){.breach-landing .bl-team .bl-team-layout{gap:56px}.breach-landing .bl-team .bl-role-nav button>span:nth-child(2){font-size:22px}}
 @media(max-width:759px){.breach-landing .bl-team .bl-role-task{margin-top:28px;padding-top:24px}.breach-landing .bl-team .bl-role-task h4{font-size:21px;line-height:1.5}.breach-landing .bl-team .bl-role-case-link{margin-top:20px}}
+
+/* One visual story and one numbered workflow. */
+.breach-landing .bl-hero-subtitle{max-width:680px;line-height:1.8}
+.breach-landing .bl-hero-subtitle strong{font-weight:600;color:var(--ink)}
+.breach-landing .bl-story-bottom{padding-top:32px;gap:0}
+.breach-landing .bl-story-tools{margin-top:0}
+.breach-landing .bl-role-number{display:none}
+.breach-landing .bl-stage-bottom{justify-content:flex-end}
+.breach-landing .bl-data-scene[data-active='true'] .bl-scene-lines path{stroke-dashoffset:0}
+.breach-landing .bl-field-demo-link{display:inline-flex;align-items:center;gap:12px;min-height:44px;margin-top:16px;font-size:14px;color:var(--blue);text-decoration:underline;text-underline-offset:4px}
+.breach-landing .bl-field-demo-link .bl-icon{width:18px;height:18px}
+.breach-landing .bl-record-glyph{margin:20px 0 14px}
+.breach-landing .bl-record-topline,.breach-landing .bl-record-name{font-size:12px;line-height:1.5}
+.breach-landing .bl-eyebrow,.breach-landing .bl-mono,.breach-landing .bl-stage-num,.breach-landing .bl-label,.breach-landing .bl-status,.breach-landing .bl-sequence-number{font-size:12px}
+.breach-landing .bl-stage-copy>.bl-eyebrow,.breach-landing .bl-case-context .bl-mono,.breach-landing .bl-preview-heading .bl-mono,.breach-landing .bl-field-record>div,.breach-landing .bl-field-record>div .bl-eyebrow{font-size:12px}
+.breach-landing .bl-register-summary .bl-mono,.breach-landing .bl-register-summary p,.breach-landing .bl-review-summary span,.breach-landing .bl-response-sequence small,.breach-landing .bl-clock-times,.breach-landing .bl-clock-times strong{font-size:12px;line-height:1.6}
+.breach-landing .bl-team .bl-role-task>.bl-mono,.breach-landing .bl-fragment-detail .bl-fragment-source,.breach-landing .bl-closing>.bl-eyebrow,.breach-landing .bl-brand-sub{font-size:12px;line-height:1.6}
+.breach-landing .bl-invite-note{font-size:14px;line-height:1.7;max-width:none}
+.breach-landing .bl-invite-note a{text-decoration:underline;text-underline-offset:4px}
+@media(max-width:759px){
+ .breach-landing .bl-hero-subtitle{max-width:360px;font-size:15px}
+ .breach-landing .bl-hero-heading .bl-eyebrow{font-size:12px;letter-spacing:0;line-height:1.6}
+ .breach-landing .bl-record-glyph{margin:16px 0 12px}
+ .breach-landing .bl-fragment,.breach-landing .bl-incident-choices button,.breach-landing .bl-chips li,.breach-landing .bl-preview-note{font-size:12px}
+ .breach-landing .bl-story-bottom{padding-top:40px}
+ .breach-landing .bl-brand-sub{display:none}
+ .breach-landing .bl-stage-bottom{padding-top:24px}
+}
