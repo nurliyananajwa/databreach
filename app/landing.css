@@ -96,3 +96,240 @@
  .bl-role-nav button>span:nth-child(2){font-size:17px}
  .bl-role-nav button .bl-icon{display:block;margin-left:auto}
 }
+
+
+/* Normal scrolling, with animation confined to the artwork. */
+.breach-landing .bl-wrap{width:min(1160px,calc(100% - 96px))}
+.breach-landing .bl-header{position:relative;inset:auto;height:96px}
+.breach-landing .bl-story,.breach-landing.bl-motion-off .bl-story{height:auto}
+.breach-landing .bl-story-sticky,.breach-landing.bl-motion-off .bl-story-sticky{position:relative;top:auto;height:auto;min-height:0;display:block;padding-bottom:56px}
+.breach-landing .bl-hero-heading{padding-top:56px}
+.breach-landing .bl-hero-heading .bl-eyebrow{margin-bottom:24px;font-size:11px}
+.breach-landing .bl-hero-heading h1{font-size:clamp(56px,6.7vw,90px);line-height:1.06}
+.breach-landing .bl-hero-heading h1 em{font-size:1em}
+.breach-landing .bl-hero-subtitle{font-size:17px;line-height:1.7;max-width:510px;margin:24px auto 0!important}
+.breach-landing .bl-desktop-break{display:block}
+.breach-landing .bl-hero-actions{margin-top:32px}
+.breach-landing .bl-button{font-size:15px;min-height:50px;padding:14px 24px;gap:28px}
+.breach-landing .bl-data-scene,.breach-landing.bl-motion-off .bl-data-scene{height:420px;min-height:0;max-height:none;width:min(1100px,100%);margin:48px auto 0;flex:none}
+.breach-landing .bl-record-object{width:210px;height:265px;top:45%;animation:none}
+.breach-landing .bl-record-face{padding:20px}
+.breach-landing .bl-record-topline{font-size:9px}
+.breach-landing .bl-record-glyph{margin:32px 0 18px}
+.breach-landing .bl-record-name{font-size:8px;line-height:1.5}
+.breach-landing .bl-record-sub{font-size:27px;line-height:1.12;margin-top:12px}
+.breach-landing .bl-record-face:after{animation:none}
+.breach-landing .bl-fragment{font-size:13px;min-height:48px;padding:12px 16px;gap:12px;backdrop-filter:none}
+.breach-landing .bl-fragment-index{font-size:10px}
+.breach-landing .bl-fragment>span:last-child{font-size:17px;margin-left:8px}
+.breach-landing .bl-fragment-0{left:12%;right:auto;top:8%}
+.breach-landing .bl-fragment-1{left:auto;right:12%;top:7%}
+.breach-landing .bl-fragment-2{left:2%;right:auto;top:43%}
+.breach-landing .bl-fragment-3{left:auto;right:2%;top:43%}
+.breach-landing .bl-fragment-4{left:18%;right:auto;top:76%}
+.breach-landing .bl-fragment-5{left:auto;right:16%;top:76%}
+.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-0{left:18%;top:9%}
+.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-1{left:auto;right:18%;top:9%}
+.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-2{left:8%;top:43%}
+.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-3{left:auto;right:8%;top:43%}
+.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-4{left:18%;top:76%}
+.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-5{left:auto;right:16%;top:76%}
+.breach-landing .bl-scene-owners>span{font-size:14px;padding:12px 18px;gap:12px}
+.breach-landing .bl-scene-owners i{font-size:11px}
+.breach-landing .bl-scene-owners>span:nth-child(1){left:15%;top:24%}
+.breach-landing .bl-scene-owners>span:nth-child(2){right:12%;top:42%}
+.breach-landing .bl-scene-owners>span:nth-child(3){left:25%;top:76%}
+.breach-landing .bl-scene-stamp{font-size:11px;line-height:1.5;padding:16px;left:64%;top:58%}
+.breach-landing .bl-scene-hint{font-size:12px;bottom:-10px;max-width:none}
+.breach-landing .bl-story-bottom{display:flex;flex-direction:column;align-items:center;gap:24px;padding:48px 0 0;text-align:center}
+.breach-landing .bl-chapter-caption{max-width:560px}
+.breach-landing .bl-chapter-caption p{font-size:20px;line-height:1.4;margin:12px 0 0!important}
+.breach-landing .bl-story-controls>div:first-child{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.breach-landing .bl-story-controls>div:first-child button{font-size:13px;min-height:46px;padding:12px 18px}
+.breach-landing .bl-story-controls button span{font-size:11px;margin-right:8px}
+.breach-landing .bl-story-tools{justify-content:center;margin-top:20px}
+.breach-landing .bl-story-tools button{min-height:36px;font-size:12px}
+.breach-landing .bl-fragment-detail{padding:26px 28px;width:min(440px,calc(100% - 48px))}
+.breach-landing .bl-fragment-detail p,.breach-landing .bl-fragment-detail small{line-height:1.7;margin-top:14px}
+/* Separate choosing a case from exploring its response. */
+.breach-landing .bl-demo{padding-block:112px;border-top:1px solid var(--line)}
+.breach-landing .bl-demo-heading,.breach-landing .bl-section-heading{gap:64px;margin-bottom:48px}
+.breach-landing .bl-demo-heading h2,.breach-landing .bl-section-heading h2{font-size:clamp(40px,4.4vw,60px);line-height:1.12;margin-top:20px}
+.breach-landing .bl-demo-heading>p,.breach-landing .bl-section-heading>p{font-size:16px;line-height:1.8;max-width:370px}
+.breach-landing .bl-demo-workspace{border:0;background:transparent;box-shadow:none}
+.breach-landing .bl-demo-selector{grid-template-columns:240px 1fr;gap:48px;padding:32px;border:1px solid #d8dbe1;background:#fff;margin-bottom:40px;align-items:start}
+.breach-landing .bl-demo-selector label,.breach-landing .bl-selector-label{display:block;font-size:14px;font-weight:500;line-height:1.5;margin-bottom:16px}
+.breach-landing .bl-demo-selector select{min-height:52px;font-size:16px;padding:13px 14px}
+.breach-landing .bl-incident-choices{gap:12px}
+.breach-landing .bl-incident-choices button{font-size:14px;line-height:1.5;min-height:56px;padding:16px;gap:12px}
+.breach-landing .bl-incident-choices button[aria-pressed='true']{background:#eaf0ff;color:#2149d4;border-color:#6f8dff}
+.breach-landing .bl-incident-choices button:hover{transform:none;background:#f4f6ff;border-color:#6f8dff}
+.breach-landing .bl-explore{border:1px solid #d8dbe1;background:#fff}
+.breach-landing .bl-case-context{padding:32px 36px;gap:16px;background:#fff;border-top:0;border-bottom:1px solid #e1e4ea}
+.breach-landing .bl-case-context strong{font-size:21px;line-height:1.5;margin-top:8px;font-weight:500;max-width:800px}
+.breach-landing .bl-case-context>.bl-mono{background:#eef2ff;color:#234ac1;font-size:12px}
+.breach-landing .bl-stage-nav button{min-height:94px;padding:24px;gap:16px}
+.breach-landing .bl-stage-nav button[aria-pressed='true']{background:#f4f6ff}
+.breach-landing .bl-stage-nav strong{font-size:17px;line-height:1.4}
+.breach-landing .bl-stage-nav small{font-size:12px;line-height:1.5;margin-top:6px}
+.breach-landing .bl-stage-nav .bl-icon{display:none}
+.breach-landing .bl-stage-content{gap:48px;background:#f7f8fa;padding:44px;align-items:start;grid-template-columns:.85fr 1.15fr}
+.breach-landing .bl-stage-copy{padding:8px 0 0}
+.breach-landing .bl-stage-copy>.bl-eyebrow{margin-bottom:24px}
+.breach-landing .bl-stage-copy h3{font-size:34px;line-height:1.2;letter-spacing:-.045em}
+.breach-landing .bl-stage-copy>p:not(.bl-eyebrow){font-size:16px;line-height:1.8;margin-top:24px}
+.breach-landing .bl-stage-bottom{padding-top:40px;margin-top:0;gap:24px}
+.breach-landing .bl-stage-preview{margin:0;min-height:0;width:100%;align-self:start;box-shadow:none}
+.breach-landing .bl-preview-heading{padding:20px 24px}
+.breach-landing .bl-source-scene,.breach-landing .bl-review,.breach-landing .bl-response,.breach-landing .bl-register{padding:28px}
+.breach-landing .bl-source-top strong{font-size:17px;line-height:1.5}
+.breach-landing .bl-source-top>div>span{line-height:1.6;margin-top:6px}
+.breach-landing .bl-field-record{padding:24px}
+.breach-landing .bl-data-connector{padding:24px 0}
+.breach-landing .bl-chips{gap:10px;margin:20px 0}
+.breach-landing .bl-chips li{padding:8px 10px;line-height:1.5}
+.breach-landing .bl-preview-note{line-height:1.8;margin-top:24px!important}
+.breach-landing .bl-review h4{font-size:29px;line-height:1.25;margin:20px 0}
+.breach-landing .bl-review>p:not(.bl-preview-note){font-size:15px;line-height:1.8}
+.breach-landing .bl-rules-toggle{margin-top:32px;padding:20px 0;min-height:56px}
+.breach-landing .bl-assessment-details{padding:36px;grid-column:1/-1}
+.breach-landing .bl-rules{gap:0 36px}
+.breach-landing .bl-rules li{padding:22px 0;gap:14px}
+.breach-landing .bl-rules p{line-height:1.75;margin-top:10px}
+.breach-landing .bl-stage-content[data-stage='2']{grid-template-columns:1fr;gap:32px}
+.breach-landing .bl-stage-content[data-stage='2'] .bl-stage-copy{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;padding:0}
+.breach-landing .bl-stage-content[data-stage='2'] .bl-stage-copy>.bl-eyebrow{grid-column:1/-1}
+.breach-landing .bl-stage-content[data-stage='2'] .bl-stage-copy>h3{grid-column:1}
+.breach-landing .bl-stage-content[data-stage='2'] .bl-stage-copy>p:not(.bl-eyebrow){grid-column:2;grid-row:2;margin:0;max-width:none}
+.breach-landing .bl-stage-content[data-stage='2'] .bl-stage-bottom{grid-column:1/-1;padding-top:24px}
+.breach-landing .bl-stage-content[data-stage='2'] .bl-stage-preview{margin:0}
+.breach-landing .bl-response{gap:24px 40px}
+.breach-landing .bl-response-sequence li{padding:22px 0;gap:16px}
+.breach-landing .bl-response-sequence strong{font-size:15px;line-height:1.5}
+.breach-landing .bl-response-sequence li>div>span{font-size:13px;margin-top:8px}
+.breach-landing .bl-deadline{padding:24px}
+.breach-landing .bl-deadline>p{line-height:1.8;margin-top:20px}
+.breach-landing .bl-register dl>div{padding:20px 0;line-height:1.7}
+/* One role explanation and one example, with a clear gap. */
+.breach-landing .bl-team{padding-block:112px}
+.breach-landing .bl-team-layout{gap:72px;margin-top:56px;grid-template-columns:.9fr 1.1fr}
+.breach-landing .bl-role-nav>.bl-eyebrow{margin-bottom:24px}
+.breach-landing .bl-role-nav button{padding:30px 0;min-height:112px;gap:24px}
+.breach-landing .bl-role-nav button[aria-pressed='true']{padding-left:20px}
+.breach-landing .bl-role-nav button>span:nth-child(2){font-size:26px;line-height:1.4}
+.breach-landing .bl-role-nav small{font-size:14px;line-height:1.6;margin-top:10px}
+.breach-landing .bl-role-detail>h3{font-size:38px;line-height:1.2;margin-top:20px}
+.breach-landing .bl-role-detail>p:not(.bl-eyebrow){font-size:16px;line-height:1.8;margin-top:24px}
+.breach-landing .bl-role-task{margin-top:36px;padding:32px}
+.breach-landing .bl-role-task h4{font-size:23px;line-height:1.4;margin-top:16px}
+.breach-landing .bl-role-task>p:not(.bl-mono){font-size:15px;line-height:1.8;margin-top:16px}
+.breach-landing .bl-role-task ul{gap:14px;margin:24px 0}
+.breach-landing .bl-role-task li{line-height:1.7}
+.breach-landing .bl-role-case-link{min-height:52px;padding-top:24px}
+.breach-landing .bl-closing{padding-block:112px 56px}
+.breach-landing .bl-closing h2{font-size:clamp(44px,5.5vw,72px);line-height:1.12}
+.breach-landing .bl-closing>div{margin-top:40px;gap:20px 48px}
+.breach-landing .bl-closing>div>p{line-height:1.8}
+.breach-landing .bl-footer{padding-block:32px;gap:40px;line-height:1.8}
+@media(max-width:1050px){.breach-landing .bl-wrap{width:calc(100% - 64px)}.breach-landing .bl-demo-selector{grid-template-columns:200px 1fr;gap:32px;padding:28px}.breach-landing .bl-stage-content{padding:32px;gap:32px}.breach-landing .bl-stage-nav button{padding:20px 16px;gap:12px}.breach-landing .bl-team-layout{gap:48px}.breach-landing .bl-role-nav button>span:nth-child(2){font-size:23px}}
+@media(max-width:900px){.breach-landing .bl-stage-content{grid-template-columns:1fr;gap:32px}.breach-landing .bl-stage-copy{padding:0;max-width:640px}.breach-landing .bl-stage-copy h3,.breach-landing .bl-stage-copy>p:not(.bl-eyebrow){max-width:600px}.breach-landing .bl-demo-heading,.breach-landing .bl-section-heading{grid-template-columns:1fr;gap:24px}.breach-landing .bl-demo-heading>p,.breach-landing .bl-section-heading>p{max-width:530px}.breach-landing .bl-team-layout{grid-template-columns:1fr;gap:40px}.breach-landing .bl-response{grid-template-columns:1fr;gap:32px}}
+@media(max-width:759px){
+ .breach-landing .bl-wrap{width:calc(100% - 40px)}
+ .breach-landing .bl-header{height:80px}
+ .breach-landing .bl-hero-heading{padding-top:40px}
+ .breach-landing .bl-hero-heading .bl-eyebrow{font-size:9px;letter-spacing:.04em;margin-bottom:24px}
+ .breach-landing .bl-hero-heading h1{font-size:clamp(36px,9.4vw,60px);line-height:1.1}
+ .breach-landing .bl-hero-subtitle{font-size:15px;line-height:1.8;max-width:310px;margin-top:24px!important}
+ .breach-landing .bl-desktop-break{display:none}
+ .breach-landing .bl-hero-actions{margin-top:28px}
+ .breach-landing .bl-data-scene,.breach-landing.bl-motion-off .bl-data-scene{height:370px;margin-top:40px;width:100%}
+ .breach-landing .bl-record-object{width:145px;height:190px;top:43%}
+ .breach-landing .bl-record-face{padding:13px}
+ .breach-landing .bl-record-topline{font-size:7px}
+ .breach-landing .bl-record-glyph{grid-template-columns:repeat(2,13px);gap:3px;margin:22px 0 12px}
+ .breach-landing .bl-record-glyph i{height:13px}
+ .breach-landing .bl-record-name{font-size:6px}
+ .breach-landing .bl-record-sub{font-size:20px;margin-top:8px}
+ .breach-landing .bl-fragment{font-size:11px;padding:10px 11px;gap:6px;min-height:44px}
+ .breach-landing .bl-fragment-index{display:none}
+ .breach-landing .bl-fragment>span:last-child{font-size:14px;margin-left:2px}
+ .breach-landing .bl-fragment-0,.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-0{left:4%;right:auto;top:4%}
+ .breach-landing .bl-fragment-1,.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-1{left:auto;right:4%;top:4%}
+ .breach-landing .bl-fragment-2,.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-2{left:2%;right:auto;top:64%}
+ .breach-landing .bl-fragment-3,.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-3{left:auto;right:2%;top:64%}
+ .breach-landing .bl-fragment-4,.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-4{left:4%;right:auto;top:81%}
+ .breach-landing .bl-fragment-5,.breach-landing .bl-data-scene[data-chapter='1'] .bl-fragment-5{left:auto;right:4%;top:81%}
+ .breach-landing .bl-scene-owners>span{font-size:12px;padding:10px 13px;gap:8px}
+ .breach-landing .bl-scene-owners>span:nth-child(1){left:4%;top:8%}
+ .breach-landing .bl-scene-owners>span:nth-child(2){right:4%;top:69%}
+ .breach-landing .bl-scene-owners>span:nth-child(3){left:5%;top:78%}
+ .breach-landing .bl-scene-stamp{left:auto;right:5%;top:74%;font-size:9px;padding:12px}
+ .breach-landing .bl-scene-hint{bottom:-20px;width:calc(100% - 40px)}
+ .breach-landing .bl-story-bottom{gap:24px;padding-top:60px}
+ .breach-landing .bl-chapter-caption p{font-size:18px;line-height:1.5}
+ .breach-landing .bl-story-controls{width:100%}
+ .breach-landing .bl-story-controls>div:first-child{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+ .breach-landing .bl-story-controls>div:first-child button{font-size:13px;min-height:46px;padding:12px 10px}
+ .breach-landing .bl-story-controls button span{display:inline;font-size:11px;margin-right:8px}
+ .breach-landing .bl-fragment-detail{padding:24px;width:calc(100% - 40px)}
+ .breach-landing .bl-demo,.breach-landing .bl-team{padding-block:72px}
+ .breach-landing .bl-demo-heading,.breach-landing .bl-section-heading{gap:24px;margin-bottom:36px}
+ .breach-landing .bl-demo-heading h2,.breach-landing .bl-section-heading h2{font-size:36px;line-height:1.15}
+ .breach-landing .bl-demo-heading>p,.breach-landing .bl-section-heading>p{font-size:15px}
+ .breach-landing .bl-demo-workspace{margin:0}
+ .breach-landing .bl-demo-selector{grid-template-columns:1fr;padding:24px 20px;gap:28px;margin-bottom:28px}
+ .breach-landing .bl-incident-choices button{font-size:12px;padding:14px 10px;gap:8px;min-height:66px}
+ .breach-landing .bl-case-context{padding:24px 20px;gap:12px}
+ .breach-landing .bl-case-context strong{font-size:18px;line-height:1.6;margin-top:6px}
+ .breach-landing .bl-stage-nav button{padding:16px 10px;min-height:76px;gap:8px}
+ .breach-landing .bl-stage-nav strong{font-size:14px}
+ .breach-landing .bl-stage-nav small{display:none}
+ .breach-landing .bl-stage-content{padding:28px 20px;gap:32px}
+ .breach-landing .bl-stage-copy h3{font-size:28px;line-height:1.25}
+ .breach-landing .bl-stage-copy>p:not(.bl-eyebrow){font-size:15px;margin-top:20px}
+ .breach-landing .bl-stage-bottom{gap:16px;padding-top:28px}
+ .breach-landing .bl-text-link{font-size:13px}
+ .breach-landing .bl-stage-preview{margin:0}
+ .breach-landing .bl-preview-heading{padding:18px 16px;font-size:12px;flex-wrap:wrap}
+ .breach-landing .bl-source-scene,.breach-landing .bl-review,.breach-landing .bl-response,.breach-landing .bl-register{padding:22px 16px}
+ .breach-landing .bl-field-record{padding:18px 14px}
+ .breach-landing .bl-chips{gap:8px}
+ .breach-landing .bl-chips li{font-size:12px;padding:7px 9px}
+ .breach-landing .bl-review h4{font-size:25px}
+ .breach-landing .bl-review>p:not(.bl-preview-note){font-size:14px}
+ .breach-landing .bl-review-summary span{font-size:11px}
+ .breach-landing .bl-preview-note{font-size:12px}
+ .breach-landing .bl-rules-toggle{font-size:13px;padding:18px 0;margin-top:24px}
+ .breach-landing .bl-assessment-details{padding:24px 0}
+ .breach-landing .bl-rules{grid-template-columns:1fr}
+ .breach-landing .bl-rules li{gap:10px;flex-wrap:wrap}
+ .breach-landing .bl-rules li>div{min-width:0;flex-basis:calc(100% - 38px)}
+ .breach-landing .bl-rules small{margin-left:34px}
+ .breach-landing .bl-rules strong{font-size:14px}
+ .breach-landing .bl-rules p{font-size:13px}
+ .breach-landing .bl-stage-content[data-stage='2'] .bl-stage-copy{display:flex;gap:0}
+ .breach-landing .bl-stage-content[data-stage='2'] .bl-stage-copy>p:not(.bl-eyebrow){margin-top:20px}
+ .breach-landing .bl-stage-content[data-stage='2'] .bl-stage-preview{margin:0}
+ .breach-landing .bl-response-sequence small{display:none}
+ .breach-landing .bl-deadline{padding:20px 16px}
+ .breach-landing .bl-register dl>div{grid-template-columns:1fr;gap:8px;padding:18px 0}
+ .breach-landing .bl-team-layout{margin-top:36px;gap:36px}
+ .breach-landing .bl-role-nav{display:flex;flex-direction:column;gap:0}
+ .breach-landing .bl-role-nav>.bl-eyebrow{margin-bottom:16px}
+ .breach-landing .bl-role-nav button,.breach-landing .bl-role-nav button[aria-pressed='true']{display:flex;flex-direction:row;align-items:center;min-height:66px;padding:18px 14px;gap:16px;border-width:0 0 1px}
+ .breach-landing .bl-role-nav button:first-of-type{border-top:1px solid #ffffff30}
+ .breach-landing .bl-role-nav button[aria-pressed='true']{border-left:3px solid var(--coral)}
+ .breach-landing .bl-role-nav button>span:nth-child(2){font-size:20px}
+ .breach-landing .bl-role-nav .bl-icon{display:block;margin-left:auto}
+ .breach-landing .bl-role-detail>h3{font-size:32px;line-height:1.25}
+ .breach-landing .bl-role-detail>p:not(.bl-eyebrow){font-size:15px}
+ .breach-landing .bl-role-task{padding:24px 20px;margin-top:28px}
+ .breach-landing .bl-role-task h4{font-size:22px}
+ .breach-landing .bl-role-task>p:not(.bl-mono){font-size:14px}
+ .breach-landing .bl-closing{padding-block:72px 40px}
+ .breach-landing .bl-closing h2{font-size:38px;line-height:1.15}
+ .breach-landing .bl-closing>div{margin-top:32px;gap:24px}
+ .breach-landing .bl-footer{padding-block:28px}
+}
+
+@media(max-width:759px){.breach-landing .bl-clock-readout{flex-wrap:wrap;align-items:start;gap:16px}.breach-landing .bl-clock-times{flex-direction:column;gap:12px}.breach-landing .bl-clock-times>span:last-child{text-align:left}.breach-landing .bl-deadline label{flex-wrap:wrap;gap:8px}.breach-landing .bl-source-top>div{min-width:0}.breach-landing .bl-stage-content,.breach-landing .bl-stage-preview{min-width:0}}
