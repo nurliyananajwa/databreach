@@ -123,7 +123,7 @@ export default function Hero() {
   const scenario = incident ? SCENARIOS[business][incident] : null;
   const result = useMemo(() => (scenario ? assess(scenario) : null), [scenario]);
 
-  // The cloud sits where the empty slot is in the layout.
+  // The decorative cloud is out of flow, so it never reserves space above the record.
   const anchor = useCallback(() => {
     const s = section.current?.getBoundingClientRect();
     if (s && s.width < 1024) {
@@ -213,11 +213,13 @@ export default function Hero() {
     : "";
 
   return (
-    <section ref={section} id="try" className="on-dark relative isolate overflow-hidden bg-ink text-white">
+    <section ref={section} id="try" className="on-dark relative isolate overflow-hidden bg-ink text-white [overflow-anchor:none]">
       <p className="sr-only" aria-live="polite">{said}</p>
       <DataCloud ref={cloud} anchor={anchor} className="absolute inset-0 -z-10 size-full" frontClassName="pointer-events-none absolute inset-0 z-20 size-full" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-28 sm:px-8 lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,34rem)] lg:items-center lg:gap-14 lg:pb-14">
+      <div ref={cloudSpot} className="pointer-events-none absolute right-0 top-0 hidden h-56 w-80 lg:block" aria-hidden="true" />
+
+      <div className="relative mx-auto grid max-w-7xl items-start gap-10 px-5 pb-16 pt-28 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,34rem)] lg:gap-14 lg:pb-16 lg:pt-36">
         {/* left: the question and the controls */}
         <div className="relative">
           <h1 className="font-bold leading-[1.0] tracking-[-0.03em]" style={{ fontSize: "clamp(2.5rem, 4.6vw, 4.2rem)" }}>
@@ -279,10 +281,8 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* right: the cloud above, the record below */}
+        {/* The record starts beside the headline, even when the rules are expanded. */}
         <div className="relative">
-          <div ref={cloudSpot} className="pointer-events-none hidden lg:block lg:h-60" aria-hidden="true" />
-
           <div ref={panel} className="relative scroll-mt-6">
             <p className="mb-3 flex flex-wrap items-center gap-2 text-sm font-bold text-white/85">
               <span className="size-2 rounded-full bg-white/70" aria-hidden="true" />
@@ -290,7 +290,7 @@ export default function Hero() {
             </p>
             {scenario && result ? (
               <article key={`${business}-${incident}`} className="on-light panel-in overflow-hidden rounded-xl bg-white text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]" aria-label="Incident record preview">
-                <header className="flex items-center gap-3 border-b border-rule bg-paper px-5 py-2.5 text-sm">
+                <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-rule bg-paper px-5 py-2.5 text-sm">
                   <span className="font-bold">{code}</span>
                   <span className="text-muted">{biz.label}</span>
                   <span className={`ml-auto rounded px-2 py-0.5 text-xs font-bold ${STATUS[result.verdict].tone}`}>{STATUS[result.verdict].label}</span>
@@ -313,7 +313,7 @@ export default function Hero() {
                         ))}
                         {shown < scenario.fields.length && <li className="rounded border border-dashed border-rule px-2 py-0.5 text-sm text-muted" aria-hidden="true">checking…</li>}
                       </ul>
-                      <button type="button" onClick={() => setWhy((w) => !w)} aria-expanded={why} className="mt-2 text-sm font-bold underline decoration-rule decoration-2 underline-offset-4 hover:decoration-ink">
+                      <button type="button" onClick={() => setWhy((w) => !w)} aria-expanded={why} aria-controls="demo-rules" className="mt-2 text-sm font-bold underline decoration-rule decoration-2 underline-offset-4 hover:decoration-ink">
                         {why ? "Hide the rules" : "Why? See the rules"}
                       </button>
                     </div>
@@ -332,11 +332,11 @@ export default function Hero() {
                   </div>
 
                   {why && (
-                    <div>
-                    <p className="mt-4 text-sm text-muted">Illustrative checks, not a completed assessment. Data categories prompt review; unresolved questions remain for your Compliance Officer.</p>
-                    <ul className="mt-4 grid gap-1.5 rounded-lg bg-paper p-3 text-[0.95rem]">
+                    <div id="demo-rules" className="mt-4 rounded-lg border border-rule bg-paper p-3">
+                    <p className="text-sm text-muted">Sample checks for this scenario. The Compliance Officer reviews the context before deciding.</p>
+                    <ul className="mt-3 grid gap-3 text-sm">
                       {result.rules.map((r, i) => (
-                        <li key={r.code} className="rule-in flex items-start gap-2.5" style={{ animationDelay: `${i * 60}ms` }}>
+                        <li key={r.code} className="rule-in grid grid-cols-[1rem_minmax(0,1fr)] items-start gap-x-2.5 gap-y-0.5" style={{ animationDelay: `${i * 60}ms` }}>
                           <span className={`mt-1 grid size-4 shrink-0 place-items-center rounded-full border text-[0.6rem] font-bold ${r.met === true ? "border-stamp bg-stamp text-white" : r.met === false ? "border-rule bg-white" : "border-dashed border-muted text-muted"}`} aria-hidden="true">
                             {r.met === true ? "✓" : r.met === null ? "?" : ""}
                           </span>
@@ -344,7 +344,7 @@ export default function Hero() {
                             <span className={r.met ? "font-bold" : "text-muted"}>{r.label}</span>
                             <span className="text-muted">, {r.why.charAt(0).toLowerCase() + r.why.slice(1)}</span>
                           </span>
-                          <span className="ml-auto shrink-0 text-xs text-muted">{r.met === true ? "flagged" : r.met === false ? "not flagged" : "review needed"}</span>
+                          <span className="col-start-2 text-xs text-muted">{r.met === true ? "Flagged" : r.met === false ? "Not flagged" : "Review needed"}</span>
                         </li>
                       ))}
                     </ul>
