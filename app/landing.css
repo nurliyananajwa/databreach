@@ -151,3 +151,20 @@
 }
 .breach-landing.bl-motion-off *,.breach-landing.bl-motion-off *:before,.breach-landing.bl-motion-off *:after{animation:none!important;transition:none!important}
 @media(prefers-reduced-motion:reduce){.breach-landing.bl-vivid *,.breach-landing.bl-vivid *:before,.breach-landing.bl-vivid *:after{animation:none!important;transition:none!important}}
+
+/* Keep the working UI visible while only its smaller details move. */
+.bl-vivid .bl-workspace-inner,.bl-vivid .bl-workspace-stats,.bl-vivid .bl-sequence-next,.bl-vivid .bl-stage-copy{animation:none;opacity:1}
+.bl-vivid .bl-stage-preview,.bl-vivid .bl-assessment-details,.bl-vivid .bl-role-detail{animation:bl-panel-shift .2s ease-out both}
+.bl-vivid .bl-hero-fields li,.bl-vivid .bl-chips li{animation-name:bl-field-slide;animation-duration:.22s;opacity:1}
+.bl-vivid .bl-reveal.bl-reveal-ready{opacity:1;transform:none;transition:none}
+.bl-vivid .bl-role-task li>.bl-task-bullet{border:0;border-radius:0;background:none;width:auto;height:auto;min-width:8px;font-size:18px;line-height:1;color:#8c6abe;pointer-events:none}
+@keyframes bl-panel-shift{from{transform:translateY(4px)}to{transform:none}}
+@keyframes bl-field-slide{from{transform:translateX(7px)}to{transform:none}}
+
+/* Compact two-column hero for laptop windows; tablet and phone layouts stay stacked. */
+@media(min-width:940px) and (max-width:1100px){
+ .bl-vivid .bl-hero{grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);gap:30px;padding-block:30px 42px}
+ .bl-vivid .bl-hero-copy{max-width:none}.bl-vivid .bl-hero h1{font-size:clamp(39px,4.2vw,46px);line-height:1.1}.bl-vivid .bl-intro{font-size:16px;line-height:1.65;margin-top:20px!important}.bl-vivid .bl-hero-copy>.bl-eyebrow{font-size:11px}.bl-vivid .bl-actions{gap:14px;margin-top:22px}.bl-vivid .bl-actions .bl-button{padding:13px 16px;font-size:14px;gap:12px}.bl-vivid .bl-actions .bl-text-link{font-size:13px}.bl-vivid .bl-hero-note{font-size:13px;line-height:1.6}
+ .bl-vivid .bl-hero-visual{max-width:none}.bl-vivid .bl-primary-heading{gap:9px;margin-bottom:12px;font-size:13px}.bl-vivid .bl-primary-heading label{gap:6px}.bl-vivid .bl-primary-heading select{font-size:13px;padding:8px 21px 8px 8px;min-height:39px;max-width:155px}.bl-vivid .bl-orbit{grid-template-columns:1fr 1fr;gap:7px}.bl-vivid .bl-orbit button{min-height:43px;font-size:13px;padding:9px;gap:7px}.bl-vivid .bl-flow-paths{height:30px}
+ .bl-vivid .bl-workspace-inner{padding:19px}.bl-vivid .bl-window-bar{padding:12px 15px;font-size:10px}.bl-vivid .bl-workspace h2{font-size:21px;margin-top:14px}.bl-vivid .bl-workspace-caption{font-size:13px;margin-top:6px!important}.bl-vivid .bl-workspace-stats{margin-block:17px}.bl-vivid .bl-workspace-stats span{font-size:12px}.bl-vivid .bl-workspace-stats strong{font-size:28px}.bl-vivid .bl-workspace-stats .bl-small-stat{font-size:14px}.bl-vivid .bl-hero-fields{margin-bottom:16px!important;min-height:30px}.bl-vivid .bl-hero-fields li{font-size:12px;padding:4px 7px}.bl-vivid .bl-next{padding:11px;gap:8px}.bl-vivid .bl-next strong{font-size:13px}.bl-vivid .bl-next-icon{padding:7px}.bl-vivid .bl-mini-flow{font-size:12px;margin-top:17px;gap:8px}
+}
