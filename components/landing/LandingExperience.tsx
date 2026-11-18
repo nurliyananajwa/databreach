@@ -18,7 +18,7 @@ const SOURCES: Record<IncidentId, { label: string; location: string; icon: strin
 const ROLES = [
   { name: "Staff", short: "ST", title: "Raise the concern.", text: "Report what happened and complete assigned response tasks.", action: "Record the incident details", state: "Report & assist" },
   { name: "Compliance Officer", short: "CO", title: "Connect the facts.", text: "Confirm exposure, assess the context and document the notification decision.", action: "Review exposure and notification needs", state: "Review & coordinate" },
-  { name: "Manager", short: "MG", title: "Keep oversight.", text: "Manage team access and review notification drafts before they are sent outside the system.", action: "Review a notification draft, if required", state: "Approve & oversee" },
+  { name: "Manager", short: "MG", title: "Keep oversight.", text: "Manage team access and review any required notification drafts.", action: "Review a notification draft, if required", state: "Approve & oversee" },
 ] as const;
 function Icon({ name }: { name: string }) {
   return <svg className="bl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -93,10 +93,10 @@ export default function LandingExperience() {
   const suggestion = result.verdict === "both" ? "Notification to both suggested" : result.verdict === "commissioner" ? "Commissioner notification suggested" : "Further review needed";
   const selectedRole = ROLES[role];
   const peopleLabel = scenario.people === 1 ? "person" : "people";
-  const roleWork = [
-    { label: "Incident report", status: "Ready for intake", task: "Capture the first report", detail: "Record when the incident was noticed and the system or document involved.", items: ["What happened and when", "The affected data source"] },
-    { label: "Assessment queue", status: "Needs review", task: "Confirm exposure and impact", detail: scenario.people.toLocaleString("en-MY") + " " + peopleLabel + " and " + scenario.fields.length + " data types to review.", items: ["Confirm which data was exposed", "Record a reason for the decision"] },
-    { label: result.verdict === "register" ? "Decision oversight" : "Draft review", status: "Awaiting officer review", task: result.verdict === "register" ? "Review the recorded decision" : "Review a draft when required", detail: "The officer's assessment comes first. Review the decision and any required notification draft.", items: ["Check the scope and response", "Approve a draft or return it for revision"] },
+  const roleTask = [
+    "Capture the first report",
+    "Confirm exposure and impact",
+    result.verdict === "register" ? "Review the recorded decision" : "Review a notification draft",
   ][role];
   function changeScenario(b: BusinessId, i: IncidentId) { setBusiness(b); setIncident(i); setStage(0); setRulesOpen(false); setElapsed(12); }
 
@@ -127,7 +127,7 @@ export default function LandingExperience() {
       </section>
 
 </div></section>
-      <section id="team" className="bl-team"><div className="bl-wrap"><div className="bl-section-heading"><div><p className="bl-eyebrow">02 / THE PEOPLE</p><h2>One incident.<br/><em>A connected team.</em></h2></div><p>Select a role to see its part in the response.</p></div><div className="bl-team-layout"><div className="bl-role-nav" role="group" aria-label="Explore team responsibilities"><p className="bl-eyebrow">SELECT A TEAM ROLE</p>{ROLES.map((r,i)=><button key={r.name} aria-pressed={role===i} aria-controls="bl-role-detail" onClick={()=>setRole(i)}><span className="bl-role-number">0{i+1}</span><span>{r.name}<small>{r.state}</small></span><Icon name="arrow"/></button>)}</div><div id="bl-role-detail" className="bl-role-detail" role="region" aria-label={selectedRole.name}><p className="bl-eyebrow">{selectedRole.name.toUpperCase()}</p><h3>{selectedRole.title}</h3><p>{selectedRole.text}</p><div className="bl-role-task"><div className="bl-role-task-heading"><span>{roleWork.label}</span><span>{roleWork.status}</span></div><p className="bl-mono">{caseCode} / {businessName}</p><h4>{roleWork.task}</h4><p>{roleWork.detail}</p><ul>{roleWork.items.map(item=><li key={item}><span className="bl-task-bullet" aria-hidden="true">•</span>{item}</li>)}</ul><a href="#try" className="bl-role-case-link" onClick={()=>{setStage(role===0?0:role===1?1:2);setRulesOpen(false);}}>{role===0?"View the linked data":role===1?"View the assessment":"View the response plan"} <Icon name="arrow"/></a></div></div></div></div></section>
+      <section id="team" className="bl-team"><div className="bl-wrap"><div className="bl-section-heading"><div><p className="bl-eyebrow">02 / THE PEOPLE</p><h2>One incident.<br/><em>A connected team.</em></h2></div><p>Select a role to see its part in the response.</p></div><div className="bl-team-layout"><div className="bl-role-nav" role="group" aria-label="Explore team responsibilities"><p className="bl-eyebrow">SELECT A TEAM ROLE</p>{ROLES.map((r,i)=><button key={r.name} aria-pressed={role===i} aria-controls="bl-role-detail" onClick={()=>setRole(i)}><span className="bl-role-number">0{i+1}</span><span>{r.name}<small>{r.state}</small></span><Icon name="arrow"/></button>)}</div><div id="bl-role-detail" className="bl-role-detail" role="region" aria-label={selectedRole.name}><p className="bl-eyebrow">{selectedRole.name.toUpperCase()}</p><h3>{selectedRole.title}</h3><p>{selectedRole.text}</p><div className="bl-role-task"><p className="bl-mono">IN THIS EXAMPLE · {caseCode} / {businessName}</p><h4>{roleTask}</h4><a href="#try" className="bl-role-case-link" onClick={()=>{setStage(role===0?0:role===1?1:2);setRulesOpen(false);}}>{role===0?"View the linked data":role===1?"View the assessment":"View the response plan"} <Icon name="arrow"/></a></div></div></div></div></section>
       <section className="bl-closing bl-wrap"><p className="bl-eyebrow">FROM THE FIRST REPORT TO THE FINAL RECORD</p><h2>Your team.<br/><em>One connected response.</em></h2><div><p>Your organisation's inventory, incident reports and response work, together.</p><Link className="bl-button bl-button-dark" href="/sign-in">Open your workspace <Icon name="arrow"/></Link><span className="bl-invite-note">Access is by invitation from your manager.</span></div><a className="bl-back-top" href="#main">Back to top ↑</a></section>
     </main><footer className="bl-footer bl-wrap"><span>PDPA / Breach Response Tracker</span><p>Developed as an academic project for IMS568 at UiTM. All data shown is fictional.</p></footer>
   </div>;
