@@ -35,6 +35,25 @@ function Icon({ name }: { name: string }) {
       : <><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M9 7h6M9 11h6M9 15h4" /></>}
   </svg>;
 }
+
+const CHAPTERS = [
+  {label:"Exposure", title:"It starts with scattered information.", text:"A device, a document, a database. Understand what could be involved."},
+  {label:"Clarity", title:"Bring the relevant data into focus.", text:"Connect the source, identify the fields and review the impact."},
+  {label:"Ownership", title:"Give the next action a person.", text:"Staff, Compliance Officers and Managers move around the same incident."},
+  {label:"History", title:"Keep the response in one record.", text:"The facts, the reasons and the actions belong together."},
+] as const;
+function DataScene({chapter, active, onSelect, motion}: {chapter:number; active:string|null; onSelect:(name:string|null)=>void; motion:boolean}) {
+  const fields=["Full name","Email address","Payment details","Phone number","Identity number","Health information"];
+  return <div className="bl-data-scene" data-chapter={chapter} onPointerMove={e=>{if(!motion||e.pointerType!=="mouse")return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--mx",((e.clientX-r.left)/r.width-.5)*12+"px");e.currentTarget.style.setProperty("--my",((e.clientY-r.top)/r.height-.5)*10+"px");}} onPointerLeave={e=>{e.currentTarget.style.setProperty("--mx","0px");e.currentTarget.style.setProperty("--my","0px");}}>
+    <div className="bl-scene-floor" aria-hidden="true" />
+    <svg className="bl-scene-lines" viewBox="0 0 1000 400" fill="none" aria-hidden="true"><ellipse cx="500" cy="228" rx="355" ry="138"/><ellipse cx="500" cy="228" rx="260" ry="98"/>{["M160 100Q340 90 500 210","M820 90Q650 100 500 210","M120 300Q330 310 500 210","M870 300Q680 300 500 210"].map(d=><path key={d} d={d} pathLength="100"/>)}</svg>
+    <div className="bl-record-object" aria-hidden="true"><div className="bl-glass-layer bl-layer-back"/><div className="bl-glass-layer bl-layer-coral"/><div className="bl-record-face"><div className="bl-record-topline"><span>PDPA</span><span>01—04</span></div><div className="bl-record-glyph"><i/><i/><i/><i/></div><span className="bl-record-name">{["DATA / EXPOSED","SOURCE / LINKED","TEAM / CONNECTED","RESPONSE / RECORDED"][chapter]}</span><span className="bl-record-sub">From exposure<br/>to clarity.</span><div className="bl-record-bars"><i/><i/><i/></div></div></div>
+    <div className="bl-fragment-layer">{fields.map((name,i)=><button className={'bl-fragment bl-fragment-'+i} key={name} aria-pressed={active===name} onClick={()=>onSelect(active===name?null:name)}><span className="bl-fragment-index">0{i+1}</span><span>{name}</span><span aria-hidden="true">+</span></button>)}</div>
+    <div className="bl-scene-owners" aria-hidden="true">{["Staff","Compliance","Manager"].map((name,i)=><span key={name}><i>0{i+1}</i>{name}</span>)}</div>
+    <div className="bl-scene-stamp" aria-hidden="true"><Icon name="record"/><span>ONE CONNECTED<br/>INCIDENT RECORD</span></div>
+    <p className="bl-scene-hint" aria-live="polite">{chapter===2 ? "Three roles. One connected response." : chapter===3 ? "Facts, decisions and actions, together." : active ? active+": a field your team may need to review. Click again to close." : "Explore a data fragment"}</p>
+  </div>;
+}
 export default function LandingExperience() {
   const [business, setBusiness] = useState<BusinessId>("shop");
   const [incident, setIncident] = useState<IncidentId>("hack");
@@ -42,19 +61,24 @@ export default function LandingExperience() {
   const [role, setRole] = useState(1);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [motion, setMotion] = useState(true);
-  const root = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setMotion(!preference.matches);
-    sync();
-    preference.addEventListener("change", sync);
-    const items = root.current?.querySelectorAll(".bl-reveal") ?? [];
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("bl-in-view"); observer.unobserve(entry.target); } });
-    }, { threshold: 0.12 });
-    items.forEach(item => { item.classList.add("bl-reveal-ready"); observer.observe(item); });
-    return () => { preference.removeEventListener("change", sync); observer.disconnect(); };
-  }, []);
+  const [chapter, setChapter] = useState(0);
+  const [activeField, setActiveField] = useState<string|null>(null);
+  const root=useRef<HTMLDivElement>(null);
+  const story=useRef<HTMLElement>(null);
+  useEffect(()=>{
+    const preference=window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync=()=>setMotion(!preference.matches);sync();
+    preference.addEventListener("change",sync);
+    return()=>preference.removeEventListener("change",sync);
+  },[]);
+  useEffect(()=>{
+    if(!motion)return;
+    let frame=0;
+    const update=()=>{frame=0;const el=story.current;if(!el||window.innerWidth<760)return;const r=el.getBoundingClientRect();const travel=el.offsetHeight-window.innerHeight;if(travel<=0||r.top>0||r.bottom<window.innerHeight)return;const p=Math.max(0,Math.min(1,-r.top/travel));setChapter(Math.min(3,Math.floor(p*4)));};
+    const queue=()=>{if(!frame)frame=window.requestAnimationFrame(update);};
+    window.addEventListener("scroll",queue,{passive:true});window.addEventListener("resize",queue);queue();
+    return()=>{window.removeEventListener("scroll",queue);window.removeEventListener("resize",queue);window.cancelAnimationFrame(frame);};
+  },[motion]);
   const scenario = SCENARIOS[business][incident];
   const result = assess(scenario);
   const businessName = BUSINESSES.find(b => b.id === business)!.label;
@@ -69,37 +93,20 @@ export default function LandingExperience() {
     { label: result.verdict === "register" ? "Decision oversight" : "Draft review", status: "Awaiting officer review", task: result.verdict === "register" ? "Review the recorded decision" : "Review a draft when required", detail: "The officer's assessment comes first. Review the decision and any required notification draft.", items: ["Check the scope and response", "Approve a draft or return it for revision"] },
   ][role];
   function changeScenario(b: BusinessId, i: IncidentId) { setBusiness(b); setIncident(i); setStage(0); setRulesOpen(false); }
-  return <div ref={root} className={`breach-landing bl-vivid ${motion ? "" : "bl-motion-off"}`}>
+
+  function toggleMotion(){if(motion&&story.current){window.scrollTo({top:window.scrollY+story.current.getBoundingClientRect().top,behavior:"instant"});}setMotion(!motion);}
+  return <div ref={root} className={'breach-landing '+(motion?'':'bl-motion-off')}>
     <a className="bl-skip" href="#main">Skip to content</a>
-    <header className="bl-header bl-wrap"><Link href="/" className="bl-brand"><span className="bl-brand-mark"><Icon name="record" /></span><span>PDPA<span className="bl-brand-sub">Breach Response Tracker</span></span></Link><nav aria-label="Main"><a href="#try">Explore the workflow</a><a href="#team">Your team</a><Link className="bl-button bl-button-dark bl-button-small" href="/sign-in">Sign in <Icon name="arrow" /></Link></nav></header>
+    <header className="bl-header bl-wrap"><Link href="/" className="bl-brand"><span className="bl-brand-symbol" aria-hidden="true"><i/><i/><i/><i/></span><span>PDPA<span className="bl-brand-sub">Breach Response Tracker</span></span></Link><nav aria-label="Main"><a href="#scenario-controls">Explore the system</a><a href="#team">The people</a><Link className="bl-signin" href="/sign-in">Sign in <Icon name="arrow"/></Link></nav></header>
     <main id="main">
-      <section className="bl-hero bl-wrap" aria-labelledby="bl-title"><div className="bl-hero-copy"><p className="bl-eyebrow"><span className="bl-dot" /> PDPA BREACH RESPONSE TRACKER</p><h1 id="bl-title">A breach happens.<br /><em>Take the next step.</em></h1><p className="bl-intro">Personal-data inventory and breach response for Malaysian small businesses. Bring the facts, your team and the next actions into one clear record.</p><div className="bl-actions"><a className="bl-button bl-button-dark" href="#try">Explore the selected incident <Icon name="arrow" /></a><a className="bl-text-link" href="#team">Meet the response team</a></div><p className="bl-hero-note">Locate the data. Review the impact. Coordinate the response.</p></div>
-        <div className="bl-hero-visual" aria-label="Interactive incident workspace">
-          <div className="bl-visual-halo" aria-hidden="true" />
-          <div id="scenario-controls" className="bl-primary-controls">
-            <div className="bl-primary-heading"><span>Try a breach scenario</span><label htmlFor="bl-business">Business<select id="bl-business" value={business} onChange={e => changeScenario(e.target.value as BusinessId,incident)}>{BUSINESSES.map(b => <option key={b.id} value={b.id}>{b.label}</option>)}</select></label></div>
-            <div className="bl-orbit" role="group" aria-label="Choose an incident">
-              {([{id:"email",label:"Misdirected email"},{id:"laptop",label:"Stolen laptop"},{id:"hack",label:"Database breach"},{id:"whatsapp",label:"Message leak"}] as const).map(item => <button key={item.id} aria-pressed={incident === item.id} onClick={() => changeScenario(business,item.id)}><Icon name={SOURCES[item.id].icon} /><span>{item.label}</span>{incident === item.id && <Icon name="check" />}</button>)}
-            </div>
-            <svg className="bl-flow-paths" key={caseCode} viewBox="0 0 500 64" preserveAspectRatio="none" aria-hidden="true">{([['email','M60 0C60 40 250 5 250 64'],['laptop','M185 0C185 35 250 25 250 64'],['hack','M315 0C315 35 250 25 250 64'],['whatsapp','M440 0C440 40 250 5 250 64']] as const).map(([id,d]) => <path key={id} d={d} className={incident === id ? "bl-path-active" : ""} pathLength="100" />)}</svg>
-          </div>
-          <div className="bl-workspace-tilt" onPointerMove={e => {if(!motion || e.pointerType !== "mouse")return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--tilt-x", ((.5-(e.clientY-r.top)/r.height)*4)+"deg");e.currentTarget.style.setProperty("--tilt-y", (((e.clientX-r.left)/r.width-.5)*5)+"deg");}} onPointerLeave={e => {e.currentTarget.style.setProperty("--tilt-x","0deg");e.currentTarget.style.setProperty("--tilt-y","0deg");}}>
-            <div className="bl-workspace">
-              <div className="bl-window-bar"><span className="bl-window-dots" aria-hidden="true"><i /><i /><i /></span><span>YOUR RESPONSE WORKSPACE</span><span className="bl-live-dot" /></div>
-              <div className="bl-workspace-inner">
-                <div className="bl-workspace-top"><span className="bl-mono">{caseCode} / {businessName.toUpperCase()}</span><span className="bl-status">Review needed</span></div>
-                <h2>{scenario.what}</h2><p className="bl-workspace-caption">{source.location} → one coordinated response.</p>
-                <div className="bl-workspace-stats"><div><span>People affected</span><strong>{scenario.people.toLocaleString("en-MY")}</strong></div><div><span>Data types</span><strong>{String(scenario.fields.length).padStart(2,"0")}</strong></div><div><span>Next owner</span><strong className="bl-small-stat">Compliance<br />Officer</strong></div></div>
-                <ul className="bl-hero-fields" aria-label="Data fields in the selected example">{scenario.fields.map((field,i) => <li key={`${caseCode}-${field.name}`} style={{animationDelay:(i*40)+"ms"}}>{field.name}</li>)}</ul>
-                <div className="bl-next bl-sequence-next"><span className="bl-next-icon"><Icon name="search" /></span><div><span>NEXT ACTION</span><strong>Confirm the scope of exposure</strong></div><Icon name="arrow" /></div>
-                <div className="bl-mini-flow"><span className="bl-mini-done"><Icon name="check" /> Reported</span><span className="bl-mini-current"><span className="bl-dot" /> Review</span><span>Response</span><span>Record</span></div>
-              </div>
-            </div>
-          </div>
-          <div className="bl-caption"><button className="bl-motion-toggle" aria-pressed={!motion} onClick={() => setMotion(!motion)}>{motion ? "Pause motion" : "Enable motion"}</button></div>
-        </div>
-      </section>
-      <div className="bl-promise-strip"><div className="bl-wrap"><span><Icon name="grid" /> Know where data lives</span><span><Icon name="search" /> Explain the assessment</span><span><Icon name="people" /> Coordinate the response</span><span><Icon name="record" /> Keep the history</span></div></div>
+      <section ref={story} className="bl-story" aria-labelledby="bl-title"><div className="bl-story-sticky">
+        <div className="bl-hero-heading bl-wrap"><p className="bl-eyebrow"><span className="bl-dot"/> PERSONAL DATA. HUMAN RESPONSIBILITY.</p><h1 id="bl-title">A breach happens.<br/><em>Clarity starts here.</em></h1><p className="bl-hero-subtitle">Know your data. Connect your team. Shape the response.</p></div>
+        <DataScene chapter={chapter} active={activeField} onSelect={setActiveField} motion={motion}/>
+        <div className="bl-story-bottom bl-wrap"><div className="bl-chapter-caption"><span className="bl-mono">0{chapter+1} / {CHAPTERS[chapter].label.toUpperCase()}</span><p>{CHAPTERS[chapter].title}</p><span>{CHAPTERS[chapter].text}</span></div><div className="bl-story-controls"><div role="group" aria-label="Explore the visual story">{CHAPTERS.map((c,i)=><button key={c.label} aria-pressed={chapter===i} onClick={()=>{setChapter(i);setActiveField(null);}}><span>0{i+1}</span>{c.label}</button>)}</div><div className="bl-story-tools"><button aria-pressed={!motion} onClick={toggleMotion}>{motion?"Pause motion":"Enable motion"}</button><a href="#scenario-controls">Try the system <Icon name="arrow"/></a></div></div></div>
+        <span className="bl-scroll-label" aria-hidden="true">SCROLL TO CONNECT THE DOTS ↓</span>
+      </div></section>
+      <section className="bl-introduction bl-wrap"><p className="bl-eyebrow">FROM EXPOSURE TO CLARITY</p><div><h2>Less scattered information.<br/><em>More connected decisions.</em></h2><p>A personal-data inventory and breach-response workspace for Malaysian small businesses. See where data lives, understand an incident and coordinate what happens next.</p></div><a className="bl-circle-link" href="#scenario-controls" aria-label="Explore the interactive system demo"><Icon name="arrow"/></a></section>
+      <div id="scenario-controls" className="bl-demo-intro bl-wrap"><div><p className="bl-eyebrow">01 / EXPLORE THE SYSTEM</p><h2>Make it<br/><em>your scenario.</em></h2><p>Choose a business and an incident. Follow the same case through the whole response.</p></div><div className="bl-demo-selector"><label htmlFor="bl-business">Your business<select id="bl-business" value={business} onChange={e=>changeScenario(e.target.value as BusinessId,incident)}>{BUSINESSES.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</select></label><div className="bl-incident-choices" role="group" aria-label="Choose an incident">{([{id:"hack",label:"Database breach"},{id:"email",label:"Misdirected email"},{id:"laptop",label:"Stolen laptop"},{id:"whatsapp",label:"Message leak"}] as const).map(item=><button key={item.id} aria-pressed={incident===item.id} onClick={()=>changeScenario(business,item.id)}><Icon name={SOURCES[item.id].icon}/><span>{item.label}</span><span aria-hidden="true">{incident===item.id?'↗':'+'}</span></button>)}</div></div></div>
       <section id="try" className="bl-explore bl-wrap bl-reveal" aria-labelledby="bl-explore-title"><div className="bl-section-heading"><div><p className="bl-eyebrow">01 / FOLLOW THE RECORD</p><h2 id="bl-explore-title">One incident.<br /><em>A clear path forward.</em></h2></div><p>Your selected incident follows four connected steps. Explore the data, assessment, team responsibilities and record.</p></div>
         <div className="bl-case-context" aria-live="polite"><span className="bl-mono">{caseCode}</span><span>{businessName}</span><strong>{scenario.what}.</strong><a className="bl-change-scenario" href="#scenario-controls">Change scenario <span aria-hidden="true">↑</span></a></div>
         <p className="sr-only" aria-live="polite" aria-atomic="true">Step {stage + 1} of 4: {STAGES[stage].title}</p><div className="bl-stage-nav" role="group" aria-label="Explore the breach workflow">{STAGES.map((s, i) => <button key={s.title} aria-pressed={stage === i} aria-controls="bl-stage-content" onClick={() => setStage(i)}><span className="bl-stage-num">0{i + 1}</span><span><strong>{s.title}</strong><small>{s.sub}</small></span><Icon name={s.icon} /></button>)}</div>
@@ -113,8 +120,9 @@ export default function LandingExperience() {
           {stage === 1 && rulesOpen && <div id="bl-rules" className="bl-assessment-details"><div className="bl-details-heading"><h4>Why this suggestion?</h4><p>Review each criterion alongside the context of the incident.</p></div><ul className="bl-rules">{result.rules.map(r => <li key={r.code}><span className={r.met ? "bl-rule-flag" : "bl-rule-neutral"}>{r.met === true ? "!" : r.met === null ? "?" : "−"}</span><div><strong>{r.label}</strong><p>{r.why}</p></div><small>{r.met === true ? "Flagged" : r.met === null ? "Review" : "Not flagged"}</small></li>)}</ul></div>}
         </div>
       </section>
-      <section id="team" className="bl-team"><div className="bl-wrap bl-team-layout bl-reveal"><div><p className="bl-eyebrow">02 / THE PEOPLE BEHIND THE RESPONSE</p><h2>Shared responsibility.<br /><em>Clear ownership.</em></h2><p>Staff, Compliance Officers and Managers work around the same incident, with access suited to their role.</p><div className="bl-role-nav" role="group" aria-label="Explore team responsibilities">{ROLES.map((r,i) => <button key={r.name} aria-pressed={role === i} aria-controls="bl-role-detail" onClick={() => setRole(i)}><span>{r.short}</span>{r.name}<Icon name="arrow" /></button>)}</div></div><div id="bl-role-detail" key={role} className="bl-role-detail" role="region" aria-label={selectedRole.name}><p className="bl-eyebrow">{selectedRole.name.toUpperCase()}</p><h3>{selectedRole.title}</h3><p>{selectedRole.text}</p><div><Icon name="check" /><span>{selectedRole.state}</span></div><div className="bl-role-task"><div className="bl-role-task-heading"><span>{roleWork.label}</span><span>{roleWork.status}</span></div><p className="bl-mono">{caseCode} / {businessName}</p><h4>{roleWork.task}</h4><p>{roleWork.detail}</p><ul>{roleWork.items.map(item => <li key={item}><span className="bl-task-bullet" aria-hidden="true">•</span>{item}</li>)}</ul><a href="#try" className="bl-role-case-link" onClick={() => {setStage(role === 0 ? 0 : role === 1 ? 1 : 2);setRulesOpen(false);}}>Explore this step <Icon name="arrow" /></a></div></div></div></section>
-      <section className="bl-closing bl-wrap bl-reveal"><div><p className="bl-eyebrow">READY TO WORK TOGETHER?</p><h2>Bring your team<br /><em>into the response.</em></h2></div><div><p>Access your organisation’s inventory, incident reports and assigned response work.</p><Link className="bl-button bl-button-dark" href="/sign-in">Open your workspace <Icon name="arrow" /></Link><span className="bl-invite-note">Access is by invitation from your manager.</span></div></section>
-    </main><footer className="bl-footer"><div className="bl-wrap"><div className="bl-footer-top"><span>PDPA / Breach Response Tracker</span><a href="#main">Back to top ↑</a></div><p>Developed as an academic project for IMS568 at UiTM. All data shown is fictional.</p></div></footer>
+
+      <section id="team" className="bl-team"><div className="bl-wrap"><div className="bl-section-heading"><div><p className="bl-eyebrow">02 / THE PEOPLE</p><h2>One incident.<br/><em>A connected team.</em></h2></div><p>Everyone has a part to play. Explore how responsibility moves around the same record.</p></div><div className="bl-team-layout"><div className="bl-role-nav" role="group" aria-label="Explore team responsibilities">{ROLES.map((r,i)=><button key={r.name} aria-pressed={role===i} aria-controls="bl-role-detail" onClick={()=>setRole(i)}><span className="bl-role-number">0{i+1}</span><span>{r.name}<small>{r.state}</small></span><Icon name="arrow"/></button>)}</div><div id="bl-role-detail" className="bl-role-detail" role="region" aria-label={selectedRole.name}><p className="bl-eyebrow">{selectedRole.name.toUpperCase()}</p><h3>{selectedRole.title}</h3><p>{selectedRole.text}</p><div className="bl-role-task"><div className="bl-role-task-heading"><span>{roleWork.label}</span><span>{roleWork.status}</span></div><p className="bl-mono">{caseCode} / {businessName}</p><h4>{roleWork.task}</h4><p>{roleWork.detail}</p><ul>{roleWork.items.map(item=><li key={item}><span className="bl-task-bullet" aria-hidden="true">•</span>{item}</li>)}</ul><a href="#try" className="bl-role-case-link" onClick={()=>{setStage(role===0?0:role===1?1:2);setRulesOpen(false);}}>Explore this step <Icon name="arrow"/></a></div></div></div></div></section>
+      <section className="bl-closing bl-wrap"><p className="bl-eyebrow">FROM THE FIRST REPORT TO THE FINAL RECORD</p><h2>Bring clarity<br/>to <em>what comes next.</em></h2><div><p>Your organisation's inventory, incident reports and response work, together.</p><Link className="bl-button bl-button-dark" href="/sign-in">Open your workspace <Icon name="arrow"/></Link><span className="bl-invite-note">Access is by invitation from your manager.</span></div><a className="bl-back-top" href="#main">Back to top ↑</a></section>
+    </main><footer className="bl-footer bl-wrap"><span>PDPA / Breach Response Tracker</span><p>Developed as an academic project for IMS568 at UiTM. All data shown is fictional.</p></footer>
   </div>;
 }
