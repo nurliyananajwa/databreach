@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { BUSINESSES, INCIDENTS, SCENARIOS, assess, type BusinessId, type IncidentId } from "./scenarios";
+import HoursStory from "./HoursStory";
 
 const STAGES = [
   { title: "Locate", sub: "Find the affected data", icon: "grid" },
@@ -102,6 +103,7 @@ export default function LandingExperience() {
         <DataScene active={activeField} onSelect={setActiveField} motion={motion}/>
         <div className="bl-story-bottom bl-wrap"><div className="bl-story-tools"><button aria-pressed={!motion} onClick={toggleMotion}>{motion?"Pause motion":"Enable motion"}</button></div></div>
       </div></section>
+      <HoursStory motion={motion}/>
       <section id="scenario-controls" className="bl-demo bl-wrap" aria-labelledby="bl-demo-title"><header className="bl-demo-heading"><div><p className="bl-eyebrow">INTERACTIVE DEMO</p><h2 id="bl-demo-title">Explore a breach scenario.</h2></div><p>Choose a business, then an incident. Follow that case through four steps.</p></header><div className="bl-demo-workspace"><div className="bl-demo-selector"><div className="bl-business-choice"><label htmlFor="bl-business">1. Choose a business</label><select id="bl-business" value={business} onChange={e=>changeScenario(e.target.value as BusinessId,incident)}>{BUSINESSES.map(b=><option key={b.id} value={b.id}>{b.label}</option>)}</select></div><div className="bl-incident-group"><p className="bl-selector-label">2. Choose an incident</p><div className="bl-incident-choices" role="group" aria-label="Choose an incident">{([{id:"hack",label:"Database breach"},{id:"email",label:"Misdirected email"},{id:"laptop",label:"Stolen laptop"},{id:"whatsapp",label:"Message leak"}] as const).map(item=><button key={item.id} aria-pressed={incident===item.id} onClick={()=>changeScenario(business,item.id)}><Icon name={SOURCES[item.id].icon}/><span>{item.label}</span><span aria-hidden="true">{incident===item.id?'↗':'+'}</span></button>)}</div></div></div>
       <section id="try" className="bl-explore" aria-label="Breach scenario workflow">
         <div className="bl-case-context" aria-live="polite"><span className="bl-mono">{caseCode}</span><span>{businessName}</span><strong>{scenario.what}.</strong><a className="bl-change-scenario" href="#scenario-controls">Change scenario <span aria-hidden="true">↑</span></a></div>

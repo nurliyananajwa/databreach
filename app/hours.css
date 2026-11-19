@@ -1,0 +1,100 @@
+/* "What the 72 hours look like": scroll-driven story. Kept separate from
+   landing.css so its rules do not fight the hero overrides. */
+.bl-hours{--hours:0;position:relative;padding-top:110px;border-top:1px solid var(--line)}
+.bl-hours-intro{display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:end}
+.bl-hours-intro h2{font-size:clamp(46px,5.4vw,78px)}
+.bl-hours-intro p{font-size:15px;color:var(--muted);max-width:340px}
+
+.bl-hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px}
+.bl-hours-stage{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;gap:36px}
+
+/* the running clock */
+.bl-hours-readout{display:flex;align-items:flex-end;gap:22px}
+.bl-hours-big{font-size:clamp(96px,10vw,150px);line-height:.8;letter-spacing:-.07em;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink);transition:color .4s}
+.bl-hours-big small{font-size:.32em;letter-spacing:-.02em;margin-left:4px;color:var(--muted)}
+.bl-hours-meta{display:flex;flex-direction:column;gap:4px;padding-bottom:6px;font-size:14px;color:var(--muted)}
+.bl-hours-meta strong{font-size:18px;font-weight:500;letter-spacing:-.03em;color:var(--blue);transition:color .4s}
+.bl-hours-rail{position:relative;height:6px;background:#e3e4df;border-radius:3px;margin-top:26px}
+.bl-hours-fill{position:absolute;inset:0 auto 0 0;width:calc(var(--hours) * 100%);background:var(--blue);border-radius:3px;transition:width .25s linear,background .4s}
+.bl-hours-rail i{position:absolute;top:-5px;width:1px;height:16px;background:#b9bbb5}
+.bl-hours-rail i b{position:absolute;top:22px;left:50%;translate:-50% 0;font-weight:400;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bl-hours[data-urgent='true'] .bl-hours-fill{background:var(--coral)}
+.bl-hours[data-urgent='true'] .bl-hours-big,.bl-hours[data-urgent='true'] .bl-hours-meta strong{color:#d4432c}
+
+/* the card: same object as the hero, changing per moment */
+.bl-hours-card-zone{position:relative;height:330px;perspective:1000px}
+.bl-hours-card{position:absolute;left:50%;top:50%;width:190px;height:238px;transform-style:preserve-3d;translate:-50% -50%;transform:rotateX(12deg) rotateY(-25deg) rotateZ(-12deg);transition:transform 1.1s cubic-bezier(.2,.65,.15,1),scale 1.1s cubic-bezier(.2,.65,.15,1)}
+.bl-hours-card .bl-layer-back,.bl-hours-card .bl-layer-coral{transition:transform 1.1s cubic-bezier(.2,.65,.15,1),filter .6s}
+.bl-hours-card .bl-record-name{font-size:9px;letter-spacing:.08em}
+.bl-hours-cardtext{font-size:28px}
+.bl-hours-card .bl-record-name,.bl-hours-cardtext{animation:bl-hours-swap .5s both}
+.bl-hours-stamp{position:absolute;right:-70px;bottom:22px;background:#e5eeff;color:#1743c7;border:1px solid #2855ff55;padding:9px 12px;font-size:12px;border-radius:3px;white-space:nowrap;opacity:0;transform:translateZ(30px) rotate(10deg) scale(.8);transition:opacity .5s,transform .5s}
+
+.bl-hours[data-moment='1'] .bl-hours-card{transform:rotateX(5deg) rotateY(-10deg) rotateZ(3deg)}
+.bl-hours[data-moment='2'] .bl-hours-card{transform:rotateX(4deg) rotateY(12deg) rotateZ(-4deg)}
+.bl-hours[data-moment='3'] .bl-hours-card{transform:rotateX(2deg) rotateY(-6deg) rotateZ(2deg)}
+.bl-hours[data-moment='3'] .bl-layer-coral{transform:translate3d(46px,30px,-35px) rotateZ(18deg);filter:saturate(1.3)}
+.bl-hours[data-moment='4'] .bl-hours-card,.bl-hours[data-moment='5'] .bl-hours-card{transform:none}
+.bl-hours[data-moment='4'] .bl-layer-back,.bl-hours[data-moment='5'] .bl-layer-back{transform:translate3d(-8px,-8px,-10px)}
+.bl-hours[data-moment='4'] .bl-layer-coral,.bl-hours[data-moment='5'] .bl-layer-coral{transform:translate3d(8px,8px,-5px)}
+.bl-hours[data-moment='4'] .bl-hours-stamp{opacity:1;transform:translateZ(30px) rotate(-5deg) scale(1)}
+.bl-hours[data-moment='5'] .bl-hours-card{scale:.92}
+.bl-hours[data-moment='5'] .bl-record-face{filter:saturate(.75) brightness(.85)}
+
+/* loose data fields: scattered at hour 0, pulled into the card from hour 3 */
+.bl-hours-chips{list-style:none;margin:0;padding:0;position:absolute;inset:0}
+.bl-hours-chip{position:absolute;left:var(--x);top:var(--y);background:#fff;border:1px solid #dde2ed;box-shadow:0 4px 16px #3241680d;padding:8px 12px;border-radius:5px;font-size:13px;color:#3d485b;white-space:nowrap;rotate:var(--r);transition:left .9s cubic-bezier(.5,0,.2,1),top .9s cubic-bezier(.5,0,.2,1),opacity .6s .3s,scale .9s,rotate .9s}
+.bl-hours-chip-4{border-color:#ffc3b9;background:#fff4f1;color:#a43120}
+.bl-hours-chip-0{--x:4%;--y:10%;--r:-8deg}.bl-hours-chip-1{--x:68%;--y:4%;--r:7deg}.bl-hours-chip-2{--x:0%;--y:62%;--r:5deg}.bl-hours-chip-3{--x:72%;--y:58%;--r:-6deg}.bl-hours-chip-4{--x:36%;--y:88%;--r:3deg}
+.bl-hours:not([data-moment='0']) .bl-hours-chip{left:44%;top:44%;opacity:0;scale:.4;rotate:0deg}
+
+/* the moments */
+.bl-hours-steps{list-style:none;margin:0;padding:22svh 0 34svh}
+.bl-hours-step{min-height:72svh;padding-top:8px;opacity:.28;transition:opacity .5s}
+.bl-hours-step[data-on='true']{opacity:1}
+.bl-hours-when{font-size:14px;color:var(--blue);font-variant-numeric:tabular-nums}
+.bl-hours-step h3{font-size:clamp(34px,3.4vw,50px);margin-top:14px!important;max-width:460px}
+.bl-hours-step>p:not(.bl-hours-when):not(.bl-hours-who){font-size:16px;color:var(--muted);margin-top:18px!important;max-width:430px}
+.bl-hours-who{display:inline-block;margin-top:22px!important;font-size:13px;border:1px solid var(--line);border-radius:30px;padding:6px 12px}
+
+@keyframes bl-hours-swap{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
+
+/* tablet */
+@media(max-width:1100px){
+ .bl-hours-grid{gap:40px}
+ .bl-hours-card{width:160px;height:205px}
+ .bl-hours-cardtext{font-size:24px}
+ .bl-hours-stamp{right:-40px}
+}
+
+/* phone: the clock and card become a sticky strip above the moments */
+@media(max-width:759px){
+ .bl-hours{padding-top:70px}
+ .bl-hours-intro{grid-template-columns:1fr;gap:16px}
+ .bl-hours-intro h2{font-size:clamp(40px,11vw,54px)}
+ .bl-hours-grid{grid-template-columns:1fr;gap:0}
+ .bl-hours-stage{height:auto;top:0;z-index:4;padding:14px 0 10px;gap:6px;background:linear-gradient(var(--paper) 88%,transparent)}
+ .bl-hours-readout{gap:14px}
+ .bl-hours-big{font-size:64px}
+ .bl-hours-meta{font-size:13px}.bl-hours-meta strong{font-size:15px}
+ .bl-hours-rail{margin-top:14px;margin-bottom:22px}
+ .bl-hours-rail i b{top:18px;font-size:11px}
+ .bl-hours-card-zone{height:150px}
+ .bl-hours-card{width:104px;height:134px}
+ .bl-hours-card .bl-record-face{padding:10px}
+ .bl-hours-card .bl-record-glyph{grid-template-columns:repeat(2,10px);gap:3px;margin:12px 0 8px}
+ .bl-hours-card .bl-record-glyph i{height:10px}
+ .bl-hours-card .bl-record-topline{font-size:6px}
+ .bl-hours-card .bl-record-name{font-size:6px}
+ .bl-hours-cardtext{font-size:14px}
+ .bl-hours-chip{font-size:11px;padding:5px 8px}
+ .bl-hours-stamp{right:-104px;bottom:-6px;font-size:11px;padding:6px 8px}
+ .bl-hours-steps{padding:4svh 0 20svh}
+ .bl-hours-step{min-height:62svh}
+ .bl-hours-step h3{font-size:32px}
+ .bl-hours-step>p:not(.bl-hours-when):not(.bl-hours-who){font-size:15px}
+}
+
+/* motion off (button or system setting): states still change, without movement */
+.bl-motion-off .bl-hours *,.bl-hours-still *{transition:none!important;animation:none!important}
+@media(prefers-reduced-motion:reduce){.bl-hours *{transition:none!important;animation:none!important}}
