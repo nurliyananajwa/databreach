@@ -51,7 +51,7 @@ function DataScene({active,onSelect,motion}:{active:string|null;onSelect:(name:s
   const selected=FIELD_DETAILS.find(f=>f.name===active);
   const trigger=useRef<HTMLButtonElement|null>(null);
   function close(){onSelect(null);if(trigger.current?.isConnected)trigger.current.focus();}
-  return <div ref={scene} className="bl-data-scene" data-chapter="0" data-active={!!active} onKeyDown={e=>{if(e.key==='Escape'&&active){e.preventDefault();close();}}} onPointerMove={e=>{if(!motion||e.pointerType!=="mouse")return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--mx",((e.clientX-r.left)/r.width-.5)*10+"px");e.currentTarget.style.setProperty("--my",((e.clientY-r.top)/r.height-.5)*8+"px");}} onPointerLeave={e=>{e.currentTarget.style.setProperty("--mx","0px");e.currentTarget.style.setProperty("--my","0px");}}>
+  return <div ref={scene} className="bl-data-scene" data-chapter="0" data-active={!!active} onKeyDown={e=>{if(e.key==='Escape'&&active){e.preventDefault();close();}}} onPointerMove={e=>{if(!motion||e.pointerType!=="mouse")return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--mx",((e.clientX-r.left)/r.width-.5)*10+"px");e.currentTarget.style.setProperty("--my",((e.clientY-r.top)/r.height-.5)*8+"px");e.currentTarget.style.setProperty("--tx",((e.clientX-r.left)/r.width-.5)*18+"deg");e.currentTarget.style.setProperty("--ty",((e.clientY-r.top)/r.height-.5)*-14+"deg");}} onPointerLeave={e=>{for(const v of ["--mx","--my"])e.currentTarget.style.setProperty(v,"0px");for(const v of ["--tx","--ty"])e.currentTarget.style.setProperty(v,"0deg");}}>
     <div className="bl-scene-floor" aria-hidden="true"/>
     <svg className="bl-scene-lines" viewBox="0 0 1000 400" fill="none" aria-hidden="true"><ellipse cx="500" cy="228" rx="355" ry="138"/><ellipse cx="500" cy="228" rx="260" ry="98"/>{["M160 100Q340 90 500 210","M820 90Q650 100 500 210","M120 300Q330 310 500 210","M870 300Q680 300 500 210"].map(d=><path key={d} d={d} pathLength="100"/>)}</svg>
     <div className="bl-record-object" aria-hidden="true"><div className="bl-glass-layer bl-layer-back"/><div className="bl-glass-layer bl-layer-coral"/><div className="bl-record-face"><div className="bl-record-topline"><span>PDPA</span><span>DEMO</span></div><div className="bl-record-glyph"><i/><i/><i/><i/></div><span className="bl-record-name">PERSONAL DATA</span><span className="bl-record-sub">From exposure<br/>to clarity.</span><div className="bl-record-bars"><i/><i/><i/></div></div></div>
@@ -94,12 +94,25 @@ export default function LandingExperience() {
   function changeScenario(b: BusinessId, i: IncidentId) { setBusiness(b); setIncident(i); setStage(0); setRulesOpen(false); setElapsed(12); }
 
   function toggleMotion(){setMotion(!motion);}
-  return <div className={'breach-landing '+(motion?'':'bl-motion-off')}>
+  const root=useRef<HTMLDivElement>(null);
+  // 2. as the hero leaves the screen, the camera "flies into" the card (--fly 0..1)
+  useEffect(()=>{const el=root.current;const hero=el?.querySelector<HTMLElement>('.bl-story');if(!el||!hero)return;let raf=0;
+    const update=()=>{raf=0;const b=hero.getBoundingClientRect().bottom;const p=Math.min(1,Math.max(0,(innerHeight*0.95-b)/(innerHeight*0.6)));hero.style.setProperty('--fly',p.toFixed(3));};
+    const on=()=>{if(!raf)raf=requestAnimationFrame(update);};addEventListener('scroll',on,{passive:true});addEventListener('resize',on);update();
+    return()=>{removeEventListener('scroll',on);removeEventListener('resize',on);cancelAnimationFrame(raf);};},[]);
+  // 1. entry moment: plays once per visit, skippable, never for reduced motion
+  const [intro,setIntro]=useState<'show'|'leave'|'gone'>('show');
+  useEffect(()=>{let seen=false;try{seen=sessionStorage.getItem('bl-intro')==='1';sessionStorage.setItem('bl-intro','1');}catch{}
+    if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches){setIntro('gone');return;}
+    const a=setTimeout(()=>setIntro('leave'),1900),b=setTimeout(()=>setIntro('gone'),2700);return()=>{clearTimeout(a);clearTimeout(b);};},[]);
+  const skipIntro=()=>{setIntro('leave');setTimeout(()=>setIntro('gone'),500);};
+  return <div ref={root} className={'breach-landing '+(motion?'':'bl-motion-off')}>
+    {intro!=='gone'&&<div className="bl-intro" data-state={intro} role="presentation"><p className="bl-intro-line">A data breach just happened.</p><p className="bl-intro-sub">The 72-hour clock has started.</p><button type="button" className="bl-intro-skip" onClick={skipIntro}>Skip</button></div>}
     <a className="bl-skip" href="#main">Skip to content</a>
     <header className="bl-header bl-wrap"><Link href="/" className="bl-brand" aria-label="PDPA Breach Response Tracker"><span className="bl-brand-symbol" aria-hidden="true"><i/><i/><i/><i/></span><span>PDPA<span className="bl-brand-sub">Breach Response Tracker</span></span></Link><nav aria-label="Main"><a className="bl-nav-demo" href="#scenario-controls">Try the demo</a><a href="#team">The people</a><Link className="bl-signin" href="/sign-in">Sign in <Icon name="arrow"/></Link></nav></header>
     <main id="main">
       <section className="bl-story" aria-labelledby="bl-title"><div className="bl-story-sticky">
-        <div className="bl-hero-heading bl-wrap"><p className="bl-eyebrow"><span className="bl-dot"/> PERSONAL DATA. HUMAN RESPONSIBILITY.</p><h1 id="bl-title">A breach happens.<br/><em>Clarity starts here.</em></h1><p className="bl-hero-subtitle">Personal-data inventory and breach response for Malaysian SMEs. When notification is required, track the <strong>72-hour Commissioner deadline</strong> and act as soon as practicable.</p><div className="bl-hero-actions"><a href="#scenario-controls" className="bl-button bl-button-dark">Try the demo <Icon name="arrow"/></a></div></div>
+        <div className="bl-hero-heading bl-wrap"><p className="bl-eyebrow"><span className="bl-dot"/> PERSONAL DATA. HUMAN RESPONSIBILITY.</p><h1 id="bl-title">A breach happens.<br/><em>Clarity starts here.</em></h1><p className="bl-hero-subtitle">Breach response for Malaysian SMEs. When notice is needed, meet the <strong>72-hour Commissioner deadline</strong>, with proof.</p><div className="bl-hero-actions"><a href="#scenario-controls" className="bl-button bl-button-dark">Try the demo <Icon name="arrow"/></a></div></div>
         <DataScene active={activeField} onSelect={setActiveField} motion={motion}/>
         <div className="bl-story-bottom bl-wrap"><div className="bl-story-tools"><button aria-pressed={!motion} onClick={toggleMotion}>{motion?"Pause motion":"Enable motion"}</button></div></div>
       </div></section>

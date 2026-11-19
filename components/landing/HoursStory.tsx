@@ -20,7 +20,7 @@ const MOMENTS: Moment[] = [
     hour: 0,
     when: "Mon 09:00 · hour 0",
     title: "A staff member spots it.",
-    body: "Someone copied the customer database. The staff member reports it in a short form, and the 72-hour clock starts from the moment the business knows.",
+    body: "Someone copied the customer database. It is reported in a two-minute form, and the clock starts.",
     who: "Staff",
     card: { status: "REPORTED", big: "Reported." },
   },
@@ -28,7 +28,7 @@ const MOMENTS: Moment[] = [
     hour: 3,
     when: "Mon 12:00 · hour 3",
     title: "The scattered data comes together.",
-    body: "The data inventory already says what the database held. Name, email, phone, address and card details are linked to the incident: 4,800 customers.",
+    body: "The inventory already knows what the database held: five data types, 4,800 customers.",
     who: "Compliance Officer",
     card: { status: "EXPOSURE CONFIRMED", big: "5 data types." },
   },
@@ -36,7 +36,7 @@ const MOMENTS: Moment[] = [
     hour: 6,
     when: "Mon 15:00 · hour 6",
     title: "A person decides, with reasons.",
-    body: "The tracker shows each notification criterion as met or not met. The officer makes the call and writes down why.",
+    body: "Each criterion shows as met or not met. The officer makes the call and writes down why.",
     who: "Compliance Officer",
     card: { status: "DECISION RECORDED", big: "Notify." },
   },
@@ -44,7 +44,7 @@ const MOMENTS: Moment[] = [
     hour: 24,
     when: "Tue 09:00 · hour 24",
     title: "Fix the cause while the clock runs.",
-    body: "The officer assigns three tasks: reset the database passwords, ask the hosting company for its logs, and list the customers who paid by card. Staff tick them off in the tracker.",
+    body: "Three tasks go out: reset passwords, get the hosting logs, list card customers. Staff tick them off.",
     who: "Compliance Officer, then Staff",
     card: { status: "TASKS IN PROGRESS", big: "3 tasks." },
   },
@@ -52,7 +52,7 @@ const MOMENTS: Moment[] = [
     hour: 48,
     when: "Wed 09:00 · hour 48",
     title: "24 hours left. Nobody forgets.",
-    body: "The tracker alerts the officer and the manager. The notice draft is waiting for approval, and the clock keeps running while it waits.",
+    body: "The officer and manager are alerted. The draft waits for approval, and the clock keeps running.",
     who: "The tracker, then Manager",
     card: { status: "AWAITING APPROVAL", big: "24 h left." },
   },
@@ -60,7 +60,7 @@ const MOMENTS: Moment[] = [
     hour: 54,
     when: "Wed 15:00 · hour 54",
     title: "Sent, with 18 hours to spare.",
-    body: "The manager approves the draft. The officer records when it was sent to the Commissioner. The people affected are told within the next 7 days.",
+    body: "Approved and sent to the Commissioner. The people affected are told within 7 days.",
     who: "Manager and Compliance Officer",
     card: { status: "COMMISSIONER NOTIFIED", big: "On time." },
   },
@@ -68,7 +68,7 @@ const MOMENTS: Moment[] = [
     hour: 54,
     when: "Kept for 2 years",
     title: "If anyone asks, the proof is there.",
-    body: "Every report, decision, approval and date stays in one locked record with a full history. Nothing has to be rebuilt from WhatsApp chats.",
+    body: "Every decision and date stays in one locked record. Nothing rebuilt from WhatsApp chats.",
     who: "Everyone",
     card: { status: "RECORD LOCKED", big: "Kept." },
   },
@@ -149,7 +149,7 @@ export default function HoursStory({ motion }: { motion: boolean }) {
       <div className="bl-wrap bl-hours-intro">
         <h2 id="bl-hours-title">What the 72 hours look like.</h2>
         <div>
-          <p>Scroll through one fictional breach, from the first report to the kept record. Watch the clock.</p>
+          <p>One fictional breach, from first report to kept record. Watch the clock.</p>
           <a className="bl-hours-skip" href="#scenario-controls">Skip to the demo <span aria-hidden="true">↓</span></a>
         </div>
       </div>
