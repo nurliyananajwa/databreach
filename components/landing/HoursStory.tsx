@@ -41,6 +41,14 @@ const MOMENTS: Moment[] = [
     card: { status: "DECISION RECORDED", big: "Notify." },
   },
   {
+    hour: 24,
+    when: "Tue 09:00 · hour 24",
+    title: "Fix the cause while the clock runs.",
+    body: "The officer assigns three tasks: reset the database passwords, ask the hosting company for its logs, and list the customers who paid by card. Staff tick them off in the tracker.",
+    who: "Compliance Officer, then Staff",
+    card: { status: "TASKS IN PROGRESS", big: "3 tasks." },
+  },
+  {
     hour: 48,
     when: "Wed 09:00 · hour 48",
     title: "24 hours left. Nobody forgets.",
@@ -66,6 +74,7 @@ const MOMENTS: Moment[] = [
   },
 ];
 
+const DONE = 5; // index of the "Sent" moment: the clock stops there
 const FIELDS = ["Name", "Email", "Phone", "Address", "Card details"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu"];
 const clockAt = (h: number) => {
@@ -99,24 +108,25 @@ export default function HoursStory({ motion }: { motion: boolean }) {
       const a = MOMENTS[i], b = MOMENTS[Math.min(i + 1, MOMENTS.length - 1)];
       const span = tops[i + 1] - tops[i];
       const t = i < tops.length - 1 && span > 0 ? Math.min(1, Math.max(0, (mid - tops[i]) / span)) : 0;
-      // hold on this moment's hour while its text is being read (first 55%),
-      // then run quickly to the next moment's hour in the gap before it
-      const run = Math.min(1, Math.max(0, (t - 0.55) / 0.45));
+      // the clock runs to the next moment's hour over the second half of the
+      // gap; the next moment is highlighted as soon as the clock heads for it
+      const run = Math.min(1, Math.max(0, (t - 0.4) / 0.5)); // done just before the title reaches the centre
       const eased = run * run * (3 - 2 * run);
       const h = Math.round(a.hour + (b.hour - a.hour) * eased);
+      const now = i < MOMENTS.length - 1 && t >= 0.4 ? i + 1 : i;
       el.style.setProperty("--hours", String(h / 72));
-      el.dataset.urgent = h >= 48 && i < 4 ? "true" : "false";
+      el.dataset.urgent = h >= 48 && now < DONE ? "true" : "false";
       // the clock only ever measures the 72-hour deadline: once the notice is
       // sent it stops at hour 54 and stays there (the 2 years is told by the text)
-      const key = `${h}|${i}`;
+      const key = `${h}|${now}`;
       if (key !== shown) {
         shown = key;
-        const done = i >= 4;
+        const done = now >= DONE;
         if (hoursOut.current) hoursOut.current.textContent = String(h);
         if (leftOut.current) leftOut.current.textContent = done ? "Done: 18 hours to spare" : `${72 - h} hours left`;
         if (timeOut.current) timeOut.current.textContent = done ? "✓ Clock stopped at Wed 15:00" : clockAt(h);
       }
-      setActive((cur) => (cur === i ? cur : i));
+      setActive((cur) => (cur === now ? cur : now));
     };
     const onScroll = () => { if (onScreen && !raf) raf = requestAnimationFrame(update); };
     const io = new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; if (onScreen) onScroll(); });
