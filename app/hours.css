@@ -20,6 +20,9 @@
 .bl-hours-rail i{position:absolute;top:-5px;width:1px;height:16px;background:#b9bbb5}
 .bl-hours-rail i b{font-style:normal;position:absolute;top:22px;left:50%;translate:-50% 0;font-weight:400;font-size:13px;color:#4f5358;font-variant-numeric:tabular-nums}
 .bl-hours[data-urgent='true'] .bl-hours-fill{background:var(--coral)}
+.bl-hours-sent{position:absolute;bottom:14px;translate:-50% 0;background:var(--blue);color:#fff;font-size:12px;padding:3px 8px;border-radius:3px;opacity:0;transition:opacity .4s}
+.bl-hours-sent:after{content:'';position:absolute;left:50%;top:100%;translate:-50% 0;border:5px solid transparent;border-top-color:var(--blue)}
+.bl-hours[data-moment='4'] .bl-hours-sent,.bl-hours[data-moment='5'] .bl-hours-sent{opacity:1}
 .bl-hours[data-urgent='true'] .bl-hours-big,.bl-hours[data-urgent='true'] .bl-hours-meta strong{color:#d4432c}
 
 /* the card: same object as the hero, changing per moment */

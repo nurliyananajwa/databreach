@@ -78,6 +78,7 @@ export default function HoursStory({ motion }: { motion: boolean }) {
   const steps = useRef<(HTMLElement | null)[]>([]);
   const hoursOut = useRef<HTMLSpanElement>(null);
   const leftOut = useRef<HTMLSpanElement>(null);
+  const unitOut = useRef<HTMLElement>(null);
   const timeOut = useRef<HTMLSpanElement>(null);
   const [active, setActive] = useState(0);
 
@@ -106,12 +107,15 @@ export default function HoursStory({ motion }: { motion: boolean }) {
       const h = Math.round(a.hour + (b.hour - a.hour) * eased);
       el.style.setProperty("--hours", String(h / 72));
       el.dataset.urgent = h >= 48 && i < 4 ? "true" : "false";
-      const key = `${h}|${i >= 4}`;
+      // after the notice is sent the clock stops; the last moment shows how long the record is kept
+      const key = `${h}|${i}`;
       if (key !== shown) {
         shown = key;
-        if (hoursOut.current) hoursOut.current.textContent = String(h);
-        if (leftOut.current) leftOut.current.textContent = i >= 4 ? "Notified in time" : `${72 - h} hours left`;
-        if (timeOut.current) timeOut.current.textContent = clockAt(h);
+        const kept = i >= 5;
+        if (hoursOut.current) hoursOut.current.textContent = kept ? "2" : String(h);
+        if (unitOut.current) unitOut.current.textContent = kept ? "yrs" : "h";
+        if (leftOut.current) leftOut.current.textContent = kept ? "Record kept until 2028" : i >= 4 ? "Clock stopped: notified in time" : `${72 - h} hours left`;
+        if (timeOut.current) timeOut.current.textContent = kept ? "Notice sent at hour 54" : clockAt(h);
       }
       setActive((cur) => (cur === i ? cur : i));
     };
@@ -146,7 +150,7 @@ export default function HoursStory({ motion }: { motion: boolean }) {
         <div className="bl-hours-stage">
           <div className="bl-hours-clock" aria-hidden="true">
             <div className="bl-hours-readout">
-              <span className="bl-hours-big"><span ref={hoursOut}>0</span><small>h</small></span>
+              <span className="bl-hours-big"><span ref={hoursOut}>0</span><small ref={unitOut}>h</small></span>
               <span className="bl-hours-meta">
                 <span ref={timeOut}>Mon 09:00</span>
                 <strong ref={leftOut}>72 hours left</strong>
@@ -154,6 +158,7 @@ export default function HoursStory({ motion }: { motion: boolean }) {
             </div>
             <div className="bl-hours-rail">
               <span className="bl-hours-fill" />
+              <span className="bl-hours-sent" style={{ left: `${(54 / 72) * 100}%` }}>Sent</span>
               {[0, 24, 48, 72].map((h) => (
                 <i key={h} style={{ left: `${(h / 72) * 100}%` }}><b>{h}h</b></i>
               ))}
