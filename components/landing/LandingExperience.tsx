@@ -121,7 +121,19 @@ export default function LandingExperience() {
 
 </div></section>
       <section id="team" className="bl-team"><div className="bl-wrap"><div className="bl-section-heading"><div><p className="bl-eyebrow">TEAM RESPONSIBILITIES</p><h2>Who does what?</h2></div><p>Select a role to see its part in the response.</p></div><div className="bl-team-layout"><div className="bl-role-nav" role="group" aria-label="Explore team responsibilities"><p className="bl-eyebrow">SELECT A TEAM ROLE</p>{ROLES.map((r,i)=><button key={r.name} aria-pressed={role===i} aria-controls="bl-role-detail" onClick={()=>setRole(i)}><span className="bl-role-number">0{i+1}</span><span>{r.name}<small>{r.state}</small></span><Icon name="arrow"/></button>)}</div><div key={selectedRole.name} id="bl-role-detail" className="bl-role-detail" role="region" aria-label={selectedRole.name}><p className="bl-eyebrow">{selectedRole.name.toUpperCase()}</p><h3>{selectedRole.title}</h3><p>{selectedRole.text}</p><div className="bl-role-task"><p className="bl-mono">IN THIS EXAMPLE · {caseCode} / {businessName}</p><h4>{roleTask}</h4><a href="#try" className="bl-role-case-link" onClick={()=>{setStage(role===0?0:role===1?1:2);setRulesOpen(false);}}>{role===0?"View the linked data":role===1?"View the assessment":"View the response plan"} <Icon name="arrow"/></a></div></div></div></div></section>
-      <section className="bl-closing bl-wrap"><p className="bl-eyebrow">EXPLORE BEFORE YOU SIGN IN</p><h2>See the response in action.</h2><div><p>Try a sample incident without an account. Explore the assessment, response tasks and incident record.</p><a className="bl-button bl-button-dark" href="#scenario-controls">Try the demo <Icon name="arrow"/></a><span className="bl-invite-note">Already invited? <Link href="/sign-in">Team sign-in</Link></span></div><a className="bl-back-top" href="#main">Back to top ↑</a></section>
+      <section className="bl-start" aria-labelledby="bl-start-title"><div className="bl-wrap">
+        <h2 id="bl-start-title">Getting started.</h2>
+        <p className="bl-start-lead">Every business gets its own private workspace. Nobody signs up alone: access always comes from someone responsible.</p>
+        <ol className="bl-start-steps">
+          <li><h3>Your workspace is set up.</h3><p>The system administrator creates your business workspace and its first manager account.</p></li>
+          <li><h3>The manager invites the team.</h3><p>Staff and the Compliance Officer join by invitation, each with only the access their role needs.</p></li>
+          <li><h3>List your data first.</h3><p>Record where personal data is kept before anything goes wrong. That is what makes 72 hours enough.</p></li>
+        </ol>
+        <div className="bl-start-actions">
+          <Link className="bl-button bl-button-dark" href="/sign-in">Sign in to your workspace <Icon name="arrow"/></Link>
+          <div className="bl-start-links"><a href="#scenario-controls">Not set up yet? Try the demo</a><a href="#main">Back to top ↑</a></div>
+        </div>
+      </div></section>
     </main><footer className="bl-footer bl-wrap"><span>PDPA / Breach Response Tracker</span><p>Developed as an academic project for IMS568 at UiTM. All data shown is fictional.</p></footer>
   </div>;
 }

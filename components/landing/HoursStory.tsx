@@ -99,7 +99,11 @@ export default function HoursStory({ motion }: { motion: boolean }) {
       const a = MOMENTS[i], b = MOMENTS[Math.min(i + 1, MOMENTS.length - 1)];
       const span = tops[i + 1] - tops[i];
       const t = i < tops.length - 1 && span > 0 ? Math.min(1, Math.max(0, (mid - tops[i]) / span)) : 0;
-      const h = Math.round(a.hour + (b.hour - a.hour) * t);
+      // hold on this moment's hour while its text is being read (first 55%),
+      // then run quickly to the next moment's hour in the gap before it
+      const run = Math.min(1, Math.max(0, (t - 0.55) / 0.45));
+      const eased = run * run * (3 - 2 * run);
+      const h = Math.round(a.hour + (b.hour - a.hour) * eased);
       el.style.setProperty("--hours", String(h / 72));
       el.dataset.urgent = h >= 48 && i < 4 ? "true" : "false";
       const key = `${h}|${i >= 4}`;
@@ -131,7 +135,10 @@ export default function HoursStory({ motion }: { motion: boolean }) {
     <section ref={root} className={`bl-hours${motion ? "" : " bl-hours-still"}`} aria-labelledby="bl-hours-title" data-moment={active}>
       <div className="bl-wrap bl-hours-intro">
         <h2 id="bl-hours-title">What the 72 hours look like.</h2>
-        <p>Scroll through one fictional breach, from the first report to the kept record. Watch the clock.</p>
+        <div>
+          <p>Scroll through one fictional breach, from the first report to the kept record. Watch the clock.</p>
+          <a className="bl-hours-skip" href="#scenario-controls">Skip to the demo <span aria-hidden="true">↓</span></a>
+        </div>
       </div>
 
       <div className="bl-wrap bl-hours-grid">
@@ -161,7 +168,7 @@ export default function HoursStory({ motion }: { motion: boolean }) {
               <div className="bl-glass-layer bl-layer-back" />
               <div className="bl-glass-layer bl-layer-coral" />
               <div className="bl-record-face">
-                <div className="bl-record-topline"><span>INC-005</span><span>ONLINE SHOP</span></div>
+                <div className="bl-record-topline"><span>INC-005</span><span>DEMO</span></div>
                 <div className="bl-record-glyph"><i /><i /><i /><i /></div>
                 <span className="bl-record-name" key={`s${active}`}>{m.card.status}</span>
                 <span className="bl-record-sub bl-hours-cardtext" key={`b${active}`}>{m.card.big}</span>
