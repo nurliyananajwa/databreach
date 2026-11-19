@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDPA Breach Response Tracker · system mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Same tokens as the landing page */
+:root{--paper:#f4f3ef;--sheet:#fff;--ink:#191b20;--muted:#62656a;--line:#e1e0da;--blue:#2855ff;--blue-soft:#eef2ff;--coral:#ff6b4d;--red:#d4432c;--green:#1f8a5b;--r:10px}
+*{box-sizing:border-box;margin:0}
+body{font-family:"Instrument Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5}
+button{font:inherit;cursor:pointer}
+h1,h2,h3{font-weight:500;letter-spacing:-.035em;line-height:1.08}
+.muted{color:var(--muted)}
+
+/* mockup-only bar */
+.mock{position:fixed;inset:0 0 auto 0;z-index:50;height:44px;display:flex;align-items:center;gap:14px;padding:0 18px;background:var(--ink);color:#fff;font-size:13px}
+.mock b{font-weight:500;opacity:.6}
+.mock .roles{display:flex;gap:4px}
+.mock .roles button{border:1px solid #ffffff33;background:transparent;color:#fff;border-radius:20px;padding:4px 12px}
+.mock .roles button[aria-pressed=true]{background:#fff;color:var(--ink)}
+.mock span:last-child{margin-left:auto;opacity:.55}
+
+/* shell */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh;padding-top:44px}
+.side{position:sticky;top:44px;height:calc(100vh - 44px);border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;background:var(--paper)}
+.brand{display:flex;gap:10px;align-items:center;padding:0 10px 22px}
+.brand i{width:22px;height:22px;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.brand i:before,.brand i:after{content:'';background:var(--blue);border-radius:2px}
+.brand i{background:linear-gradient(var(--blue),var(--blue)) 0 100%/9px 9px no-repeat,radial-gradient(circle,var(--coral) 60%,transparent 62%) 100% 100%/10px 10px no-repeat}
+.brand strong{display:block;font-weight:600}.brand small{font-size:11px;color:var(--muted)}
+.nav{all:unset;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:#3a3d43;cursor:pointer;position:relative}
+.nav:hover{background:#ecebe6}
+.nav[aria-current=page]{background:var(--sheet);color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.nav[aria-current=page]:before{content:'';position:absolute;left:-14px;top:8px;bottom:8px;width:3px;border-radius:2px;background:var(--blue)}
+.nav .badge{margin-left:auto;font-size:11px;background:var(--coral);color:#fff;border-radius:10px;padding:0 7px}
+.side .me{margin-top:auto;padding:12px 10px;border-top:1px solid var(--line);font-size:13px}
+.main{min-width:0}
+
+/* the clock strip: on every screen while an incident is open */
+.strip{position:sticky;top:44px;z-index:20;display:flex;align-items:center;gap:18px;padding:10px 32px;background:#fffffff0;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);cursor:pointer}
+.strip .code{font-weight:600}
+.strip .rail{flex:1;max-width:380px;height:5px;border-radius:3px;background:#e6e5df;position:relative}
+.strip .rail i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--blue);transition:width 1s linear,background .4s}
+.strip .left{font-weight:600;color:var(--blue);font-variant-numeric:tabular-nums;min-width:120px}
+.strip.urgent .rail i{background:var(--coral)}.strip.urgent .left{color:var(--red)}
+.strip .go{margin-left:auto;font-size:13px;color:var(--muted)}
+
+.page{padding:36px 32px 80px;max-width:1180px;animation:enter .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:28px}
+.head h1{font-size:40px}
+.head p{margin-top:8px;max-width:560px}
+.btn{border:0;border-radius:30px;padding:11px 18px;background:var(--blue);color:#fff;display:inline-flex;gap:8px;align-items:center;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.dark{background:var(--ink)}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:1.3fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.label{font-size:13px;color:var(--muted)}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:5px;padding:3px 9px;font-size:13px;margin:0 4px 6px 0;background:#fff}
+.chip.risk{border-color:#ffc3b9;background:#fff4f1;color:#a43120}
+.pill{display:inline-block;font-size:12px;border-radius:20px;padding:2px 10px;background:var(--blue-soft);color:#1743c7}
+.pill.red{background:#ffece7;color:var(--red)}.pill.green{background:#e6f5ee;color:var(--green)}.pill.grey{background:#ecebe6;color:#55585e}
+
+/* big clock (as on the landing page) */
+.clock{display:flex;align-items:flex-end;gap:14px}
+.clock .num{font-size:84px;line-height:.82;letter-spacing:-.07em;font-variant-numeric:tabular-nums}
+.clock .num small{font-size:.3em;color:var(--muted);letter-spacing:0}
+.bigrail{position:relative;height:6px;border-radius:3px;background:#e6e5df;margin:22px 0 26px}
+.bigrail i{position:absolute;inset:0 auto 0 0;background:var(--blue);border-radius:3px;transition:width 1s linear}
+.bigrail b{position:absolute;top:14px;translate:-50% 0;font-weight:400;font-size:12px;color:var(--muted)}
+.bigrail s{position:absolute;top:-5px;width:1px;height:16px;background:#bbb}
+
+/* incident journey: the 4 steps from the landing page, as the incident's spine */
+.journey{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;margin-bottom:22px}
+.journey button{all:unset;cursor:pointer;padding:14px 18px;border-right:1px solid var(--line);position:relative}
+.journey button:last-child{border-right:0}
+.journey button small{display:block;font-size:12px;color:var(--muted)}
+.journey button[data-state=done]{color:var(--muted)}
+.journey button[data-state=done] small:after{content:' ✓';color:var(--green)}
+.journey button[data-state=now]{background:var(--blue-soft);color:#1743c7}
+.journey button[data-state=now]:after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--blue);transform-origin:left;animation:grow .6s both}
+.journey button[aria-selected=true]{box-shadow:inset 0 0 0 2px var(--blue)}
+@keyframes grow{from{transform:scaleX(0)}}
+.why{border-left:3px solid var(--blue);padding:4px 0 4px 14px;margin:18px 0;color:#3a3d43;font-size:14px}
+
+/* the record card from the landing page */
+.obj{position:relative;width:150px;height:188px;margin:6px auto 0;perspective:900px}
+.obj .l{position:absolute;inset:0;border-radius:10px}
+.obj .b{background:#dce4ff;transform:translate(-14px,-8px) rotate(-8deg)}
+.obj .c{background:linear-gradient(135deg,#ff9a85,var(--coral));transform:translate(14px,8px) rotate(7deg);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.obj .f{background:linear-gradient(150deg,#3d6bff,#1638c9);color:#fff;padding:14px;display:flex;flex-direction:column;box-shadow:0 18px 40px #2855ff40;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.obj .f small{font-size:9px;letter-spacing:.08em;opacity:.8}
+.obj .f strong{margin-top:auto;font-size:22px;font-weight:500;letter-spacing:-.04em;line-height:1}
+.obj:hover .f{transform:rotateY(-10deg) rotateX(6deg)}
+.obj:hover .c{transform:translate(22px,14px) rotate(12deg)}
+
+/* rows */
+.row{display:grid;grid-template-columns:1.1fr .9fr 2fr auto;gap:18px;align-items:center;padding:14px 4px;border-top:1px solid var(--line);transition:opacity .3s,background .2s}
+.row:hover{background:#fafaf8}
+.row.dim{opacity:.28}
+.mini{height:4px;border-radius:2px;background:#e6e5df;position:relative;width:120px}
+.mini i{position:absolute;inset:0 auto 0 0;border-radius:2px;background:var(--blue)}
+.mini.urgent i{background:var(--coral)}
+.filters{display:flex;gap:6px}
+.filters button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:5px 12px;font-size:13px}
+.filters button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* report wizard */
+.wiz{max-width:640px}
+.dots{display:flex;gap:6px;margin-bottom:26px}.dots i{height:4px;flex:1;border-radius:2px;background:#e1e0da;transition:background .4s}.dots i.on{background:var(--blue)}
+.opt{display:flex;gap:14px;align-items:center;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:var(--r);padding:16px 18px;margin-bottom:10px;transition:border-color .2s,transform .2s}
+.opt:hover{border-color:var(--blue);transform:translateX(4px)}
+.opt[aria-pressed=true]{border-color:var(--blue);background:var(--blue-soft)}
+textarea{width:100%;min-height:110px;border:1px solid var(--line);border-radius:var(--r);padding:14px;font:inherit;background:#fff}
+.sent{text-align:center;padding:50px 20px}
+.sent .tick{width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:30px;margin:0 auto 18px;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(0)}}
+
+/* tour hints (mockup only) */
+.hint{position:fixed;right:22px;bottom:22px;max-width:300px;background:var(--ink);color:#fff;border-radius:12px;padding:14px 16px;font-size:13px;z-index:40;box-shadow:0 20px 40px #0003;animation:enter .5s}
+.hint b{display:block;font-weight:500;margin-bottom:4px}
+.hint button{background:none;border:0;color:#9db0ff;padding:0;margin-top:8px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:860px){.app{grid-template-columns:1fr}.side{display:none}.g2,.g3{grid-template-columns:1fr}.row{grid-template-columns:1fr}.journey{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="mock" role="region" aria-label="Mockup controls">
+  <b>MOCKUP · preview as</b>
+  <div class="roles" id="roles"></div>
+  <span>All data is fictional · Greenleaf Family Clinic</span>
+</div>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2" fill="#2855ff"/><rect x="13" y="1" width="10" height="10" rx="2" fill="#2855ff"/><rect x="1" y="13" width="10" height="10" rx="2" fill="#2855ff"/><circle cx="18" cy="18" r="5" fill="#ff6b4d"/></svg><div><strong>PDPA</strong><small>Breach Response Tracker</small></div></div>
+    <nav id="nav"></nav>
+    <div class="me" id="me"></div>
+  </aside>
+  <div class="main">
+    <div class="strip" id="strip" title="Open the incident">
+      <span class="code">INC-005</span><span class="muted">Customer database copied</span>
+      <span class="rail"><i id="stripFill"></i></span>
+      <span class="left" id="stripLeft"></span>
+      <span class="go">Open →</span>
+    </div>
+    <main id="view"></main>
+  </div>
+</div>
+<div id="hintBox"></div>
+
+<script>
+/* ---------- fictional data ---------- */
+const AWARE = Date.now() - 41.6 * 3600e3;            // INC-005: aware 41.6 h ago
+const LIMIT = 72 * 3600e3;
+const ROLES = {
+  staff:   {label:"Staff",              name:"Aina (Staff)",              nav:["home","report","mine"]},
+  officer: {label:"Compliance Officer", name:"Farid (Compliance Officer)", nav:["home","incidents","inventory","tasks","register"]},
+  manager: {label:"Manager",            name:"Dr Lim (Manager)",           nav:["home","incidents","approvals","inventory","register","users"]},
+};
+const NAV = {home:"Home",report:"Report a breach",mine:"My reports",incidents:"Incidents",inventory:"Data inventory",tasks:"Tasks",approvals:"Approvals",register:"Breach register",users:"Users"};
+const PLACES = [
+  {p:"Patient records",k:"Clinic system",f:["Name","IC number","Phone","Diagnosis"],risk:["IC number","Diagnosis"]},
+  {p:"Appointment list",k:"Booking app",f:["Name","Phone","Reason for visit"],risk:["Reason for visit"]},
+  {p:"Staff payroll",k:"Accounting laptop",f:["Name","IC number","Bank account","Salary"],risk:["IC number","Bank account","Salary"]},
+  {p:"Customer mailing list",k:"Google Sheet",f:["Name","Email"],risk:[]},
+  {p:"CCTV footage",k:"Front-desk recorder",f:["Faces","Time of visit"],risk:[]},
+  {p:"WhatsApp group",k:"Staff phones",f:["Names","Phone numbers","Photos"],risk:[]},
+];
+const INCIDENTS = [
+  {c:"INC-005",t:"Customer database copied",s:"Assess",h:41.6,who:"Farid"},
+  {c:"INC-004",t:"Email sent to the wrong patient",s:"Record",h:null,who:"Farid",note:"No notice needed"},
+  {c:"INC-003",t:"Laptop stolen from car",s:"Closed",h:null,who:"Farid",note:"Notified at hour 31"},
+];
+let role="officer", screen="home", step=1, wiz={n:0,type:null};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const hoursUsed=()=>(Date.now()-AWARE)/3600e3;
+const fmtLeft=()=>{const s=Math.max(0,(LIMIT-(Date.now()-AWARE))/1e3);return `${Math.floor(s/3600)}h ${String(Math.floor(s%3600/60)).padStart(2,"0")}m left`;};
+const chips=(f,risk=[])=>f.map(x=>`<span class="chip ${risk.includes(x)?"risk":""}">${x}</span>`).join("");
+function go(s){screen=s;render();scrollTo({top:0,behavior:"smooth"});}
+
+/* ---------- screens ---------- */
+const S={};
+S.home=()=>{
+  if(role==="staff") return `
+   <div class="head"><div><h1>Hi Aina.</h1><p class="muted">If something went wrong with personal data, tell us now. The sooner it is reported, the more time the team has.</p></div></div>
+   <div class="grid g2">
+     <button class="card" style="text-align:left;cursor:pointer;border-color:var(--blue)" onclick="go('report')">
+       <span class="pill">Takes about 2 minutes</span><h2 style="font-size:34px;margin:14px 0 8px">Report a breach →</h2>
+       <p class="muted">Lost laptop, wrong email, a leak in a group chat. You do not need to be sure. The Compliance Officer decides what happens next.</p></button>
+     <div class="card"><p class="label">Your last report</p><h3 style="font-size:22px;margin:8px 0">Customer database copied</h3><span class="pill">Being assessed by Farid</span>
+       <p class="muted" style="margin-top:12px;font-size:14px">You will be told if you have a task.</p></div>
+   </div>`;
+  if(role==="officer") return `
+   <div class="head"><div><h1>One incident needs you.</h1><p class="muted">INC-005 is in the Assess step. Confirm what was exposed and record your decision.</p></div>
+     <button class="btn" onclick="go('incident')">Continue INC-005 →</button></div>
+   <div class="grid g2">
+     <div class="card" onclick="go('incident')" style="cursor:pointer">${bigClock()}</div>
+     <div class="card"><p class="label">Your tasks</p>
+       ${task("Confirm exposed data for INC-005",true)}${task("Review the payroll data place (6 months old)")}${task("Close INC-004 in the register")}</div>
+   </div>
+   <div class="grid g3" style="margin-top:18px">${stat("Open incidents","1")}${stat("Data places listed","6")}${stat("Notified on time","2 of 2")}</div>`;
+  return `
+   <div class="head"><div><h1>Everything on time.</h1><p class="muted">One open incident, nothing waiting for your approval yet. You will be alerted when Farid sends a notice draft.</p></div></div>
+   <div class="grid g2">
+     <div class="card" onclick="go('incident')" style="cursor:pointer">${bigClock()}</div>
+     <div class="card"><p class="label">Waiting for your approval</p><p style="margin:14px 0 6px;font-size:22px;letter-spacing:-.03em">Nothing yet</p>
+       <p class="muted" style="font-size:14px">The Commissioner notice for INC-005 will appear here. The clock keeps running while it waits, so approve quickly.</p></div>
+   </div>
+   <div class="grid g3" style="margin-top:18px">${stat("Incidents this year","3")}${stat("Average time to notify","31 h")}${stat("Staff invited","5")}</div>`;
+};
+const stat=(l,v)=>`<div class="card"><p class="label">${l}</p><p style="font-size:42px;letter-spacing:-.05em;line-height:1.1;margin-top:6px">${v}</p></div>`;
+const task=(t,on)=>`<label style="display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)"><input type="checkbox" ${on?"":""}> <span>${t}</span></label>`;
+function bigClock(){const h=hoursUsed();return `
+   <div style="display:flex;justify-content:space-between"><p class="label">INC-005 · Customer database copied</p><span class="pill ${h>=48?"red":""}">Assess</span></div>
+   <div class="clock" style="margin-top:14px"><span class="num" data-live="hours">${Math.floor(h)}<small>h</small></span>
+     <span><span class="label">used of 72</span><br><strong style="color:${h>=48?"var(--red)":"var(--blue)"};font-weight:500" data-live="left">${fmtLeft()}</strong></span></div>
+   <div class="bigrail"><i data-live="fill" style="width:${Math.min(100,h/72*100)}%"></i>${[0,24,48,72].map(x=>`<s style="left:${x/72*100}%"></s><b style="left:${x/72*100}%">${x}h</b>`).join("")}</div>`;}
+
+S.incidents=()=>`
+   <div class="head"><div><h1>Incidents</h1><p class="muted">Every breach, from report to record. Open ones show their clock.</p></div></div>
+   <div class="card" style="padding:6px 18px">${INCIDENTS.map(i=>`
+     <div class="row" style="cursor:pointer" onclick="go('incident')"><div><strong>${i.c}</strong><br><span class="muted">${i.t}</span></div>
+       <div><span class="pill ${i.s==="Closed"?"grey":i.s==="Record"?"green":""}">${i.s}</span></div>
+       <div>${i.h!=null?`<div class="mini ${i.h>48?"urgent":""}"><i style="width:${i.h/72*100}%"></i></div><span class="label">${fmtLeft()}</span>`:`<span class="label">${i.note}</span>`}</div>
+       <span class="muted">→</span></div>`).join("")}</div>`;
+
+const STEPS=["Locate","Assess","Notify","Record"];
+const STEP_HELP=[
+  "Link the data places from your inventory. The fields they hold become the suggested exposure.",
+  "Confirm what was really exposed. The six criteria show as met or not met; you make the decision and write why.",
+  "Draft the Commissioner notice. The manager approves it, then you record when it was sent.",
+  "Everything is kept in one locked record for 2 years."];
+S.incident=()=>`
+   <div class="head"><div><p class="label">INC-005 · reported by Aina · Mon 09:00</p><h1>Customer database copied</h1></div>
+     <div class="obj" title="Hover me"><div class="l b"></div><div class="l c"></div><div class="l f"><small>INC-005</small><small style="margin-top:8px">${["DATA LINKED","ASSESSING","AWAITING APPROVAL","RECORD LOCKED"][step]}</small><strong>${["Located.","Assess.","Notify.","Kept."][step]}</strong></div></div></div>
+   <div class="journey" role="tablist">${STEPS.map((s,i)=>`<button role="tab" aria-selected="${i===step}" data-state="${i<1?"done":i===1?"now":"next"}" onclick="step=${i};render()"><small>Step ${i+1}${i===1?" · now":""}</small>${s}</button>`).join("")}</div>
+   <div class="grid g2">
+     <div class="card" style="animation:enter .4s" key="${step}">
+       <h2 style="font-size:28px">${["Where was the data?","What was exposed, and do we notify?","Tell the Commissioner","The record"][step]}</h2>
+       <p class="why">${STEP_HELP[step]}</p>
+       ${[locate,assess,notify,record][step]()}
+     </div>
+     <div class="card">${bigClock()}<p class="label">Who does what here</p>
+       <p style="margin-top:8px;font-size:14px">${["Compliance Officer links the data.","Compliance Officer decides. The tracker never decides for you.","Compliance Officer drafts → Manager approves → Officer records the send.","Everyone can read it; nobody can edit it."][step]}</p></div>
+   </div>`;
+const locate=()=>`<p class="label">Linked from the inventory</p><div style="margin:10px 0 4px"><strong>Patient records</strong> <span class="muted">· Clinic system</span></div>${chips(PLACES[0].f,PLACES[0].risk)}<p class="label" style="margin-top:10px">4,800 people · suggested scope</p>`;
+// the six criteria from the database (guideline DBN-1.0-2025)
+const CRIT=[["More than 1,000 people affected",true],["Sensitive personal data (health)",true],["May cause financial loss",false],["Could enable identity fraud (IC number with contact details)",true],["May cause physical harm or loss of property",false],["Data may be misused for illegal purposes",null]];
+const assess=()=>`<p class="label">The six criteria</p>${CRIT.map(([t,m],i)=>`<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);animation:enter .4s ${i*.07}s both"><span class="pill ${m===true?"red":m===false?"grey":""}">${m===true?"Met":m===false?"Not met":"Your judgement"}</span>${t}</div>`).join("")}
+   <div style="margin-top:16px;display:flex;gap:10px"><button class="btn" onclick="step=2;render()">Decide: notify →</button><button class="btn ghost">Decide: record only</button></div>`;
+const notify=()=>`<p class="label">Draft · filled from the record</p><textarea>On Monday 09:00 we became aware that the customer database of Greenleaf Family Clinic was copied by an unknown party. About 4,800 patients are affected…</textarea>
+   <div style="margin-top:14px;display:flex;gap:10px;align-items:center"><button class="btn dark">Send for approval</button><span class="label">Dr Lim will be alerted</span></div>`;
+const record=()=>`<p class="label">History</p>${["Mon 09:00 · Aina reported","Mon 12:00 · Farid linked Patient records","Mon 15:00 · Farid decided: notify (reason recorded)","Wed 09:00 · Tracker alert: 24 h left","Wed 15:00 · Dr Lim approved · notice sent"].map((t,i)=>`<p style="padding:8px 0;border-top:1px solid var(--line);animation:enter .4s ${i*.08}s both">${t}</p>`).join("")}`;
+
+let filter="all";
+S.inventory=()=>`
+   <div class="head"><div><h1>Data inventory</h1><p class="muted">Where personal data lives. When a breach happens, the incident starts from this list.</p></div><button class="btn">+ Add a data place</button></div>
+   <div class="filters" style="margin-bottom:12px">${[["all","All"],["risk","Risky data only"]].map(([k,l])=>`<button aria-pressed="${filter===k}" onclick="filter='${k}';render()">${l}</button>`).join("")}</div>
+   <div class="card" style="padding:6px 18px">${PLACES.map(p=>`<div class="row ${filter==="risk"&&!p.risk.length?"dim":""}"><strong>${p.p}</strong><span class="muted">${p.k}</span><div>${chips(p.f,p.risk)}</div><span class="muted">Edit</span></div>`).join("")}</div>
+   <p class="label" style="margin-top:12px">Only field names are stored, never the data itself.</p>`;
+
+S.report=()=>{const steps=[
+   ()=>`<h1 style="font-size:36px">What happened?</h1><p class="muted" style="margin:8px 0 20px">Pick the closest one. You can add details next.</p>
+       ${["Something was lost or stolen","Data was sent to the wrong person","Someone got in without permission","Something else"].map(t=>`<button class="opt" aria-pressed="${wiz.type===t}" onclick="wiz.type='${t}';wiz.n=1;render()">${t}<span style="margin-left:auto">→</span></button>`).join("")}`,
+   ()=>`<h1 style="font-size:36px">Tell us briefly.</h1><p class="muted" style="margin:8px 0 20px">What, when you noticed, and anything you already did. No personal data, please.</p><textarea placeholder="e.g. The laptop with the appointment list was taken from my car at about 8 pm."></textarea>
+       <div style="margin-top:16px;display:flex;gap:10px"><button class="btn ghost" onclick="wiz.n=0;render()">Back</button><button class="btn" onclick="wiz.n=2;render()">Send report</button></div>`,
+   ()=>`<div class="sent"><div class="tick">✓</div><h1 style="font-size:36px">Reported. Thank you.</h1><p class="muted" style="margin:10px auto 22px;max-width:420px">Farid, the Compliance Officer, has been alerted. The 72-hour clock starts from now.</p><button class="btn ghost" onclick="wiz={n:0,type:null};go('home')">Back home</button></div>`];
+  return `<div class="wiz"><div class="dots">${[0,1,2].map(i=>`<i class="${i<=wiz.n?"on":""}"></i>`).join("")}</div><div style="animation:enter .4s" key="${wiz.n}">${steps[wiz.n]()}</div></div>`;};
+
+S.approvals=()=>`<div class="head"><div><h1>Approvals</h1><p class="muted">Notice drafts waiting for you. The clock does not pause while a draft waits.</p></div></div>
+   <div class="card"><span class="pill red">Preview · how it will look</span><h2 style="font-size:24px;margin:12px 0 6px">INC-005 · Commissioner notice</h2><p class="muted">Drafted by Farid · ${fmtLeft()}</p><div style="margin-top:16px;display:flex;gap:10px"><button class="btn">Approve</button><button class="btn ghost">Return with a comment</button></div></div>`;
+const simple=(t,d)=>()=>`<div class="head"><div><h1>${t}</h1><p class="muted">${d}</p></div></div><div class="card muted">Not designed in this mockup yet.</div>`;
+S.mine=simple("My reports","Everything you have reported, and where it is now.");
+S.tasks=simple("Tasks","Actions assigned during incidents.");
+S.register=simple("Breach register","Every incident, kept for 2 years.");
+S.users=simple("Users","Invite people and set their role.");
+
+/* ---------- render ---------- */
+function render(){
+  $("#roles").innerHTML=Object.entries(ROLES).map(([k,r])=>`<button aria-pressed="${k===role}" onclick="role='${k}';screen='home';step=1;render();hint()">${r.label}</button>`).join("");
+  const r=ROLES[role];
+  if(!r.nav.includes(screen)&&screen!=="incident") screen="home";
+  $("#nav").innerHTML=r.nav.map(k=>`<a class="nav" ${(screen===k||(screen==="incident"&&k==="incidents"))?'aria-current="page"':""} onclick="go('${k}')">${NAV[k]}${k==="tasks"?'<span class="badge">3</span>':""}</a>`).join("");
+  $("#me").innerHTML=`<strong style="font-weight:500">${r.name}</strong><br><span class="muted">Greenleaf Family Clinic</span>`;
+  $("#strip").style.display=role==="staff"?"none":"flex";
+  $("#view").innerHTML=`<div class="page" key="${screen}">${S[screen]()}</div>`;
+  tick();
+}
+function tick(){
+  const h=hoursUsed(), pct=Math.min(100,h/72*100);
+  $("#stripFill").style.width=pct+"%"; $("#stripLeft").textContent=fmtLeft();
+  $("#strip").classList.toggle("urgent",h>=48);
+  document.querySelectorAll('[data-live=fill]').forEach(e=>e.style.width=pct+"%");
+  document.querySelectorAll('[data-live=left]').forEach(e=>e.textContent=fmtLeft());
+  document.querySelectorAll('[data-live=hours]').forEach(e=>e.firstChild.textContent=Math.floor(h));
+}
+$("#strip").onclick=()=>go("incident");
+setInterval(tick,1000);
+
+const HINTS={staff:["Staff see one big action","Report a breach is the whole job for staff: three short steps, then the clock starts."],
+  officer:["The clock follows you","The strip under the top bar shows INC-005's deadline on every screen. Click it to jump back."],
+  manager:["Managers see the outcome","Headline sentence first, numbers second. Approvals appear when a notice draft is ready."]};
+function hint(){const [t,d]=HINTS[role];$("#hintBox").innerHTML=`<div class="hint"><b>${t}</b>${d}<br><button onclick="this.parentElement.remove()">Got it</button></div>`;}
+render();hint();
+</script>
+</body>
+</html>
