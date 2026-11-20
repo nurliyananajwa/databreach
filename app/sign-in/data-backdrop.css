@@ -1,0 +1,15 @@
+.pa-data-backdrop{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;--pointer-x:-400px;--pointer-y:-400px;--reveal:0;contain:layout paint}
+.pa-data-base,.pa-data-revealed{position:absolute;inset:0;pointer-events:none}
+.pa-data-field{position:absolute;display:block;white-space:nowrap;font:16px/1.5 Consolas,'Courier New',monospace;letter-spacing:-.035em;transform:rotate(var(--tilt));animation:pa-field-drift var(--drift-duration) ease-in-out var(--drift-delay) infinite alternate;color:#2855ff}
+.pa-data-prefix{font-size:11px;letter-spacing:0;margin-right:8px}
+.pa-data-base{opacity:.075}
+.pa-data-revealed{opacity:var(--reveal);transition:opacity .24s ease;mask-image:radial-gradient(circle 230px at var(--pointer-x) var(--pointer-y),#000 12%,transparent 100%);-webkit-mask-image:radial-gradient(circle 230px at var(--pointer-x) var(--pointer-y),#000 12%,transparent 100%)}
+.pa-data-revealed .pa-data-field{color:#2855ff;text-shadow:0 0 22px #2855ff18}
+.pa-data-revealed .pa-data-field:nth-child(4n){color:#c8503a}
+.pa-data-backdrop[data-paused=true] .pa-data-field,.pa-data-backdrop[data-visible=false] .pa-data-field{animation-play-state:paused}
+.pa-data-backdrop[data-paused=true] .pa-data-revealed{opacity:0}
+.pa-motion-control{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px 24px;color:#626873;font-size:12px;line-height:1.6;padding-top:24px}
+.pa-motion-control button{background:transparent;border:0;color:#48576d;padding:8px 0;min-height:44px;text-decoration:underline;text-underline-offset:4px;font-size:12px}
+@keyframes pa-field-drift{from{translate:0 -7px}to{translate:8px 7px}}
+@media(max-width:600px){.pa-data-field{font-size:13px}.pa-data-prefix{display:none}.pa-data-base{opacity:.07}.pa-data-revealed{mask-image:radial-gradient(circle 150px at var(--pointer-x) var(--pointer-y),#000 10%,transparent 100%);-webkit-mask-image:radial-gradient(circle 150px at var(--pointer-x) var(--pointer-y),#000 10%,transparent 100%)}.pa-motion-control{justify-content:center;text-align:center;gap:4px;padding-top:20px}}
+@media(prefers-reduced-motion:reduce){.pa-data-field{animation:none!important}.pa-data-revealed{transition:none;opacity:0!important}}

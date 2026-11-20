@@ -4,3 +4,22 @@
 @media(prefers-reduced-motion:reduce){.pdpa-auth *{transition:none!important;scroll-behavior:auto!important}}
 
 @media(max-width:759px){.pa-intro>.pa-eyebrow,.pa-intro>p:not(.pa-eyebrow){display:none}.pa-intro h2{font-size:34px;margin-top:0}.pa-return{margin-top:12px;min-height:36px}.pa-layout{margin-top:32px;gap:24px}}
+
+/* Cursor-reveal sign-in: keep the form on an opaque surface. */
+.pdpa-auth{position:relative;isolation:isolate;padding-bottom:84px}
+.pa-shell{position:relative;z-index:1}
+.pa-header{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.pa-header .pa-return{margin:0;font-size:13px}
+.pa-layout{display:flex;justify-content:center;align-items:center;min-height:calc(100svh - 220px);margin-top:20px;padding:36px 0}
+.pa-panel{width:440px;max-width:100%;padding:36px;background:#fff;box-shadow:0 16px 60px #1833660b}
+.pa-panel>.pa-eyebrow{font-size:11px;letter-spacing:.06em}
+.pa-panel h1{font-size:42px;margin-top:18px;line-height:1.1}
+.pa-description{margin-top:18px!important}
+.pa-google-form{margin-top:30px}
+.pa-availability{font-size:13px;line-height:1.7;background:transparent;border:0;padding:0;color:#626b7b;margin-top:18px!important}
+.pa-dev-access{margin-top:24px;border-top:1px solid #e1e5eb;padding-top:16px;font-size:13px}
+.pa-dev-access summary{cursor:pointer;color:#54627a;min-height:44px;align-content:center}
+.pa-dev-access .pa-dev{margin-top:12px;padding-top:0;border:0}
+.pa-motion-control{position:absolute;bottom:20px;left:48px;right:48px}
+@media(max-width:1000px){.pa-layout{margin-top:20px}.pa-panel{padding:32px}.pa-motion-control{left:32px;right:32px}}
+@media(max-width:759px){.pdpa-auth{padding:24px 20px 108px}.pa-header{gap:16px}.pa-brand{font-size:21px}.pa-header .pa-return{font-size:12px;gap:6px;white-space:nowrap}.pa-layout{min-height:calc(100svh - 250px);padding:40px 0 28px;margin-top:20px}.pa-panel{padding:28px 24px}.pa-panel h1{font-size:36px}.pa-panel>.pa-eyebrow{font-size:10px;letter-spacing:.025em}.pa-description{font-size:14px}.pa-motion-control{left:20px;right:20px;bottom:16px}}
