@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDPA Tracker · mockup C: Breach Response Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--card:#fff;--ink:#141a2b;--muted:#7b8296;--line:#e6e9f0;--blue:#2f6bff;--sky:#cfe0fb;--green:#25a462;--red:#e5484d;--amber:#e7a113;--r:22px}
+*{box-sizing:border-box;margin:0}
+body{font-family:Manrope,system-ui,sans-serif;background:#e9ecf2;color:var(--ink);font-size:14px;padding:28px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.muted{color:var(--muted)}
+.frame{max-width:1280px;margin:0 auto;border-radius:32px;overflow:hidden;background:var(--bg);box-shadow:0 30px 80px #1b2b5a22;border:6px solid #fff}
+
+/* ---------- header band ---------- */
+.band{position:relative;height:350px;padding:22px 30px;background:linear-gradient(160deg,#a9c9f7 0%,#c9dcf8 45%,#dfe9fa 100%);overflow:hidden}
+.band:before{content:'';position:absolute;inset:-40% -10% auto auto;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,#ffffff99,transparent 65%)}
+.bar{position:relative;z-index:2;display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;font-size:17px}
+.logo i{width:36px;height:36px;border-radius:11px;background:#ffffff55;border:1px solid #ffffff88;display:grid;place-items:center;backdrop-filter:blur(6px)}
+.nav{margin:0 auto;display:flex;gap:4px;padding:4px;border-radius:30px;background:#ffffff40;border:1px solid #ffffff80;backdrop-filter:blur(10px)}
+.nav button{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:24px;color:#30426b;font-size:13px;transition:background .25s}
+.nav button[aria-current=true]{background:#fff;color:var(--ink);box-shadow:0 4px 12px #2f6bff1a}
+.nav svg{width:16px;height:16px}
+.circle{width:38px;height:38px;border-radius:50%;background:#ffffff55;border:1px solid #ffffff99;display:grid;place-items:center;color:#30426b}
+.who{display:flex;align-items:center;gap:8px;padding:5px 5px 5px 14px;border-radius:30px;background:#fff;font-size:13px}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:600;color:#fff}
+.hello{position:relative;z-index:2;margin-top:34px;color:#fff;max-width:640px}
+.hello small{font-size:13px;opacity:.85}
+.hello h1{font-weight:300;font-size:54px;white-space:nowrap;letter-spacing:-.035em;line-height:1.05;margin-top:6px}
+.hello p{opacity:.85;margin-top:8px;max-width:420px}
+.chips{position:absolute;z-index:2;right:30px;top:150px;display:flex;gap:8px}
+.chip{background:#fff;border-radius:20px;padding:7px 12px;font-size:12px}
+.chip b{font-weight:600}
+.chip .ok{background:#e3f6ec;color:var(--green);border-radius:12px;padding:2px 8px;font-weight:600}
+
+/* glass 3D object */
+.glass{position:absolute;z-index:1;left:52%;top:46px;width:270px;height:250px;perspective:900px;animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+.glass .sheet{position:absolute;border-radius:22px;border:1.5px solid #ffffffcc;background:linear-gradient(140deg,#ffffffb3,#ffffff26 60%,#9ec2ff40);backdrop-filter:blur(8px);box-shadow:inset 0 0 30px #ffffff80,0 30px 60px #2f6bff33}
+.glass .s1{left:30px;top:30px;width:150px;height:190px;transform:rotateY(-24deg) rotateX(8deg) rotateZ(-10deg)}
+.glass .s2{left:90px;top:10px;width:150px;height:190px;transform:rotateY(-18deg) rotateX(10deg) rotateZ(6deg)}
+.glass .s2:after{content:'';position:absolute;left:18px;right:18px;top:60px;height:4px;border-radius:2px;background:#ffffffcc;box-shadow:0 14px 0 #ffffff99,0 28px 0 #ffffff77,0 42px 0 #ffffff55}
+.glass .shield{position:absolute;left:120px;top:112px;width:96px;height:112px;background:linear-gradient(160deg,#ffffffe6,#cfe0ff99);border:1.5px solid #fff;border-radius:48px 48px 50% 50% / 30px 30px 70% 70%;box-shadow:0 20px 40px #2f6bff40,inset 0 -10px 20px #2f6bff33;display:grid;place-items:center}
+.glass .shield svg{width:44px;height:44px}
+.glass .pulse{position:absolute;left:-30px;right:-30px;top:150px;height:2px;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 12px #fff}
+
+/* ---------- folder tabs ---------- */
+.tabs{position:relative;z-index:3;display:flex;gap:12px;padding:0 30px;margin-top:-62px}
+.tab{flex:1;height:62px;border-radius:20px 20px 0 0;background:#ffffff59;border:1px solid #ffffff99;border-bottom:0;backdrop-filter:blur(8px);display:flex;align-items:center;gap:10px;padding:0 14px;text-align:left;transition:height .35s cubic-bezier(.2,.8,.2,1),background .3s,margin .35s}
+.tab .ic{width:32px;height:32px;border-radius:50%;border:1px solid #ffffffcc;display:grid;place-items:center;font-size:12px}
+.tab b{display:block;font-weight:500;font-size:13px}.tab small{font-size:11px;color:#4b5b80}
+.tab .rf{margin-left:auto;width:28px;height:28px;border-radius:50%;background:#ffffff80;display:grid;place-items:center;font-size:12px;color:#4b5b80}
+.tab[aria-selected=true]{background:var(--bg);height:92px;margin-top:-30px;border-color:var(--bg);align-items:flex-start;flex-direction:column;justify-content:center;gap:6px;backdrop-filter:none}
+.tab[aria-selected=true] .row1{display:flex;align-items:center;gap:10px;width:100%}
+.tab[aria-selected=true] .ic{background:var(--blue);color:#fff;border-color:var(--blue);border-radius:10px}
+.tab .row1{display:contents}
+.tab .meta{display:none;font-size:12px;color:var(--muted)}
+.tab[aria-selected=true] .meta{display:block}
+.tab .meta b{display:inline;font-size:16px;color:var(--ink)}
+
+/* ---------- content ---------- */
+.content{position:relative;z-index:2;background:var(--bg);border-radius:0;padding:22px 30px 30px;display:grid;grid-template-columns:1fr 1fr 1fr 1.25fr;gap:16px;align-items:start}
+.card{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 1px 0 #fff inset,0 10px 30px #1b2b5a0a;animation:up .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(16px)}}
+.ch{display:flex;align-items:flex-start;gap:8px}
+.ch h3{font-weight:500;font-size:15px;letter-spacing:-.01em;display:flex;gap:8px;align-items:center}
+.ch h3 svg{width:17px;height:17px}
+.ch .go{margin-left:auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:background .2s,transform .2s}
+.ch .go:hover{background:var(--ink);color:#fff;transform:rotate(45deg)}
+.sub{font-size:12px;color:var(--muted);margin-top:2px}
+.big{font-weight:300;font-size:46px;letter-spacing:-.04em;line-height:1;margin:26px 0 22px;display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+.dot{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px}
+.dot.g{background:var(--green)}.dot.r{background:var(--red)}.dot.a{background:var(--amber)}
+.legend{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
+.bars{display:flex;gap:2px;height:28px;align-items:stretch}
+.bars i{flex:1;border-radius:1px;background:#e4e7ee;transform-origin:bottom;animation:bar .5s both}
+.bars i.on{background:var(--green)}.bars i.hot{background:var(--red)}.bars i.blue{background:var(--blue)}
+@keyframes bar{from{transform:scaleY(0)}}
+.nums{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+
+.wide{grid-column:span 1}
+.tasks .t{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.tasks .t b{font-weight:500;display:block}.tasks .t small{font-size:12px;color:var(--muted)}
+.tasks .p{display:flex;align-items:center;gap:10px}
+.st{font-size:11px;border-radius:20px;padding:4px 10px;border:1px solid}
+.st.done{background:#e8f7ef;color:var(--green);border-color:#bfe9d1}
+.st.prog{background:#eaf0ff;color:var(--blue);border-color:#c9d8ff}
+.st.next{background:#f3f4f7;color:#6b7186;border-color:#e3e5ec}
+
+.steps{display:flex;gap:6px;margin-top:22px}
+.steps div{flex:1}
+.steps .l{height:8px;border-radius:4px;background:#e4e7ee;overflow:hidden}
+.steps .l i{display:block;height:100%;background:var(--blue);transform-origin:left;animation:fill 1s both}
+@keyframes fill{from{transform:scaleX(0)}}
+.steps small{display:block;margin-top:8px;font-size:11px;white-space:nowrap}
+.steps .done .l i{background:var(--green)}
+
+.log{grid-row:span 2;display:flex;flex-direction:column;align-self:stretch}
+.log .ch h3 .spark{color:var(--blue)}
+.online{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:4px}
+.online:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green)}
+.msgs{flex:1;display:flex;flex-direction:column;gap:14px;margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+.m{display:flex;gap:10px;align-items:flex-start;animation:up .5s both}
+.m p{background:#f5f7fb;border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.45;flex:1}
+.m time{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:4px}
+.m.alert p{background:#fff1f1;color:#a3262b}
+.m .tag{display:inline-flex;gap:6px;margin-top:8px;font-size:12px;background:#eaf0ff;color:var(--blue);padding:5px 10px;border-radius:10px}
+.filters{display:flex;gap:6px;margin-top:14px}
+.filters button{font-size:12px;border:1px solid var(--line);border-radius:20px;padding:6px 12px}
+.filters button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.rolebar{max-width:1280px;margin:0 auto 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.rolebar button{border:1px solid #d5d9e3;border-radius:20px;padding:5px 12px;background:#fff}
+.rolebar button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:1000px){.content{grid-template-columns:1fr 1fr}.glass,.chips{display:none}.tabs{overflow-x:auto}}
+</style>
+</head>
+<body>
+<div class="rolebar">Mockup · preview as <span id="roles"></span><span style="margin-left:auto">All people and data are fictional</span></div>
+<div class="frame" id="app"></div>
+
+<script>
+const AWARE=Date.now()-41.6*3600e3;
+const used=()=>(Date.now()-AWARE)/3600e3;
+const leftTxt=()=>{const s=Math.max(0,72*3600-(Date.now()-AWARE)/1e3);return `${Math.floor(s/3600)}h ${String(Math.floor(s%3600/60)).padStart(2,"0")}m`;};
+const ICON={
+ grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>',
+ alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4 3 20h18L12 4Z"/><path d="M12 10v4M12 17v.5"/></svg>',
+ db:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3 2.5 7 2.5s7-1.1 7-2.5"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>',
+ book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h10a4 4 0 0 1 4 4v10H9a4 4 0 0 1-4-4V5Z"/><path d="M9 9h6M9 13h4"/></svg>',
+ users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 5.5a3 3 0 0 1 0 5.5M18 19a5 5 0 0 0-2.5-4.3"/></svg>',
+ clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>',
+ people:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>',
+ scale:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v16M6 8h12M6 8l-3 6a3 3 0 0 0 6 0L6 8ZM18 8l-3 6a3 3 0 0 0 6 0l-3-6Z"/></svg>',
+ log:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"/></svg>',
+ shield:'<svg viewBox="0 0 24 24" fill="none" stroke="#2f6bff" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>',
+};
+const ROLES={officer:{label:"Compliance Officer",name:"Farid",col:"#2f6bff"},manager:{label:"Manager",name:"Dr Lim",col:"#7a4cff"},staff:{label:"Staff",name:"Aina",col:"#25a462"}};
+const NAVS={officer:[["grid","Overview"],["alert","Incidents"],["db","Inventory"],["check","Tasks"],["book","Register"]],
+ manager:[["grid","Overview"],["alert","Incidents"],["check","Approvals"],["book","Register"],["users","Users"]],
+ staff:[["grid","Home"],["alert","Report"],["check","My tasks"]]};
+const TABS=[["INC-005","Database copied","30h left",true],["INC-004","Wrong email","Record only"],["INC-003","Laptop stolen","Closed"],["Inventory","6 data places","2 risky"],["Register","3 incidents","Kept 2 years"]];
+let role="officer",tab=0,logFilter="all";
+const bars=(n,on,cls="on",hot=-1,delay=0)=>Array.from({length:n},(_,i)=>`<i class="${i<on?(hot>=0&&i>=hot?"hot":cls):""}" style="animation-delay:${delay+i*.008}s"></i>`).join("");
+
+const LOG=[
+ ["Aina","#25a462","Reported the customer database as copied.","Mon 09:00","people"],
+ ["Farid","#2f6bff","Linked <b>Patient records</b>: 5 data types, 4,800 people.","Mon 12:00","people"],
+ ["Tracker","#141a2b","3 of 6 criteria met. Farid decides.","Mon 15:02","system",'<span class="tag">Criteria · 3 of 6 met</span>'],
+ ["Tracker","#e5484d","24 hours left. Farid and Dr Lim alerted.","Wed 09:00","alert"],
+];
+
+function render(){
+ const r=ROLES[role],h=used();
+ document.getElementById("roles").innerHTML=Object.entries(ROLES).map(([k,v])=>`<button aria-pressed="${k===role}" onclick="role='${k}';render()">${v.label}</button>`).join(" ");
+ const hello={officer:["One incident needs your decision.","INC-005 is in the Assess step. Confirm the exposure and record your reason."],
+   manager:["Everything is on time today.","One open incident is being assessed. Approvals will appear here."],
+   staff:["Something wrong with personal data?","Report it in two minutes. The Compliance Officer takes it from there."]}[role];
+ document.getElementById("app").innerHTML=`
+ <header class="band">
+  <div class="bar">
+   <div class="logo"><i>${ICON.shield.replace('#2f6bff','#fff')}</i>PDPA Tracker</div>
+   <nav class="nav">${NAVS[role].map(([ic,l],i)=>`<button aria-current="${i===0}">${ICON[ic]}${i===0?l:""}</button>`).join("")}</nav>
+   <span class="circle">${ICON.alert}</span>
+   <span class="who">${r.label}<span class="av" style="background:${r.col}">${r.name[0]}</span></span>
+  </div>
+  <div class="hello"><small>Greenleaf Family Clinic · Sunday, 22 Nov 2026</small><h1>Breach Response Hub</h1><p>${hello[0]} ${hello[1]}</p></div>
+  <div class="glass" aria-hidden="true"><div class="sheet s1"></div><div class="sheet s2"></div><div class="pulse"></div><div class="shield">${ICON.shield}</div></div>
+  <div class="chips"><span class="chip">Role: <b>${r.label}</b></span><span class="chip">Open: <b>1 incident</b></span><span class="chip">Status: <span class="ok">On time</span></span></div>
+ </header>
+ <div class="tabs" role="tablist">${TABS.map(([a,b,c],i)=>`<button class="tab" role="tab" aria-selected="${i===tab}" onclick="tab=${i};render()">
+   <span class="row1"><span class="ic">${i<3?ICON.alert:i===3?ICON.db:ICON.book}</span><span><b>${a}</b><small>${b}</small></span><span class="rf">↻</span></span>
+   <span class="meta">${i===0?`Time left <b data-live="left">${leftTxt()}</b>`:`<b>${c}</b>`}</span></button>`).join("")}</div>
+ <main class="content">
+  <section class="card" style="animation-delay:.05s">
+   <div class="ch"><div><h3>${ICON.clock}72-hour clock</h3><p class="sub">INC-005 · aware Mon 09:00</p></div><button class="go">↗</button></div>
+   <div class="big"><span data-live="hours">${Math.floor(h)}</span>h <span class="dot ${h>=48?"r":"a"}">!</span></div>
+   <div class="legend"><span>Used</span><span>Left</span></div>
+   <div class="bars">${bars(72,Math.floor(h),"blue",48,.1)}</div>
+   <div class="nums"><span>0h</span><span>48h alert</span><span>72h</span></div>
+  </section>
+  <section class="card" style="animation-delay:.12s">
+   <div class="ch"><div><h3>${ICON.people}People affected</h3><p class="sub">From linked data · Patient records</p></div><button class="go">↗</button></div>
+   <div class="big">4,800 <span class="dot r">!</span></div>
+   <div class="legend"><span>Risky data</span><span>Other data</span></div>
+   <div class="bars">${bars(50,20,"hot",-1,.2)}</div>
+   <div class="nums"><span>IC number · diagnosis</span><span>name · phone · email</span></div>
+  </section>
+  <section class="card" style="animation-delay:.19s">
+   <div class="ch"><div><h3>${ICON.scale}Criteria met</h3><p class="sub">Guideline DBN 1.0 (2025)</p></div><button class="go">↗</button></div>
+   <div class="big">3 <span style="font-size:20px" class="muted">of 6</span> <span class="dot r">!</span></div>
+   <div class="legend"><span>Met</span><span>Not met / judgement</span></div>
+   <div class="bars">${bars(60,30,"hot",-1,.3)}</div>
+   <div class="nums"><span>scale · sensitive · ID fraud</span><span>3 left</span></div>
+  </section>
+  <section class="card log" style="animation-delay:.26s">
+   <div class="ch"><div><h3><span class="spark">${ICON.log}</span>Activity log</h3><p class="online">Every action, saved and locked</p></div><button class="go">↗</button></div>
+   <div class="msgs">${LOG.filter(l=>logFilter==="all"||(logFilter==="alerts"&&l[4]==="alert")||(logFilter==="people"&&l[4]==="people")).map(([n,c,t,time,k,extra],i)=>`<div class="m ${k==="alert"?"alert":""}" style="animation-delay:${.3+i*.12}s"><span class="av" style="background:${c}">${n[0]}</span><div style="flex:1"><p><b style="font-weight:600">${n}</b> · ${t}${extra||""}</p></div><time>${time}</time></div>`).join("")}</div>
+   <div class="filters">${[["all","All"],["people","People"],["alerts","Alerts"]].map(([k,l])=>`<button aria-pressed="${logFilter===k}" onclick="logFilter='${k}';render()">${l}</button>`).join("")}</div>
+  </section>
+  <section class="card" style="grid-column:span 1;animation-delay:.33s">
+   <div class="ch"><div><h3>${ICON.alert}INC-005 progress</h3><p class="sub">Four steps · you are on step 2</p></div><button class="go">↗</button></div>
+   <div class="big" style="margin:22px 0 6px">Assess</div>
+   <div style="font-size:13px" class="muted">Next: decide whether to notify. The tracker never decides for you.</div>
+   <div class="steps">${[["Locate","done",100],["Assess","",55],["Notify","",0],["Record","",0]].map(([l,c,p],i)=>`<div class="${c}"><div class="l"><i style="width:${p}%;animation-delay:${.5+i*.15}s"></i></div><small>${i+1}. ${l}</small></div>`).join("")}</div>
+  </section>
+  <section class="card tasks" style="grid-column:span 2;animation-delay:.4s">
+   <div class="ch"><div><h3>${ICON.check}Today's tasks</h3><p class="sub">3 tasks · 1 done</p></div><button class="go">↗</button></div>
+   <div style="margin-top:12px">${[["09:30","Reset database passwords","IT · Aina","done","Completed"],["11:00","Get hosting logs","Farid","prog","In progress"],["14:00","List card customers","Aina","next","Upcoming"]].map(([t,a,b,c,d])=>`<div class="t"><span class="muted">${t}</span><span class="p"><span><b>${a}</b><small>${b}</small></span></span><span class="st ${c}">${d}</span></div>`).join("")}</div>
+  </section>
+ </main>`;
+}
+render();
+setInterval(()=>{document.querySelectorAll('[data-live=left]').forEach(e=>e.textContent=leftTxt());document.querySelectorAll('[data-live=hours]').forEach(e=>e.textContent=Math.floor(used()));},1000);
+</script>
+</body>
+</html>
