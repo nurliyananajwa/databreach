@@ -166,7 +166,7 @@ const NAVS={officer:[["grid","Overview"],["alert","Incidents"],["db","Inventory"
  manager:[["grid","Overview"],["alert","Incidents"],["check","Approvals"],["book","Register"],["users","Users"]],
  staff:[["grid","Home"],["alert","Report"],["check","My tasks"]]};
 const TABS=[["INC-005","Database copied","30h left",true],["INC-004","Wrong email","Record only"],["INC-003","Laptop stolen","Closed"],["Inventory","6 data places","2 risky"],["Register","3 incidents","Kept 2 years"]];
-let role="officer",tab=0,logFilter="all",panel="ai",aiEx=0,aiDone=false;
+let role="officer",tab=0,logFilter="all",panel="log",aiEx=0,aiDone=false;
 // Answers recorded from the real model (ai/report_helper on the ai-assistant branch)
 const AI_EX=[
  ["Laptop with the appointment list kena curi dalam kereta","Aina","Lost or stolen",.84,[["Appointment list",["Name","Phone","Reason for visit"]]]],
@@ -185,20 +185,12 @@ const LOG=[
 ];
 
 function aiPanel(){
- const [text,who,label,conf,places]=AI_EX[aiEx];const sure=conf>=.45;
- return `<div class="ch"><div><h3><span class="spark">${ICON.log}</span>AI report helper</h3><p class="online">Runs on our own server · suggestions only</p></div><button class="go">↗</button></div>
- <div class="msgs">
-  <div class="ai-msg"><span class="ai-ic">${ICON.log}</span><div class="bub">New report from <b>${who}</b>. Here is my suggestion. Please confirm or change it.</div></div>
-  <div class="ai-msg me"><span class="av" style="background:#25a462">${who[0]}</span><div class="bub">“${text}”</div></div>
-  <div class="ai-msg" style="animation-delay:.25s"><span class="ai-ic">${ICON.log}</span><div class="bub" style="flex:1">
-   Incident type: <b>${label}</b>
-   <div class="conf ${sure?"":"low"}"><i style="width:${Math.round(conf*100)}%"></i></div><small class="muted">${Math.round(conf*100)}% sure${sure?"":" · too low to suggest"}</small>
-   ${places.length?places.map(([p,f])=>`<div class="ai-place"><b>Probably involved: ${p}</b>${f.map(x=>`<span class="${RISKY.includes(x)?"r":""}">${x}</span>`).join("")}</div>`).join(""):`<div class="ai-place"><b>No matching data place</b><span>Please pick from the inventory</span></div>`}
-   ${aiDone?`<p style="margin-top:10px;color:var(--green);font-weight:600">✓ Confirmed by Farid · saved to the activity log</p>`:`<div class="ai-act"><button class="yes" onclick="aiDone=true;render()">Confirm</button><button>Change</button></div>`}
-  </div></div>
- </div>
- <div class="ai-try"><span class="muted" style="font-size:11px;align-self:center">Try:</span>${AI_EX.map((e,i)=>`<button aria-pressed="${i===aiEx}" onclick="aiEx=${i};aiDone=false;render()">${["Laptop curi","Salary slips","Shop hacked","Vague"][i]}</button>`).join("")}</div>
- <div class="ai-box"><input placeholder="Describe what happened…" onkeydown="if(event.key==='Enter'){this.value='';this.placeholder='In this mockup only the examples above work'}"><button aria-label="Send">→</button></div>`;}
+ return `<div class="ch"><div><h3><span class="spark">${ICON.log}</span>AI report helper</h3><p class="online" style="--c:var(--amber)">Coming soon</p></div></div>
+ <div class="msgs" style="justify-content:center;text-align:center;gap:10px">
+  <span class="ai-ic" style="margin:0 auto;width:52px;height:52px">${ICON.log}</span>
+  <p style="font-size:16px;font-weight:500">Coming soon</p>
+  <p class="muted" style="font-size:13px;max-width:240px;margin:0 auto">Suggests the incident type and the data places involved from a staff report. A person always confirms.</p>
+ </div>`;}
 function logPanel(){return `<div class="ch"><div><h3><span class="spark">${ICON.log}</span>Activity log</h3><p class="online">Every action, saved and locked</p></div><button class="go">↗</button></div>
  <div class="msgs">${LOG.map(([n,c,t,time,k,extra],i)=>`<div class="m ${k==="alert"?"alert":""}" style="animation-delay:${.1+i*.1}s"><span class="av" style="background:${c}">${n[0]}</span><div style="flex:1"><p><b style="font-weight:600">${n}</b> · ${t}${extra||""}</p></div><time>${time}</time></div>`).join("")}</div>`;}
 function render(){
