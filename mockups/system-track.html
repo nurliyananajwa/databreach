@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDPA Tracker · mockup B: the 72-hour track</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4f3ef;--ink:#15171c;--muted:#6b6e74;--line:#dcdbd4;--blue:#2855ff;--coral:#ff6b4d;--red:#d4432c;--green:#1f8a5b;--night:#0f1424}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:"Instrument Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink);overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+em{font-family:"Instrument Serif",serif;font-weight:400}
+.muted{color:var(--muted)}
+
+/* ---------- stage + zoom transitions ---------- */
+#stage{position:fixed;inset:0;overflow:hidden}
+.screen{position:absolute;inset:0;overflow:auto;padding:28px 40px 140px}
+.screen.in{animation:zin .7s cubic-bezier(.2,.8,.2,1) both}
+.screen.out{animation:zout .5s cubic-bezier(.6,0,.8,.4) both;pointer-events:none}
+.screen.back-in{animation:bin .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes zin{from{opacity:0;transform:scale(.86);filter:blur(6px)}}
+@keyframes zout{to{opacity:0;transform:scale(1.12);filter:blur(6px)}}
+@keyframes bin{from{opacity:0;transform:scale(1.12);filter:blur(6px)}}
+
+/* ---------- top line ---------- */
+.top{display:flex;align-items:center;gap:14px;font-size:13px;margin-bottom:6vh}
+.logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.top .org{margin-left:auto}
+.crumb{display:flex;gap:8px;align-items:center}
+.crumb button{color:var(--muted)}.crumb button:hover{color:var(--ink)}
+
+/* ---------- floating dock ---------- */
+.dock{position:fixed;left:50%;bottom:22px;translate:-50% 0;z-index:30;display:flex;align-items:center;gap:4px;padding:6px;border-radius:40px;background:#15171ce6;backdrop-filter:blur(14px);box-shadow:0 20px 50px #0004}
+.dock button{color:#fff;padding:10px 16px;border-radius:30px;font-size:14px;transition:background .2s,transform .2s}
+.dock button:hover{background:#ffffff1a;transform:translateY(-2px)}
+.dock button[aria-current=true]{background:#fff;color:var(--ink)}
+.dock .plus{background:var(--coral);font-weight:600}
+.dock .sep{width:1px;height:22px;background:#ffffff33;margin:0 6px}
+.dock select{background:transparent;color:#ffffffb0;border:0;font:inherit;font-size:13px;padding:0 8px;cursor:pointer}
+.dock select option{color:var(--ink)}
+
+/* ---------- giant sentence ---------- */
+.say{font-size:clamp(44px,6.6vw,104px);line-height:.98;letter-spacing:-.055em;font-weight:500;max-width:14ch}
+.say .n{font-variant-numeric:tabular-nums;color:var(--blue)}
+.say.urgent .n{color:var(--red)}
+.sub{font-size:18px;margin-top:22px;max-width:52ch}
+
+/* ---------- the track ---------- */
+.track{position:relative;height:300px;margin-top:8vh}
+.track .axis{position:absolute;left:0;right:0;top:150px;height:2px;background:var(--line)}
+.track .done{position:absolute;left:0;top:149px;height:4px;border-radius:2px;background:var(--blue);transition:width 1s linear}
+.track.urgent .done{background:var(--coral)}
+.tick{position:absolute;top:162px;translate:-50% 0;font-size:12px;color:var(--muted)}
+.now{position:absolute;top:96px;height:110px;width:2px;background:var(--ink);translate:-1px 0}
+.now:before{content:'';position:absolute;left:50%;top:50px;width:14px;height:14px;border-radius:50%;translate:-50% 0;background:var(--blue);box-shadow:0 0 0 0 #2855ff66;animation:ping 1.8s infinite}
+.now span{position:absolute;bottom:100%;left:50%;translate:-50% -6px;font-size:12px;background:var(--ink);color:#fff;padding:3px 8px;border-radius:12px;white-space:nowrap}
+@keyframes ping{70%{box-shadow:0 0 0 16px #2855ff00}}
+.flag{position:absolute;right:0;top:80px;text-align:right;font-size:13px}
+.flag b{display:block;font-weight:500;font-size:15px;color:var(--red)}
+.ev{position:absolute;translate:-50% 0;width:190px;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:13px;box-shadow:0 10px 30px #15171c0d;transition:transform .3s,box-shadow .3s;animation:drop .6s cubic-bezier(.2,.9,.3,1.2) both}
+.ev:hover{transform:translateY(-4px);box-shadow:0 18px 40px #15171c1a}
+.ev.up{top:0}.ev.down{top:186px}
+.ev:after{content:'';position:absolute;left:50%;width:1px;background:var(--line)}
+.ev.up:after{top:100%;height:58px}.ev.down:after{bottom:100%;height:34px}
+.ev b{display:block;font-weight:500;font-size:14px}
+.ev .t{font-size:11px;color:var(--blue)}
+.ev.next{border-style:dashed;background:transparent;box-shadow:none}
+.ev.next .t{color:var(--muted)}
+@keyframes drop{from{opacity:0;transform:translateY(-14px)}}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:34px;padding:16px 24px;border-radius:40px;background:var(--blue);color:#fff;font-size:16px;transition:gap .2s}
+.cta:hover{gap:16px}
+
+/* ---------- incident: horizontal stations ---------- */
+.inc{display:flex;flex-direction:column;height:100%}
+.stations{flex:1;display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;margin:0 -40px;padding:0 40px;scrollbar-width:none}
+.stations::-webkit-scrollbar{display:none}
+.st{flex:0 0 min(860px,82vw);scroll-snap-align:start;padding:10px 60px 0 0;opacity:.25;transition:opacity .5s}
+.st.on{opacity:1}
+.st .k{font-size:13px;color:var(--blue);margin-bottom:12px}
+.st h2{font-size:clamp(40px,4.6vw,68px);letter-spacing:-.05em;line-height:1;font-weight:500;max-width:13ch}
+.st p.lead{font-size:17px;margin:18px 0 26px;max-width:48ch}
+.stepbar{display:flex;gap:6px;margin-bottom:4vh}
+.stepbar button{flex:1;text-align:left;padding:10px 0 0;border-top:3px solid var(--line);font-size:13px;color:var(--muted);transition:border-color .4s,color .4s}
+.stepbar button.done{border-color:var(--ink);color:var(--ink)}
+.stepbar button.on{border-color:var(--blue);color:var(--blue)}
+.inc .org{display:none}
+.mini-clock{position:fixed;top:24px;right:40px;z-index:5;text-align:right;font-size:13px}
+.mini-clock b{display:block;font-size:34px;font-weight:500;letter-spacing:-.05em;line-height:1;color:var(--blue);font-variant-numeric:tabular-nums}
+.urgent .mini-clock b,.mini-clock.urgent b{color:var(--red)}
+
+/* criteria as switches you can see */
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:720px}
+.crit div{padding:14px 16px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:14px;animation:drop .5s both}
+.crit div b{display:block;font-size:12px;font-weight:500;margin-bottom:4px}
+.crit .m{border-color:#ffb9ab;background:#fff3ef}.crit .m b{color:var(--red)}
+.crit .x b{color:var(--muted)}
+.crit .j{border-style:dashed}.crit .j b{color:var(--blue)}
+.decide{display:flex;gap:10px;margin-top:22px}
+.pill{padding:12px 20px;border-radius:30px;border:1px solid var(--ink)}
+.pill.solid{background:var(--ink);color:#fff}
+
+/* linked data: fields fly into the record */
+.link-zone{display:flex;gap:40px;align-items:center}
+.src{display:flex;flex-direction:column;gap:8px}
+.src span{padding:8px 12px;border-radius:8px;background:#fff;border:1px solid var(--line);font-size:14px;width:max-content;animation:fly 1s cubic-bezier(.5,0,.2,1) both}
+.src span.r{border-color:#ffb9ab;color:var(--red)}
+@keyframes fly{from{transform:translateX(-60px);opacity:0}}
+
+/* 3D record card, travels with you */
+.rec{width:170px;height:214px;position:relative;perspective:900px;flex:none}
+.rec i{position:absolute;inset:0;border-radius:12px}
+.rec .b{background:#d9e1ff;transform:translate(-14px,-10px) rotate(-9deg)}
+.rec .c{background:linear-gradient(135deg,#ffa08c,var(--coral));transform:translate(14px,10px) rotate(8deg)}
+.rec .f{background:linear-gradient(150deg,#4370ff,#1534c4);color:#fff;padding:16px;display:flex;flex-direction:column;font-style:normal;box-shadow:0 24px 50px #2855ff44;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.rec .f small{font-size:10px;letter-spacing:.08em;opacity:.85}
+.rec .f strong{margin-top:auto;font-size:26px;font-weight:500;letter-spacing:-.04em}
+
+/* hold to approve */
+.hold{position:relative;overflow:hidden;padding:18px 28px;border-radius:40px;background:var(--ink);color:#fff;font-size:16px;user-select:none}
+.hold:before{content:'';position:absolute;inset:0;background:var(--green);transform:scaleX(var(--p,0));transform-origin:left;transition:transform .1s linear}
+.hold span{position:relative}
+
+/* ---------- inventory: flip tiles ---------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:5vh}
+.tile{height:170px;perspective:1000px;transition:opacity .4s,transform .4s}
+.tile.dim{opacity:.18;transform:scale(.96)}
+.tile .in{position:relative;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.tile:hover .in,.tile.flip .in{transform:rotateY(180deg)}
+.tile .fr,.tile .bk{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:20px;display:flex;flex-direction:column}
+.tile .fr{background:#fff;border:1px solid var(--line)}
+.tile .fr strong{font-size:24px;font-weight:500;letter-spacing:-.04em;line-height:1.05}
+.tile .fr .n{margin-top:auto;font-size:13px}
+.tile .fr .dot{width:10px;height:10px;border-radius:50%;background:var(--line);margin-bottom:12px}
+.tile.risk .fr .dot{background:var(--coral)}
+.tile .bk{background:var(--night);color:#fff;transform:rotateY(180deg);gap:6px;flex-wrap:wrap;flex-direction:row;align-content:flex-start}
+.tile .bk span{font-size:13px;padding:4px 9px;border-radius:6px;background:#ffffff1a;height:max-content}
+.tile .bk span.r{background:var(--coral)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:30px;padding:3px;margin-top:22px;background:#fff}
+.seg button{padding:8px 16px;border-radius:30px;font-size:14px}
+.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+
+/* ---------- staff report: one question per screen ---------- */
+.ask{max-width:900px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:5vh}
+.opt{text-align:left;padding:26px;border-radius:20px;background:#fff;border:1px solid var(--line);font-size:22px;letter-spacing:-.03em;transition:transform .25s,border-color .25s,box-shadow .25s}
+.opt:hover{transform:translateY(-4px) rotate(-.5deg);border-color:var(--blue);box-shadow:0 20px 40px #2855ff1a}
+.opt small{display:block;font-size:14px;color:var(--muted);letter-spacing:0;margin-top:6px}
+textarea{width:100%;min-height:150px;margin-top:4vh;border:0;border-bottom:2px solid var(--ink);background:transparent;font:inherit;font-size:26px;letter-spacing:-.03em;resize:none;outline:none}
+.burst{display:grid;place-items:center;text-align:center;height:70vh}
+.burst .ring{width:120px;height:120px;border-radius:50%;border:3px solid var(--blue);display:grid;place-items:center;font-size:44px;color:var(--blue);animation:pop .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(0)}}
+
+/* hint */
+.note{position:fixed;right:24px;bottom:28px;text-align:right;z-index:31;max-width:280px;font-size:13px;color:var(--muted)}
+.note b{color:var(--ink);font-weight:500}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:800px){.screen{padding:20px 20px 130px}.opts,.crit{grid-template-columns:1fr}.note{display:none}.ev{width:140px}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<nav class="dock" id="dock" aria-label="Main"></nav>
+<p class="note" id="note"></p>
+
+<script>
+const AWARE=Date.now()-41.6*3600e3, LIM=72*3600e3;
+const used=()=>(Date.now()-AWARE)/3600e3;
+const left=()=>{const s=Math.max(0,(LIM-(Date.now()-AWARE))/1e3);return {h:Math.floor(s/3600),m:Math.floor(s%3600/60)}};
+const pct=h=>Math.min(100,h/72*100);
+let role="officer", screen="home", stack=[], station=1, invFilter="all";
+
+const PLACES=[
+ ["Patient records","Clinic system",["Name","IC number","Phone","Diagnosis"],["IC number","Diagnosis"]],
+ ["Appointment list","Booking app",["Name","Phone","Reason for visit"],["Reason for visit"]],
+ ["Staff payroll","Accounting laptop",["Name","IC number","Bank account","Salary"],["IC number","Bank account","Salary"]],
+ ["Mailing list","Google Sheet",["Name","Email"],[]],
+ ["CCTV","Front desk recorder",["Faces","Time of visit"],[]],
+ ["WhatsApp group","Staff phones",["Names","Phone numbers","Photos"],[]],
+ ["Job applications","Email inbox",["Resume","IC number","Date of birth"],["IC number"]],
+];
+const EVENTS=[[0,"up","Reported","Aina, in 2 minutes"],[3,"down","Data linked","Patient records · 4,800 people"]];
+const NEXT=[[48,"down","Alert","24 h before the limit"],[60,"up","Notice due","Target: send by here"]];
+
+/* ---------- screens ---------- */
+const S={};
+const topbar=(crumbs=[])=>`<div class="top"><span class="logo"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" rx="2" fill="#2855ff"/><rect x="13" y="1" width="10" height="10" rx="2" fill="#2855ff"/><rect x="1" y="13" width="10" height="10" rx="2" fill="#2855ff"/><circle cx="18" cy="18" r="5" fill="#ff6b4d"/></svg>PDPA</span>
+  <span class="crumb">${crumbs.map(([l,t])=>`<span class="muted">/</span>${t?`<button onclick="go('${t}',true)">${l}</button>`:`<span>${l}</span>`}`).join("")}</span>
+  <span class="org muted">Greenleaf Family Clinic · fictional</span></div>`;
+
+function trackHTML(){const h=used();return `<div class="track ${h>=48?"urgent":""}">
+  <div class="axis"></div><div class="done" data-live="done" style="width:${pct(h)}%"></div>
+  ${[0,24,48,72].map(x=>`<span class="tick" style="left:${x/72*100}%">${x}h</span>`).join("")}
+  ${EVENTS.map(([x,p,t,d],i)=>`<div class="ev ${p}" style="left:${Math.max(7,x/72*100)}%;animation-delay:${.15+i*.12}s"><span class="t">hour ${x}</span><b>${t}</b>${d}</div>`).join("")}
+  ${NEXT.map(([x,p,t,d],i)=>`<div class="ev next ${p}" style="left:${x/72*100}%;animation-delay:${.6+i*.12}s"><span class="t">hour ${x}</span><b>${t}</b>${d}</div>`).join("")}
+  <div class="now" data-live="now" style="left:${pct(h)}%"><span>now · hour ${Math.floor(h)}</span></div>
+  <div class="flag">72h limit<b>${KL(72)}</b></div></div>`;}
+const KL=h=>new Date(AWARE+h*3600e3).toLocaleString("en-MY",{weekday:"short",hour:"2-digit",minute:"2-digit",hour12:false});
+
+S.home=()=>{const l=left();
+ if(role==="staff") return topbar()+`<h1 class="say">Something wrong<br>with personal data?</h1>
+   <p class="sub muted">Lost, sent to the wrong person, or seen by someone who shouldn't. You don't need to be sure. Report it, and the right person takes it from there.</p>
+   <button class="cta" onclick="go('report')">Report it now <span>→</span></button>`;
+ if(role==="manager") return topbar()+`<h1 class="say">Everything is<br><em>on time.</em></h1>
+   <p class="sub muted">One open incident. Farid is assessing it. When a notice needs your approval, it appears here first.</p>
+   ${trackHTML()}<button class="cta" onclick="go('approve')">See the approval (preview) <span>→</span></button>`;
+ return topbar()+`<h1 class="say ${used()>=48?"urgent":""}">INC-005 needs a decision in <span class="n" data-live="lefth">${l.h}h ${l.m}m</span>.</h1>
+   <p class="sub muted">The customer database was copied. 4,800 people. You linked the data at hour 3. Next: decide whether to notify.</p>
+   ${trackHTML()}<button class="cta" onclick="go('incident')">Open INC-005 <span>→</span></button>`;
+};
+
+const STN=[
+ ["Step 1 · Locate","Where was the data?","Linked from your inventory, so nobody guesses.",()=>`<div class="link-zone"><div class="src">${PLACES[0][2].map((f,i)=>`<span class="${PLACES[0][3].includes(f)?"r":""}" style="animation-delay:${i*.12}s">${f}</span>`).join("")}</div><span style="font-size:30px" class="muted">→</span>${rec("DATA LINKED","4,800.")}</div>`],
+ ["Step 2 · Assess · now","Do we need to notify?","Each rule lights up when it is met. You decide, and write one sentence on why.",()=>`<div class="crit">${[["m","Met","More than 1,000 people"],["m","Met","Sensitive data (health)"],["x","Not met","May cause financial loss"],["m","Met","Could enable identity fraud"],["x","Not met","Physical harm or loss of property"],["j","Your judgement","Could be misused illegally"]].map(([c,b,t],i)=>`<div class="${c}" style="animation-delay:${i*.08}s"><b>${b}</b>${t}</div>`).join("")}</div>
+     <div class="decide"><button class="pill solid" onclick="slide(2)">Notify →</button><button class="pill">Record only</button></div>`],
+ ["Step 3 · Notify","Tell the Commissioner.","The draft fills itself from the record. The manager approves; the clock keeps running while it waits.",()=>`<div class="link-zone">${rec("AWAITING APPROVAL","Draft.")}<div><p class="muted" style="font-size:14px">Sent to Dr Lim for approval</p><p style="font-size:22px;letter-spacing:-.03em;margin-top:6px">Target: before hour 60</p></div></div>`],
+ ["Step 4 · Record","Kept. Provable.","Every decision, approval and time, locked for 2 years.",()=>`<div class="link-zone">${rec("RECORD LOCKED","Kept.")}<div class="muted" style="font-size:14px;line-height:2">Mon 09:00 reported<br>Mon 12:00 data linked<br>Mon 15:00 decision: notify<br>Wed 15:00 approved and sent</div></div>`],
+];
+const rec=(s,b)=>`<div class="rec"><i class="b"></i><i class="c"></i><i class="f"><small>INC-005</small><small style="margin-top:6px">${s}</small><strong>${b}</strong></i></div>`;
+S.incident=()=>{const l=left();return `<div class="inc">${topbar([["Home","home"],["INC-005"]])}
+  <div class="mini-clock ${used()>=48?"urgent":""}">left on the clock<b data-live="lefth">${l.h}h ${l.m}m</b></div>
+  <div class="stepbar">${STN.map((s,i)=>`<button class="${i<1?"done":""} ${i===station?"on":""}" onclick="slide(${i})">${s[0]}</button>`).join("")}</div>
+  <div class="stations" id="stations">${STN.map(([k,h,p,body],i)=>`<section class="st ${i===station?"on":""}"><p class="k">${k}</p><h2>${h}</h2><p class="lead muted">${p}</p>${body()}</section>`).join("")}</div></div>`;};
+
+S.inventory=()=>topbar([["Home","home"],["Data inventory"]])+`<h1 class="say" style="font-size:clamp(40px,5vw,76px)">Where your<br>personal data lives.</h1>
+ <div class="seg">${[["all","All places"],["risk","Risky data"]].map(([k,t])=>`<button aria-pressed="${invFilter===k}" onclick="invFilter='${k}';render(true)">${t}</button>`).join("")}</div>
+ <div class="tiles">${PLACES.map(([p,k,f,r],i)=>`<div class="tile ${r.length?"risk":""} ${invFilter==="risk"&&!r.length?"dim":""}" tabindex="0" onclick="this.classList.toggle('flip')" style="animation:drop .5s ${i*.06}s both"><div class="in">
+   <div class="fr"><span class="dot"></span><strong>${p}</strong><span class="n muted">${k} · ${f.length} fields</span></div>
+   <div class="bk">${f.map(x=>`<span class="${r.includes(x)?"r":""}">${x}</span>`).join("")}</div></div></div>`).join("")}</div>
+ <p class="muted" style="margin-top:18px;font-size:13px">Hover or tap a place to see its fields. Only field names are stored.</p>`;
+
+let ask=0;
+S.report=()=>{const qs=[
+ ()=>`<h1 class="say" style="font-size:clamp(40px,5.4vw,84px)">What happened?</h1><div class="opts">${[["Lost or stolen","A laptop, phone, files"],["Sent to the wrong person","Email, WhatsApp, post"],["Someone got in","Hacked, or opened by the wrong staff"],["Something else","Describe it next"]].map(([a,b])=>`<button class="opt" onclick="ask=1;render(true)">${a}<small>${b}</small></button>`).join("")}</div>`,
+ ()=>`<h1 class="say" style="font-size:clamp(40px,5.4vw,84px)">Tell us briefly.</h1><textarea placeholder="When you noticed, and what you already did…"></textarea><button class="cta" onclick="ask=2;render(true)">Send report →</button>`,
+ ()=>`<div class="burst"><div><div class="ring">✓</div><h1 class="say" style="font-size:56px;margin:24px auto 10px;max-width:none">Reported.</h1><p class="muted">Farid has been told. The 72-hour clock starts now.</p><button class="cta" onclick="ask=0;go('home',true)">Done</button></div></div>`];
+ return topbar([["Home","home"],["Report"]])+`<div class="ask">${qs[ask]()}</div>`;};
+
+S.approve=()=>topbar([["Home","home"],["Approve notice"]])+`<h1 class="say" style="font-size:clamp(40px,5vw,76px)">Approve the notice<br>for <em>INC-005</em>?</h1>
+ <p class="sub muted">Farid's draft to the Commissioner. Approving lets him send it. You can also return it with a comment.</p>
+ <div style="display:flex;gap:24px;align-items:center;margin-top:5vh">${rec("AWAITING YOU","Draft.")}
+ <div><button class="hold" id="hold"><span>Press and hold to approve</span></button><p class="muted" style="font-size:13px;margin-top:10px">Holding for a second prevents accidental approvals.</p></div></div>`;
+
+/* ---------- navigation ---------- */
+const DOCK={staff:[["home","Home"],["report","+ Report","plus"]],
+ officer:[["home","Now"],["incident","INC-005"],["inventory","Inventory"],["report","+ Report","plus"]],
+ manager:[["home","Now"],["approve","Approvals"],["inventory","Inventory"]]};
+function go(s,back){screen=s;if(s==="report")ask=0;render(false,back);}
+function render(soft,back){
+ const st=document.getElementById("stage");
+ const old=st.querySelector(".screen");
+ const el=document.createElement("div");el.className="screen "+(soft?"":back?"back-in":"in");el.innerHTML=S[screen]();
+ if(old&&!soft){old.classList.add("out");setTimeout(()=>old.remove(),500);} else if(old) old.remove();
+ st.appendChild(el);
+ document.getElementById("dock").innerHTML=DOCK[role].map(([k,t,c])=>`<button class="${c||""}" aria-current="${screen===k}" onclick="go('${k}')">${t}</button>`).join("")+
+  `<span class="sep"></span><select aria-label="Preview as" onchange="role=this.value;go('home')">${[["staff","Staff"],["officer","Compliance Officer"],["manager","Manager"]].map(([k,t])=>`<option value="${k}" ${k===role?"selected":""}>View as ${t}</option>`).join("")}</select>`;
+ document.getElementById("note").innerHTML={home:"<b>Home is one sentence.</b> It says what needs you, with the live clock in it.",incident:"<b>Scroll sideways</b> through the four steps. The card changes as you go.",inventory:"<b>Tiles flip</b> to show their fields. Coral dot = risky data.",report:"<b>One question per screen.</b> Two taps and a sentence.",approve:"<b>Press and hold</b> so nobody approves by accident."}[screen]||"";
+ if(screen==="incident"){const s=el.querySelector("#stations");requestAnimationFrame(()=>s.children[station].scrollIntoView({behavior:"instant",inline:"start",block:"nearest"}));
+  s.addEventListener("scroll",()=>{const i=Math.round(s.scrollLeft/s.children[0].offsetWidth);if(i!==station){station=i;el.querySelectorAll(".st").forEach((x,j)=>x.classList.toggle("on",j===i));el.querySelectorAll(".stepbar button").forEach((x,j)=>x.classList.toggle("on",j===i));}},{passive:true});}
+ if(screen==="approve") holdSetup(el.querySelector("#hold"));
+}
+function slide(i){station=i;const s=document.getElementById("stations");s.children[i].scrollIntoView({behavior:"smooth",inline:"start",block:"nearest"});}
+function holdSetup(b){let t,p=0;const run=()=>{p=Math.min(1,p+.05);b.style.setProperty("--p",p);if(p>=1){b.querySelector("span").textContent="Approved ✓  Farid can send it";return;}t=requestAnimationFrame(run)};
+ const stop=()=>{cancelAnimationFrame(t);if(p<1){p=0;b.style.setProperty("--p",0);}};
+ b.addEventListener("pointerdown",run);b.addEventListener("pointerup",stop);b.addEventListener("pointerleave",stop);}
+setInterval(()=>{const h=used(),l=left();document.querySelectorAll('[data-live=lefth]').forEach(e=>e.textContent=`${l.h}h ${l.m}m`);document.querySelectorAll('[data-live=done]').forEach(e=>e.style.width=pct(h)+"%");document.querySelectorAll('[data-live=now]').forEach(e=>e.style.left=pct(h)+"%");},1000);
+render();
+</script>
+</body>
+</html>
