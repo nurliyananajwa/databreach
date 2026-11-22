@@ -1,0 +1,23 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Icon, { PAGE_ICON } from "./hub/icons";
+
+// Pill navigation: icons only, the current page also shows its name.
+export default function HubNav({ items }: { items: { href: string; label: string }[] }) {
+  const pathname = usePathname();
+  return (
+    <nav className="hub-nav" aria-label="App">
+      {items.map((it) => {
+        const active = pathname === it.href || pathname.startsWith(it.href + "/");
+        return (
+          <Link key={it.href} href={it.href} aria-current={active ? "page" : undefined} title={it.label}>
+            <Icon name={PAGE_ICON[it.href] ?? "home"} />
+            <span className={active ? "lbl" : "sr-only"}>{it.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}

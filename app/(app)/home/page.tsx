@@ -1,53 +1,48 @@
-import Link from "next/link";
-import { requirePage } from "@/lib/auth";
-import { ROLE_LABEL, type Role } from "@/lib/roles";
-import PageHeader from "@/components/app/PageHeader";
+import { requirePage, type CurrentUser } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
+import HomeView from "./HomeView";
 
 export const metadata = { title: "Home | PDPA Breach Response Tracker" };
 
-const JOBS: Record<Role, { href: string; title: string; body: string }[]> = {
-  staff: [
-    { href: "/report", title: "Report a breach", body: "Something went wrong with personal data? Report it straight away, even if you are not sure." },
-    { href: "/my-reports", title: "My reports", body: "See what happened to the breaches you reported." },
-    { href: "/tasks", title: "My tasks", body: "Work your data protection lead gave you." },
-  ],
-  dp_lead: [
-    { href: "/incidents", title: "Incidents", body: "Confirm what was exposed, run the assessment and record your decision." },
-    { href: "/inventory", title: "Data inventory", body: "Keep the list of personal data, where it is kept and who can open it, up to date." },
-    { href: "/tasks", title: "Tasks", body: "Give follow-up work to staff and track it." },
-    { href: "/register", title: "Breach register", body: "Every breach, notified or not, in one place." },
-  ],
-  manager: [
-    { href: "/approvals", title: "Approvals", body: "Approve notification drafts before your lead sends them." },
-    { href: "/dashboard", title: "Dashboard", body: "Open incidents, deadlines and the register at a glance." },
-    { href: "/users", title: "Users", body: "Invite people and give each one a role." },
-    { href: "/audit", title: "Audit log", body: "See who changed what, and when." },
-  ],
-};
+type Deadline = { due_at: string; incidents: { id: string; code: string; title: string; status: string } | null };
 
-export default async function HomePage() {
-  const me = await requirePage("/home");
-  const firstName = me.fullName.split(" ")[0];
-
-  return (
-    <>
-      <PageHeader
-        title={`Hello, ${firstName}`}
-        intro={`You are signed in as ${ROLE_LABEL[me.role].toLowerCase()} for ${me.orgName}.`}
-      />
-      <ul className="mt-8 grid max-w-4xl gap-4 sm:grid-cols-2">
-        {JOBS[me.role].map((job) => (
-          <li key={job.href}>
-            <Link
-              href={job.href}
-              className="block h-full rounded-md border border-rule bg-sheet p-5 hover:border-ink"
-            >
-              <span className="text-lg font-bold">{job.title}</span>
-              <span className="mt-1 block text-muted">{job.body}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
+async function load(me: CurrentUser) {
+  const db = await createClient();
+  const lead = me.role !== "staff";
+  const [deadlines, incidents, sets, fields, tasks, approvals, people, invites, alerts, audit] = await Promise.all([
+    lead
+      ? db.from("deadlines").select("due_at, incidents(id, code, title, status)").eq("type", "commissioner_72h").eq("status", "open").order("due_at").limit(1)
+      : Promise.resolve({ data: [] }),
+    db.from("incidents").select("id, code, title, status, reported_by").neq("status", "closed").order("reported_at", { ascending: false }).limit(10),
+    lead ? db.from("data_sets").select("id", { count: "exact", head: true }).eq("status", "active") : Promise.resolve({ count: 0 }),
+    lead ? db.from("data_fields").select("is_sensitive") : Promise.resolve({ data: [] }),
+    db.from("tasks").select("id, title, due_at, completed_at, assignee_id, incidents(code)").is("completed_at", null).order("due_at", { ascending: true, nullsFirst: false }).limit(5),
+    me.role === "manager" ? db.from("notifications").select("id", { count: "exact", head: true }).eq("status", "pending_approval") : Promise.resolve({ count: 0 }),
+    me.role === "manager" ? db.from("profiles").select("id", { count: "exact", head: true }).eq("is_active", true) : Promise.resolve({ count: 0 }),
+    me.role === "manager" ? db.from("invitations").select("id", { count: "exact", head: true }).is("accepted_at", null).is("revoked_at", null) : Promise.resolve({ count: 0 }),
+    db.from("alerts").select("id, message, level, created_at").is("read_at", null).order("created_at", { ascending: false }).limit(5),
+    me.role === "manager" ? db.from("audit_log").select("id, table_name, action, created_at").order("created_at", { ascending: false }).limit(6) : Promise.resolve({ data: [] }),
+  ]);
+  const fieldRows = (fields.data ?? []) as { is_sensitive: boolean }[];
+  return {
+    deadline: ((deadlines.data ?? []) as unknown as Deadline[])[0] ?? null,
+    incidents: (incidents.data ?? []) as { id: string; code: string; title: string; status: string; reported_by: string }[],
+    sets: sets.count ?? 0,
+    fieldTotal: fieldRows.length,
+    fieldSensitive: fieldRows.filter((f) => f.is_sensitive).length,
+    tasks: (tasks.data ?? []) as unknown as { id: string; title: string; due_at: string | null; assignee_id: string | null; incidents: { code: string } | null }[],
+    approvals: approvals.count ?? 0,
+    people: people.count ?? 0,
+    invites: invites.count ?? 0,
+    alerts: (alerts.data ?? []) as { id: string; message: string; level: string; created_at: string }[],
+    audit: (audit.data ?? []) as { id: number; table_name: string; action: string; created_at: string }[],
+  };
 }
+
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ panel?: string }> }) {
+  const me = await requirePage("/home");
+  const { panel } = await searchParams;
+  return <HomeView me={me} d={await load(me)} panel={panel} />;
+}
+
+export type HomeData = Awaited<ReturnType<typeof load>>;
