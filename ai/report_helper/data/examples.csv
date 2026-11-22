@@ -1,0 +1,111 @@
+text,type
+"Laptop with the appointment list was stolen from my car last night",lost_stolen
+"I lost my phone at the mall, it has the clinic WhatsApp group",lost_stolen
+"The USB drive with payroll files is missing from the office drawer",lost_stolen
+"Someone broke into the shop and took the computer at the counter",lost_stolen
+"laptop kena curi dalam kereta, ada patient list",lost_stolen
+"Phone hilang masa balik kerja, ada gambar resit customer",lost_stolen
+"A box of paper job applications went missing during the office move",lost_stolen
+"Our tablet used for check-in was taken from the front desk",lost_stolen
+"I left the visitor logbook on the train",lost_stolen
+"External hard drive with CCTV backups cannot be found",lost_stolen
+"Bag with printed invoices was snatched outside the bank",lost_stolen
+"Staff laptop not returned after resignation and cannot be traced",lost_stolen
+"The cashier's phone with customer contacts was stolen",lost_stolen
+"Pendrive berisi senarai gaji hilang",lost_stolen
+"Patient files were left in a taxi and are missing",lost_stolen
+"A folder of medical certificates disappeared from the HR cabinet",lost_stolen
+"Sent the payroll spreadsheet to the wrong email address",wrong_recipient
+"Emailed a patient's lab results to another patient by mistake",wrong_recipient
+"Forwarded the customer list to a supplier instead of our accountant",wrong_recipient
+"Posted a screenshot with customer phone numbers in the wrong WhatsApp group",wrong_recipient
+"Tersalah hantar invoice customer kepada customer lain",wrong_recipient
+"Used CC instead of BCC when emailing all 300 members",wrong_recipient
+"Mailed a letter with someone's IC number to the wrong address",wrong_recipient
+"Shared the Google Sheet link publicly by accident",wrong_recipient
+"Sent a parent the exam results of another student",wrong_recipient
+"Courier delivered the order with the customer's address label to the wrong house",wrong_recipient
+"Replied all with the salary file attached",wrong_recipient
+"Tersalah share gambar slip gaji dalam group staff",wrong_recipient
+"Uploaded the applicant list to the public website folder",wrong_recipient
+"Faxed medical records to the wrong clinic",wrong_recipient
+"Gave a customer someone else's receipt with their card details",wrong_recipient
+"Printed patient labels went home with the wrong patient",wrong_recipient
+"Hackers copied the customer database from our online store",unauthorised_access
+"Someone logged into our booking system with a stolen password",unauthorised_access
+"Ransomware locked our files and the attackers say they took copies",unauthorised_access
+"A former staff member still logs in and downloads customer records",unauthorised_access
+"Our website was hacked and order details were exposed",unauthorised_access
+"Sistem kena hack, data customer dicuri",unauthorised_access
+"An unknown person accessed the shared drive with HR files",unauthorised_access
+"Staff clicked a phishing link and the attacker read the inbox",unauthorised_access
+"A part-time worker looked up patient records without a reason",unauthorised_access
+"Suspicious login from overseas into the accounting software",unauthorised_access
+"Our cloud storage bucket was open and someone downloaded the files",unauthorised_access
+"Malware on the counter PC sent card details to an outside server",unauthorised_access
+"A vendor's account was used to access our member database",unauthorised_access
+"Ada orang masuk akaun email syarikat tanpa kebenaran",unauthorised_access
+"Intern copied the student database to a personal laptop without permission",unauthorised_access
+"CCTV system was accessed remotely by someone we don't know",unauthorised_access
+"Old paper files were thrown in the normal bin without shredding",other
+"Customer forms were found blowing around the car park",other
+"The database was corrupted and patient records cannot be recovered",other
+"A fire damaged the room with the paper records",other
+"We are not sure if anything leaked but the server behaved strangely",other
+"Staff discussed a patient's illness loudly in the waiting area",other
+"Old computers were sold without wiping the hard disks",other
+"Fail lama dibuang tanpa dirincih",other
+"Flood damaged the cabinet with employee files",other
+"Backup failed and a month of booking records is gone",other
+"A printer kept copies of ID cards in its memory and was returned to the rental company",other
+"Records were accidentally deleted during a system update",other
+"Someone overheard staff reading out IC numbers on the phone",other
+"Customer data was kept longer than allowed and never deleted",other
+"My work laptop was stolen at the petrol station",lost_stolen
+"Lost the company phone somewhere in the LRT station",lost_stolen
+"The clinic iPad went missing after the open day",lost_stolen
+"Thief took the cash register computer during the break-in",lost_stolen
+"Handbag with the patient appointment book was stolen",lost_stolen
+"Beg kena ragut, ada fail pelanggan dalam beg",lost_stolen
+"Misplaced the file of tuition student records, cannot find it anywhere",lost_stolen
+"Delivery rider lost the parcel of signed customer forms",lost_stolen
+"Hard disk with salary data stolen from the store room",lost_stolen
+"Lost a notebook with members' phone numbers at a cafe",lost_stolen
+"Phone dicuri, WhatsApp business ada senarai customer",lost_stolen
+"Server stolen from the back office",lost_stolen
+"Accidentally emailed the attendance list with IC numbers to all parents",wrong_recipient
+"Sent a customer's order confirmation with address to the wrong customer",wrong_recipient
+"Shared salary details in the wrong Telegram chat",wrong_recipient
+"Posted a photo of a patient's file on Instagram story by mistake",wrong_recipient
+"Tersilap emel laporan perubatan kepada pesakit lain",wrong_recipient
+"The mailing list was sent as an attachment to every member",wrong_recipient
+"Gave the wrong student's report card to a parent",wrong_recipient
+"Disclosed a client's bank details to another client on the phone",wrong_recipient
+"Auto-complete picked the wrong email address and the file went out",wrong_recipient
+"Made the folder of resumes public on Google Drive",wrong_recipient
+"Handed a printed customer list to the wrong delivery company",wrong_recipient
+"Hantar gambar IC customer dalam group yang salah",wrong_recipient
+"Someone hacked our Facebook page and read customer messages",unauthorised_access
+"Attackers got into the email server and downloaded attachments",unauthorised_access
+"An employee used a colleague's login to view salaries",unauthorised_access
+"Database of members was dumped and posted on a forum",unauthorised_access
+"The POS system was compromised and card numbers were captured",unauthorised_access
+"Akaun admin website kena godam",unauthorised_access
+"Someone guessed the WiFi password and accessed the file server",unauthorised_access
+"Our tuition centre app had a bug letting anyone see other students' records",unauthorised_access
+"Phishing email led to the accounts team password being stolen",unauthorised_access
+"Unknown device connected to our network and scanned the patient system",unauthorised_access
+"Contractor kept remote access and opened the customer database",unauthorised_access
+"Data customer dijual oleh bekas pekerja",unauthorised_access
+"Paper forms with IC numbers were reused as scrap paper",other
+"Water leak destroyed the archive of patient cards",other
+"System crash wiped the booking history with no backup",other
+"Old CCTV recordings were never deleted after the retention period",other
+"Staff left customer forms on the photocopier overnight",other
+"Rosak sistem, rekod pelanggan hilang terus",other
+"We kept job applicants' data for years without a reason",other
+"A recycling company received unshredded HR documents",other
+"Monitor at the counter shows patient details to people in the queue",other
+"Software update deleted the member list",other
+"Discarded hard disks were found at the rubbish dump",other
+"Forms with addresses were stored in an unlocked cabinet in the corridor",other

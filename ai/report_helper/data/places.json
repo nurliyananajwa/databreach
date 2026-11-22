@@ -1,0 +1,12 @@
+[
+  {"place": "Patient records", "kept_in": "Clinic system", "fields": ["Name", "IC number", "Phone", "Diagnosis"], "words": "patient patients medical lab results diagnosis clinic records files"},
+  {"place": "Appointment list", "kept_in": "Booking app", "fields": ["Name", "Phone", "Reason for visit"], "words": "appointment appointments booking bookings check-in schedule patient list"},
+  {"place": "Staff payroll", "kept_in": "Accounting laptop", "fields": ["Name", "IC number", "Bank account", "Salary"], "words": "payroll salary gaji slip pay bank accounting"},
+  {"place": "Customer mailing list", "kept_in": "Google Sheet", "fields": ["Name", "Email"], "words": "customer customers members mailing list email sheet newsletter"},
+  {"place": "Online orders", "kept_in": "Online store", "fields": ["Name", "Address", "Phone", "Card details"], "words": "order orders online store website shop card receipt invoice delivery address"},
+  {"place": "CCTV footage", "kept_in": "Front-desk recorder", "fields": ["Faces", "Time of visit"], "words": "cctv camera footage video recording"},
+  {"place": "Staff WhatsApp group", "kept_in": "Staff phones", "fields": ["Names", "Phone numbers", "Photos"], "words": "whatsapp group phone chat screenshot photos gambar"},
+  {"place": "Job applications", "kept_in": "Email inbox", "fields": ["Resume", "IC number", "Date of birth"], "words": "job application applications applicant resume cv candidate interview"},
+  {"place": "Medical leave records", "kept_in": "HR folder", "fields": ["Name", "Medical certificate", "Illness"], "words": "hr medical certificate mc leave employee staff files sick"},
+  {"place": "Visitor logbook", "kept_in": "Front desk", "fields": ["Name", "IC number", "Phone"], "words": "visitor logbook log book front desk guest"}
+]
