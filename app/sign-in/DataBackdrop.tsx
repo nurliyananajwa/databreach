@@ -1,20 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./data-backdrop.css";
 
-// Decorative field names only. No customer values or records are rendered here.
-const FIELDS = [
-  ["Email address", 10, 17], ["Customer records", 71, 12],
-  ["Full name", 38, 10], ["Phone number", 83, 30],
-  ["Identity number", 5, 40], ["Delivery address", 64, 27],
-  ["Payment details", 19, 60], ["Personal data", 76, 53],
-  ["Health information", 5, 77], ["Access history", 67, 77],
-  ["Staff records", 39, 86], ["Date of birth", 84, 87],
-  ["Contact details", 21, 31], ["Source linked", 87, 64],
-  ["Assessment record", 14, 89], ["Data inventory", 50, 17],
-  ["Incident history", 51, 70], ["Account details", 30, 74],
-] as const;
+// Deterministic, fictional values only; this never reads organisational records.
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const CELLS = Array.from({ length: 24 * 32 }, (_, index) => {
+  const seed = ((index + 17) * 7919 + index * index * 31) % 104729;
+  const kind = index % 7;
+  const value = kind === 4 ? `${seed % 28 + 1} ${MONTHS[seed % 12]}`
+    : kind === 1 || kind === 2 || kind === 5 ? `${seed % 96 + 4}%`
+    : String(seed % (kind === 0 ? 300 : 90) + 1);
+  return { value, tone: seed % 17 === 0 ? "coral" : seed % 7 === 0 ? "blue" : "neutral" };
+});
 
 export default function DataBackdrop() {
   const layer = useRef<HTMLDivElement>(null);
@@ -56,7 +54,7 @@ export default function DataBackdrop() {
         frame = 0;
       });
       window.clearTimeout(timer);
-      // A tap briefly reveals the same field on coarse-pointer devices.
+      // A tap briefly reveals nearby values on coarse-pointer devices.
       if (event.pointerType !== "mouse") timer = window.setTimeout(hide, 1400);
     };
     const leave = (event: PointerEvent) => { if (!event.relatedTarget) hide(); };
@@ -78,18 +76,18 @@ export default function DataBackdrop() {
     };
   }, [paused, reduced]);
 
-  const fields = FIELDS.map(([label, left, top], index) => <span
-    className="pa-data-field" key={label}
-    style={{ left: `${left}%`, top: `${top}%`, "--drift-duration": `${20 + index % 6 * 3}s`, "--drift-delay": `${-index * 2}s`, "--tilt": `${index % 2 ? 5 : -5}deg` } as CSSProperties}
-  ><span className="pa-data-prefix">{index % 3 === 0 ? "record." : "field."}</span>{label}</span>);
+  const cells = CELLS.map(({ value, tone }, index) => (
+    <span className="pa-data-cell" data-tone={tone} key={index}>{value}</span>
+  ));
 
   return <>
     <div ref={layer} className="pa-data-backdrop" aria-hidden="true" data-paused={paused || reduced}>
-      <div className="pa-data-base">{fields}</div>
-      <div className="pa-data-revealed">{fields}</div>
+      <div className="pa-data-base"><div className="pa-data-grid">{cells}</div></div>
+      <div className="pa-data-revealed"><div className="pa-data-grid">{cells}</div></div>
+      <div className="pa-data-vignette" />
     </div>
     <footer className="pa-motion-control">
-      <span>{reduced ? "Reduced motion enabled" : touch ? "Tap the background to reveal the data" : "Move your cursor to reveal the data"}</span>
+      <span>{reduced ? "Reduced motion enabled" : touch ? "Tap the background to reveal data" : "Move your cursor to reveal the data"}</span>
       {!reduced && <button type="button" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Enable background motion" : "Pause background motion"}</button>}
     </footer>
   </>;
