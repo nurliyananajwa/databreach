@@ -24,6 +24,7 @@
   --coral-soft: #fff1ed;
   --r: 22px;
   --sheet: 36px;          /* height of the sheet's rounded top inside the band */
+  --sheet-r: 28px;        /* its corner: smaller than the 30px tab inset, so the first tab sits on the flat part */
   font-family: "Manrope Variable", system-ui, sans-serif;
   font-size: 15px;
   color: var(--ink);
@@ -47,7 +48,7 @@
   background: radial-gradient(closest-side, #ffffffd9, #ffffff00); pointer-events: none;
 }
 .hub-band-page::after { /* the rounded top of the sheet */
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--sheet); background: var(--bg); border-radius: var(--sheet) var(--sheet) 0 0; z-index: 2;
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--sheet); background: var(--bg); border-radius: var(--sheet-r) var(--sheet-r) 0 0; z-index: 2;
 }
 .hub-bar { position: relative; z-index: 3; display: flex; align-items: center; gap: 14px; padding: 18px 30px; }
 .hub-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; color: var(--navy); text-decoration: none; }
@@ -112,6 +113,8 @@
 .hub-tab[aria-current="true"]::before, .hub-tab[aria-current="true"]::after { content: ""; position: absolute; bottom: 0; width: 20px; height: 20px; pointer-events: none; }
 .hub-tab[aria-current="true"]::before { left: -20px; background: radial-gradient(circle at 0 0, transparent 20px, var(--bg) 20.5px); }
 .hub-tab[aria-current="true"]::after { right: -20px; background: radial-gradient(circle at 100% 0, transparent 20px, var(--bg) 20.5px); }
+/* the first tab sits by the sheet's own rounded corner, so no left foot there */
+.hub-tab[aria-current="true"]:first-child::before { display: none; }
 .hub-tab[aria-current="true"] .ic { background: var(--accent); border-color: var(--accent); color: #fff; border-radius: 10px; }
 .hub-tab[aria-current="true"] small { color: var(--muted); }
 .hub-tab .metric { margin-left: auto; flex: none; font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 12px; padding: 3px 9px; white-space: nowrap; }
@@ -221,7 +224,7 @@
   .hub-grid > .hub-card.wide, .hub-grid > .hub-side { grid-column: 1 / -1; grid-row: auto; }
 }
 @media (max-width: 720px) {
-  .hub { padding: 0; }
+  .hub { padding: 0; --sheet-r: 16px; } /* tabs are 18px from the edge on phones */
   .hub-frame { border-radius: 0; min-height: 100vh; }
   .hub-hero > div:first-child { min-width: 0; }
   .hub-bar { flex-wrap: wrap; padding: 14px 18px; }
