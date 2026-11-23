@@ -20,7 +20,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-MY">
+    // data-scroll-behavior: Next.js 16 turns smooth scrolling off while it
+    // changes pages, so a new page opens at the top instantly.
+    <html lang="en-MY" data-scroll-behavior="smooth">
       <body>{children}</body>
     </html>
   );
