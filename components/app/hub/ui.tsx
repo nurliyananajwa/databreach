@@ -19,12 +19,13 @@ export function Card({ icon, title, sub, href, delay = 0, className = "", tour, 
   );
 }
 
-// "Barcode" meter: n thin bars, the first `on` filled. Bars from `hotFrom` on turn red.
+// Hour-cell meter: n small squares, 24 per row, the first `on` filled.
+// Cells from `hotFrom` on turn coral.
 export function Bars({ n = 48, on, tone = "on", hotFrom }: { n?: number; on: number; tone?: "on" | "hot" | "ok"; hotFrom?: number }) {
   return (
     <div className="hub-bars" aria-hidden="true">
       {Array.from({ length: n }, (_, i) => (
-        <i key={i} className={i < on ? (hotFrom !== undefined && i >= hotFrom ? "hot" : tone) : ""} style={{ animationDelay: `${0.15 + i * 0.008}s` }} />
+        <i key={i} className={i < on ? (hotFrom !== undefined && i >= hotFrom ? "hot" : tone) : ""} style={{ animationDelay: `${0.15 + i * 0.012}s` }} />
       ))}
     </div>
   );

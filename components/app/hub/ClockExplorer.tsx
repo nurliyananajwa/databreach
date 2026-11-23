@@ -32,9 +32,9 @@ export default function ClockExplorer({ code, awareAt, deadlines }: { code: stri
         type="button"
         className="hub-clockbar"
         onClick={() => dialog.current?.showModal()}
-        onPointerMove={(e) => {
-          const r = e.currentTarget.getBoundingClientRect();
-          setHover(Math.max(0, Math.min(71, Math.floor(((e.clientX - r.left) / r.width) * 72))));
+        onPointerOver={(e) => {
+          const i = (e.target as HTMLElement).dataset.i;
+          if (i !== undefined) setHover(Number(i));
         }}
         onPointerLeave={() => setHover(null)}
         aria-label={`${code}: ${used} of 72 hours used. Open all deadlines`}
@@ -42,11 +42,11 @@ export default function ClockExplorer({ code, awareAt, deadlines }: { code: stri
         <span className="hub-legend"><span>{72 - used} h left</span><span>See all deadlines →</span></span>
         <span className="hub-bars">
           {Array.from({ length: 72 }, (_, i) => (
-            <i key={i} className={i < used ? (i >= 48 ? "hot" : "on") : ""} data-hover={hover === i || undefined} style={{ animationDelay: `${0.15 + i * 0.008}s` }} />
+            <i key={i} data-i={i} className={i < used ? (i >= 48 ? "hot" : "on") : ""} data-hover={hover === i || undefined} style={{ animationDelay: `${0.15 + i * 0.012}s` }} />
           ))}
         </span>
         {hover !== null && (
-          <span className="hub-tip" style={{ left: `${((hover + 0.5) / 72) * 100}%` }} aria-hidden="true">
+          <span className="hub-tip" style={{ left: `${Math.min(80, Math.max(20, (((hover % 24) + 0.5) / 24) * 100))}%` }} aria-hidden="true">
             <b>Hour {hover + 1}</b> {when.format(new Date(start + hover * H))}
             {hover === used && " · now"}
           </span>

@@ -13,9 +13,7 @@ import type { HomeData } from "./page";
 const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 const STEP: Record<string, number> = { reported: 0, assessing: 1, decided: 2, notified: 3, follow_up: 3, closed: 4 };
 const STATUS_LABEL: Record<string, string> = { reported: "Reported", assessing: "Assessing", decided: "Decided", notified: "Notified", follow_up: "Follow-up", closed: "Closed" };
-// One colour per person in the activity log, picked from their name.
-const AV = ["#2855ff", "#ff6b4d", "#13206b", "#7b61ff", "#c2410c"];
-const avColour = (name: string) => AV[[...name].reduce((n, c) => n + c.charCodeAt(0), 0) % AV.length];
+const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeData; panel?: string }) {
   const first = me.fullName.split(" ")[0];
@@ -58,21 +56,29 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
 
   return (
     <>
-      <PageHeader title={greeting.t} intro={greeting.p} eyebrow={me.orgName} big art>
-        <span className="hub-pill-light">Role: <b>{me.role === "dp_lead" ? "Compliance Officer" : me.role === "manager" ? "Manager" : "Staff"}</b></span>
-        <span className="hub-pill-light">Status: {d.deadline ? <b className="warn">Clock running</b> : <b className="ok">All clear</b>}</span>
-      </PageHeader>
-
-      <nav className="hub-tabs" aria-label="Quick places">
-        {tabs.map((t) => (
-          <Link key={t.title + t.href} href={t.href} className="hub-tab" aria-current={t.current ? "true" : undefined}>
-            <span className="ic"><Icon name={t.icon} /></span>
-            <span style={{ minWidth: 0 }}><b>{t.title}</b><small>{t.sub}</small></span>
-            {t.metric && <span className="metric"><b>{t.metric[1]}</b> {t.metric[0]}</span>}
-            <Pending />
-          </Link>
-        ))}
-      </nav>
+      <PageHeader
+        title={greeting.t}
+        intro={greeting.p}
+        eyebrow={me.orgName}
+        big
+        ring={d.deadline ? hoursUsed : null}
+        meta={<>
+          <span>Signed in as <b>{me.role === "dp_lead" ? "Compliance Officer" : me.role === "manager" ? "Manager" : "Staff"}</b></span>
+          <span className={d.deadline ? "warn" : "ok"}>{d.deadline ? "Clock running" : "All clear"}</span>
+        </>}
+        below={
+          <nav className="hub-places" aria-label="Quick places">
+            {tabs.map((t) => (
+              <Link key={t.title + t.href} href={t.href} aria-current={t.current ? "true" : undefined}>
+                <Icon name={t.icon} />
+                <span><b>{t.title}</b><small>{t.sub}</small></span>
+                {t.metric && t.metric[1] !== "0" && <span className="count" aria-label={`${t.metric[1]} open`}>{t.metric[1]}</span>}
+                <Pending />
+              </Link>
+            ))}
+          </nav>
+        }
+      />
 
       <main id="main" className="hub-main">
         <div className="hub-grid">
@@ -157,7 +163,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             <div className="hub-ch">
               <div>
                 <h2><Icon name={side === "ai" ? "log" : me.role === "manager" ? "list" : "bell"} />{side === "ai" ? "AI report helper" : feedTitle}</h2>
-                <p className="sub">{side === "ai" ? "Coming soon" : me.role === "manager" ? "Every change, saved and locked" : "Deadlines and reminders for you"}</p>
+                <p className="sub">{side === "ai" ? "Coming soon" : me.role === "manager" ? <><Icon name="lock" className="size-3" /> Locked: entries can never be edited</> : "Deadlines and reminders for you"}</p>
               </div>
               {side === "feed" && me.role === "manager" && <Link href="/audit" className="hub-go" aria-label="Open the audit log"><Icon name="arrow" className="size-4" /></Link>}
             </div>
@@ -168,30 +174,27 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                 <p>Suggests the incident type and the data places involved from a staff report. A person always confirms.</p>
               </div>
             ) : (
-              <div className="hub-feed">
+              <div className="hub-ledger">
                 {me.role === "manager"
                   ? d.audit.length
                     ? d.audit.map((a) => (
-                        <div key={a.id} className="hub-msg">
-                          <span className="hub-av" aria-hidden="true" style={{ background: a.actor === "System" ? "#9aa1b8" : avColour(a.actor) }}>{a.actor.charAt(0)}</span>
-                          <div><span className="meta"><b>{a.actor}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{describeChange(a.table_name, a.action)}</p></div>
+                        <div key={a.id} className="hub-row">
+                          <time>{kl.format(new Date(a.created_at))}</time>
+                          <p><b>{a.actor}</b> {lower(describeChange(a.table_name, a.action))}</p>
                         </div>
                       ))
                     : <Empty icon="list" title="Quiet so far" body="Every change anyone makes is listed here, and can never be edited." />
                   : d.alerts.length
                     ? d.alerts.map((a) => (
-                        <div key={a.id} className={`hub-msg${a.level !== "info" ? " alert" : ""}`}>
-                          <span className="hub-av" aria-hidden="true">!</span>
-                          <div><span className="meta"><b>{a.level !== "info" ? "Deadline" : "Reminder"}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{a.message}</p></div>
+                        <div key={a.id} className={`hub-row${a.level !== "info" ? " urgent" : ""}`}>
+                          <time>{kl.format(new Date(a.created_at))}</time>
+                          <p><b>{a.level !== "info" ? "Deadline" : "Reminder"}</b> {a.message}</p>
                         </div>
                       ))
                     : <Empty icon="bell" title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
               </div>
             )}
-            <div className="hub-switch">
-              <Link href="/home" aria-current={side === "feed" ? "true" : undefined}>{feedTitle}</Link>
-              <Link href="/home?panel=ai" aria-current={side === "ai" ? "true" : undefined}>AI helper <span className="hub-tag" style={{ marginLeft: 4 }}>Soon</span></Link>
-            </div>
+            {side === "ai" && <Link href="/home" className="hub-back">← Back to {feedTitle.toLowerCase()}</Link>}
           </section>
 
           {me.role !== "staff" && (
