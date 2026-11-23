@@ -12,7 +12,7 @@ export function Card({ icon, title, sub, href, delay = 0, className = "", tour, 
           <h2><Icon name={icon} />{title}</h2>
           {sub && <p className="sub">{sub}</p>}
         </div>
-        {href && <Link href={href} className="hub-go" aria-label={`Open ${title}`}><Icon name="arrow" className="size-4" /><Pending /></Link>}
+        {href && <Link href={href} className="hub-view" aria-label={`View ${title}`}>View<Pending /></Link>}
       </div>
       {children}
     </section>

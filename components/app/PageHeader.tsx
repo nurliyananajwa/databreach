@@ -36,13 +36,13 @@ function ClockRing({ used }: { used: number | null }) {
   return (
     <div className="hub-ring" role="img" aria-label={used === null ? "No deadline clock running" : `${Math.floor(h)} of 72 hours used`}>
       <svg viewBox="0 0 240 240" className="hub-ring-svg">
-        <circle cx="120" cy="120" r={R} fill="none" stroke="#ffffff73" strokeWidth="12" />
+        <circle cx="120" cy="120" r={R} fill="none" stroke="#ffffff1f" strokeWidth="12" />
         {used !== null && (
-          <circle className="arc" cx="120" cy="120" r={R} fill="none" stroke={hot ? "#ff6b4d" : "#2855ff"} strokeWidth="12" strokeLinecap="round"
+          <circle className="arc" cx="120" cy="120" r={R} fill="none" stroke={hot ? "#ff6b4d" : "#8fa6ff"} strokeWidth="12" strokeLinecap="round"
             strokeDasharray={`${(h / 72) * C} ${C}`} transform="rotate(-90 120 120)" style={{ ["--c" as string]: C }} />
         )}
         {Array.from({ length: 12 }, (_, i) => (
-          <line key={i} x1="120" y1="8" x2="120" y2={i % 3 ? 14 : 18} stroke="#ffffffb3" strokeWidth="2" strokeLinecap="round" transform={`rotate(${i * 30} 120 120)`} />
+          <line key={i} x1="120" y1="8" x2="120" y2={i % 3 ? 14 : 18} stroke="#ffffff66" strokeWidth="2" strokeLinecap="round" transform={`rotate(${i * 30} 120 120)`} />
         ))}
       </svg>
       <GlassShield />

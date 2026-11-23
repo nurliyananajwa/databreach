@@ -1,17 +1,21 @@
 /* Signed-in app look ("Breach Response Hub"). Scoped to .hub so the landing
    page is untouched. Uses the landing page palette: royal blue (the 3D card),
    coral for deadlines, cream background, ink text. No green. */
-/* Signed-in app look ("Breach Response Hub"), modelled on the Mediora
-   reference: a pale, airy header with a glass picture, a light title,
-   raised folder tabs and a rounded sheet, all inside one rounded frame.
-   Colours come from the landing page: royal blue (made pale for the
-   header), coral for deadlines, ink text. No sky blue, no green.
+/* Signed-in app look ("Breach Response Hub"). The layout was first
+   inspired by the Mediora concept on Dribbble, then redesigned: a deep
+   navy header where coral means "deadline", the shield inside the live
+   72-hour clock ring, folder tabs into a rounded sheet, hour cells and a
+   locked ledger. No sky blue, no green.
    Scoped to .hub so the landing page is untouched. */
 .hub {
-  --band-a: #b4c2ff;      /* pale royal blue, left/right */
-  --band-b: #cdd7ff;      /* lighter middle */
-  --navy: #13206b;        /* text on the pale header */
-  --navy-2: #3a4584;      /* secondary text on the header (5:1 on the darkest band) */
+  --band-a: #0f1840;      /* deep navy header, edges */
+  --band-b: #18245c;      /* a little lighter in the middle */
+  --on-band: #fff;        /* text on the header */
+  --on-band-2: #b9c2e6;   /* secondary text on the header (9:1 on the band) */
+  --glass: #ffffff14;     /* see-through buttons on the header */
+  --glass-line: #ffffff2e;
+  --navy: #13206b;        /* dark text and tooltips on light surfaces */
+  --navy-2: #3a4584;
   --accent: #2855ff;
   --accent-soft: #eef2ff;
   --bg: #f4f5f9;          /* the sheet */
@@ -38,24 +42,24 @@
 
 /* ---------- header band ---------- */
 .hub-band {
-  position: relative; overflow: hidden; color: var(--navy);
+  position: relative; overflow: hidden; color: var(--on-band);
   background: linear-gradient(90deg, var(--band-a) 0%, var(--band-b) 50%, var(--band-a) 100%); /* horizontal, so the bar and the page header join without a seam */
 }
 .hub-band-top { overflow: visible; z-index: 5; } /* lets menu labels hang below the bar */
 .hub-band-page { padding-bottom: var(--sheet); }
-.hub-band-page::before { /* soft light behind the picture, like Mediora */
-  content: ""; position: absolute; right: -120px; top: -40%; width: 760px; height: 560px; border-radius: 50%;
-  background: radial-gradient(closest-side, #ffffffd9, #ffffff00); pointer-events: none;
+.hub-band-page::before { /* faint coral glow behind the clock ring, kept off the top edge so the bar and hero join cleanly */
+  content: ""; position: absolute; right: -40px; top: 10px; width: 560px; height: 420px; border-radius: 50%;
+  background: radial-gradient(closest-side, #ff6b4d2b, #ff6b4d00); pointer-events: none;
 }
 .hub-band-page::after { /* the rounded top of the sheet */
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--sheet); background: var(--bg); border-radius: var(--sheet-r) var(--sheet-r) 0 0; z-index: 2;
 }
 .hub-bar { position: relative; z-index: 3; display: flex; align-items: center; gap: 14px; padding: 18px 30px; }
-.hub-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; color: var(--navy); text-decoration: none; }
-.hub-logo i { width: 38px; height: 38px; border-radius: 12px; background: #ffffff8c; border: 1px solid #fff; display: grid; place-items: center; color: var(--accent); }
-.hub-nav { margin: 0 auto; display: flex; gap: 2px; padding: 4px; border-radius: 30px; background: #ffffff59; border: 1px solid #ffffffcc; backdrop-filter: blur(10px); }
-.hub-nav a { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px; border-radius: 24px; color: var(--navy-2); font-size: 13px; text-decoration: none; transition: background .25s, color .25s; }
-.hub-nav a:hover { background: #ffffff8c; color: var(--navy); }
+.hub-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; color: var(--on-band); text-decoration: none; }
+.hub-logo i { width: 38px; height: 38px; border-radius: 12px; background: var(--glass); border: 1px solid var(--glass-line); display: grid; place-items: center; color: #fff; }
+.hub-nav { margin: 0 auto; display: flex; gap: 2px; padding: 4px; border-radius: 30px; background: #ffffff10; border: 1px solid #ffffff24; backdrop-filter: blur(10px); }
+.hub-nav a { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px; border-radius: 24px; color: var(--on-band-2); font-size: 13px; text-decoration: none; transition: background .25s, color .25s; }
+.hub-nav a:hover { background: #ffffff1a; color: var(--on-band); }
 .hub-nav a[aria-current="page"] { background: #fff; color: var(--ink); box-shadow: 0 4px 14px #13206b1f; }
 .hub-nav a .lbl { display: none; }
 .hub-nav a[aria-current="page"] .lbl { display: inline; }
@@ -69,13 +73,13 @@
 }
 .hub-nav a:not([aria-current="page"]):is(:hover, :focus-visible)::after { opacity: 1; transform: translate(-50%, 0); }
 .hub-me { display: flex; align-items: center; gap: 10px; }
-.hub-bell { position: relative; width: 40px; height: 40px; border-radius: 50%; background: #ffffff8c; border: 1px solid #fff; display: grid; place-items: center; color: var(--navy); transition: background .2s; }
-.hub-bell:hover { background: #fff; }
-.hub-bell[aria-current="page"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+.hub-bell { position: relative; width: 40px; height: 40px; border-radius: 50%; background: var(--glass); border: 1px solid var(--glass-line); display: grid; place-items: center; color: var(--on-band); transition: background .2s; }
+.hub-bell:hover { background: #ffffff26; }
+.hub-bell[aria-current="page"] { background: #fff; color: var(--navy); border-color: #fff; }
 .hub-badge { position: absolute; top: -3px; right: -3px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--coral); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--band-b); }
 /* Ask AI: a round button like the bell; the label shows on hover */
-.hub-ai { position: relative; width: 40px; height: 40px; border-radius: 50%; background: #ffffff8c; border: 1px solid #fff; display: grid; place-items: center; color: var(--accent); transition: background .2s; }
-.hub-ai:hover { background: #fff; }
+.hub-ai { position: relative; width: 40px; height: 40px; border-radius: 50%; background: var(--glass); border: 1px solid var(--glass-line); display: grid; place-items: center; color: #ffb3a3; transition: background .2s; }
+.hub-ai:hover { background: #ffffff26; }
 .hub-ai .lbl, .hub-ai .hub-tag { display: none; }
 
 /* explorable 72-hour bar */
@@ -118,6 +122,21 @@
 .hub-tour-foot { font-size: 12px !important; color: var(--muted) !important; margin-top: 10px !important; }
 @media (prefers-reduced-motion: reduce) { .hub-tour-spot, .hub-tour-card { transition: none; animation: none; } }
 
+/* Notifications list: plain rows like the ledger (no chat bubbles) */
+.hub-feed { display: flex; flex-direction: column; margin-top: 4px; }
+.hub-msg { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.hub-msg:last-child { border-bottom: 0; }
+.hub-msg > div { flex: 1; min-width: 0; }
+.hub-msg .meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; margin-bottom: 3px; }
+.hub-msg .meta b { font-weight: 600; font-size: 13px; }
+.hub-msg p { font-size: 13px; line-height: 1.5; color: #3d4048; }
+.hub-msg time { font-size: 11px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.hub-msg.alert { box-shadow: inset 3px 0 0 var(--coral); padding-left: 12px; }
+.hub-msg.alert .meta b { color: #b3411f; }
+.hub-msg.alert .hub-av { background: var(--coral); }
+.hub-pill-light { background: #fff; color: var(--ink); border-radius: 20px; padding: 7px 12px; font-size: 12px; }
+.hub-pill-light b { font-weight: 600; }
+
 /* side panel as a ruled ledger: the locked record */
 .hub-ledger { margin-top: 12px; border-top: 1px solid var(--line); }
 .hub-row { display: grid; grid-template-columns: 74px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.45; }
@@ -155,32 +174,32 @@
 .hub-search li.none { padding: 12px 10px; color: var(--muted); font-size: 14px; }
 .hub-search-foot { margin: 0; padding: 10px 18px 14px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); }
 
-.hub-chip { display: flex; align-items: center; gap: 8px; padding: 5px 5px 5px 14px; border-radius: 30px; background: #fff; color: var(--ink); font-size: 13px; }
+.hub-chip { display: flex; align-items: center; gap: 8px; padding: 5px 5px 5px 14px; border-radius: 30px; background: var(--glass); border: 1px solid var(--glass-line); color: var(--on-band); font-size: 13px; }
 .hub-av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #fff; background: var(--accent); flex: none; }
 .hub-out:disabled { opacity: .7; cursor: progress; text-decoration: none; }
-.hub-out { color: var(--navy); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; padding: 10px 0; background: none; border: 0; cursor: pointer; font: inherit; }
+.hub-out { color: var(--on-band); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; padding: 10px 0; background: none; border: 0; cursor: pointer; font: inherit; }
 
 /* page hero (continues the band) */
 .hub-hero { position: relative; z-index: 3; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 14px 30px 30px; }
 .hub-hero > div:first-child { max-width: 560px; min-width: 300px; }
 .hub-hero.big { align-items: center; padding-top: 10px; padding-bottom: 96px; }
-.hub-hero small { font-size: 13px; color: var(--navy-2); }
-.hub-hero h1 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(40px, 5vw, 66px); letter-spacing: -.01em; line-height: 1; margin-top: 6px; color: var(--navy); }
-.hub-hero p { color: var(--navy-2); margin-top: 10px; max-width: 440px; line-height: 1.55; }
+.hub-hero small { font-size: 13px; color: var(--on-band-2); }
+.hub-hero h1 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(40px, 5vw, 66px); letter-spacing: -.01em; line-height: 1; margin-top: 6px; color: var(--on-band); }
+.hub-hero p { color: var(--on-band-2); margin-top: 10px; max-width: 440px; line-height: 1.55; }
 .hub-hero .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 /* Home: role and status under the intro */
 .hub-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; font-size: 12px; }
-.hub-meta span { background: #ffffffb3; border: 1px solid #fff; border-radius: 20px; padding: 6px 12px; color: var(--navy); }
+.hub-meta span { background: var(--glass); border: 1px solid var(--glass-line); border-radius: 20px; padding: 6px 12px; color: var(--on-band); }
 .hub-meta b { font-weight: 600; }
-.hub-meta .warn { background: var(--coral-soft); border-color: #ffd6cb; color: #b3411f; font-weight: 600; }
-.hub-meta .ok { color: var(--accent); font-weight: 600; }
+.hub-meta .warn { background: #ff6b4d26; border-color: #ff6b4d66; color: #ffb3a3; font-weight: 600; }
+.hub-meta .ok { color: #9fb4ff; font-weight: 600; }
 
 /* the clock ring around the glass shield (the live 72-hour clock) */
 .hub-ring { position: relative; flex: none; width: 236px; height: 236px; margin: -6px 10px -8px auto; }
 .hub-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.hub-ring .arc { animation: hub-arc 1.6s cubic-bezier(.2,.8,.2,1) .2s backwards; filter: drop-shadow(0 4px 10px #2855ff55); }
+.hub-ring .arc { filter: drop-shadow(0 4px 12px #8fa6ff66); animation: hub-arc 1.6s cubic-bezier(.2,.8,.2,1) .2s backwards;  }
 @keyframes hub-arc { from { stroke-dasharray: 0 var(--c); } }
-.hub-shield { position: absolute; left: 50%; top: 47%; width: 112px; transform: translate(-50%, -50%); filter: drop-shadow(0 18px 24px #13206b33); animation: hub-float 7s ease-in-out infinite; }
+.hub-shield { position: absolute; left: 50%; top: 47%; width: 112px; transform: translate(-50%, -50%); filter: drop-shadow(0 18px 28px #00000066); animation: hub-float 7s ease-in-out infinite; }
 .hub-shield .pulse { stroke-dasharray: 260; stroke-dashoffset: 260; animation: hub-pulse 3.2s ease-in-out infinite; }
 @keyframes hub-float { 50% { translate: 0 -6px; } }
 .hub-ring-label { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); white-space: nowrap; background: #fff; border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--navy-2); box-shadow: 0 6px 16px #13206b1f; }
@@ -188,12 +207,12 @@
 
 /* folder tabs: sit on the band, the current one rises and joins the sheet */
 .hub-tabs { position: relative; z-index: 4; display: flex; align-items: flex-end; gap: 12px; padding: 0 30px; margin-top: calc(-58px - var(--sheet)); height: 58px; }
-.hub-tab { flex: 1; min-width: 0; max-width: 270px; height: 58px; border-radius: 20px 20px 0 0; background: #ffffff6b; border: 1px solid #ffffffcc; border-bottom: 0; display: flex; align-items: center; gap: 10px; padding: 0 14px; color: var(--navy); text-decoration: none; transition: background .25s; backdrop-filter: blur(8px); }
-.hub-tab:hover { background: #ffffffa6; }
-.hub-tab .ic { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #fff; background: #ffffff8c; display: grid; place-items: center; flex: none; }
+.hub-tab { flex: 1; min-width: 0; max-width: 270px; height: 58px; border-radius: 20px 20px 0 0; background: #ffffff12; border: 1px solid #ffffff24; border-bottom: 0; display: flex; align-items: center; gap: 10px; padding: 0 14px; color: var(--on-band); text-decoration: none; transition: background .25s; backdrop-filter: blur(8px); }
+.hub-tab:hover { background: #ffffff22; }
+.hub-tab .ic { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--glass-line); background: var(--glass); display: grid; place-items: center; flex: none; }
 .hub-tab .ic svg { width: 16px; height: 16px; }
 .hub-tab b { display: block; font-weight: 600; font-size: 13px; }
-.hub-tab small { display: block; font-size: 11px; color: var(--navy-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hub-tab small { display: block; font-size: 11px; color: var(--on-band-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* The current tab is only a little taller and grows out of the sheet:
    the small curved "feet" join it to the sheet so it doesn't float. */
 .hub-tab[aria-current="true"] { position: relative; background: var(--bg); color: var(--ink); height: 68px; border-color: var(--bg); backdrop-filter: none; overflow: visible; }
@@ -226,7 +245,10 @@
 .hub-ch h2 svg { width: 17px; height: 17px; color: var(--accent); }
 .hub-ch .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .hub-go { margin-left: auto; width: 32px; height: 32px; flex: none; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; color: var(--ink); text-decoration: none; transition: background .2s, color .2s, transform .25s; }
-.hub-go:hover { background: var(--ink); color: #fff; transform: rotate(45deg); }
+.hub-go:hover { background: var(--ink); color: #fff; }
+/* card link: a small "View" label */
+.hub-view { margin-left: auto; flex: none; align-self: flex-start; padding: 5px 10px; border-radius: 9px; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); text-decoration: none; transition: background .2s, color .2s; }
+.hub-view:hover { background: var(--accent); color: #fff; }
 .hub-big { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 52px; letter-spacing: -.01em; line-height: 1; margin: 24px 0 20px; display: flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; }
 .hub-big small { font-family: "Manrope Variable", system-ui, sans-serif; font-size: 15px; color: var(--muted); letter-spacing: 0; }
 .hub-dot { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 700; }
