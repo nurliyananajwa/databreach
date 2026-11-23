@@ -4,22 +4,18 @@ import PageHeader from "@/components/app/PageHeader";
 import Icon, { type IconName } from "@/components/app/hub/icons";
 import { Bars, Card, Empty } from "@/components/app/hub/ui";
 import CountUp from "@/components/app/hub/CountUp";
+import ClockExplorer from "@/components/app/hub/ClockExplorer";
+import IncidentSteps from "@/components/app/hub/IncidentSteps";
+import { describeChange } from "@/lib/activity";
 import Pending from "@/components/app/hub/Pending";
 import type { HomeData } from "./page";
 
 const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 const STEP: Record<string, number> = { reported: 0, assessing: 1, decided: 2, notified: 3, follow_up: 3, closed: 4 };
-const STEPS = ["Locate", "Assess", "Notify", "Record"];
 const STATUS_LABEL: Record<string, string> = { reported: "Reported", assessing: "Assessing", decided: "Decided", notified: "Notified", follow_up: "Follow-up", closed: "Closed" };
-const day = new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 // One colour per person in the activity log, picked from their name.
 const AV = ["#2855ff", "#ff6b4d", "#13206b", "#7b61ff", "#c2410c"];
 const avColour = (name: string) => AV[[...name].reduce((n, c) => n + c.charCodeAt(0), 0) % AV.length];
-const AUDIT_WORDS: Record<string, string> = {
-  organisations: "organisation setting", data_sets: "data place", data_fields: "data field", incidents: "incident", decisions: "decision", notifications: "notice",
-  tasks: "task", profiles: "user", invitations: "invitation", assessments: "assessment", deadlines: "deadline",
-};
-const ACTION: Record<string, string> = { insert: "added", update: "changed", delete: "removed" };
 
 export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeData; panel?: string }) {
   const first = me.fullName.split(" ")[0];
@@ -82,7 +78,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         <div className="hub-grid">
           {me.role === "staff" ? (
             <>
-              <Card icon="plus" title="Report a breach" sub="Lost, sent to the wrong person, or seen by someone who shouldn't" className="" delay={0.05}>
+              <Card tour="report" icon="plus" title="Report a breach" sub="Lost, sent to the wrong person, or seen by someone who shouldn't" className="" delay={0.05}>
                 <p className="hub-big" style={{ fontSize: 34 }}>Something happened?</p>
                 <Link href="/report" className="hub-btn">Report it now →<Pending /></Link>
               </Card>
@@ -95,12 +91,15 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             </>
           ) : (
             <>
-              <Card icon="clock" title="72-hour clock" sub={d.deadline ? `${d.deadline.incidents?.code} · due ${kl.format(new Date(d.deadline.due_at))}` : "Commissioner deadline"} href={d.deadline ? "/incidents" : undefined} delay={0.05}>
+              <Card tour="clock" icon="clock" title="72-hour clock" sub={d.deadline ? `${d.deadline.incidents?.code} · due ${kl.format(new Date(d.deadline.due_at))}` : "Commissioner deadline"} href={d.deadline ? "/incidents" : undefined} delay={0.05}>
                 {d.deadline ? (
                   <>
                     <p className="hub-big"><CountUp value={Math.floor(hoursUsed)} /><small>h used</small><span className="hub-dot warn">!</span></p>
-                    <div className="hub-legend"><span>{Math.floor(hoursLeft!)} h left</span><span>72 h</span></div>
-                    <Bars n={72} on={Math.floor(hoursUsed)} hotFrom={48} />
+                    {d.deadline.incidents ? (
+                      <ClockExplorer code={d.deadline.incidents.code} awareAt={d.deadline.incidents.aware_at} deadlines={d.deadline.incidents.deadlines ?? []} />
+                    ) : (
+                      <Bars n={72} on={Math.floor(hoursUsed)} hotFrom={48} />
+                    )}
                   </>
                 ) : (
                   <Empty icon="clock" title="No clock running" body="When a breach is reported, its 72-hour countdown starts here." />
@@ -108,7 +107,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
               </Card>
 
               {me.role === "manager" ? (
-                <Card icon="stamp" title="Waiting for you" sub="Notice drafts to approve" href="/approvals" delay={0.12}>
+                <Card tour="approve" icon="stamp" title="Waiting for you" sub="Notice drafts to approve" href="/approvals" delay={0.12}>
                   {d.approvals ? (
                     <>
                       <p className="hub-big"><CountUp value={d.approvals} /><small>to approve</small><span className="hub-dot warn">!</span></p>
@@ -120,7 +119,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                   )}
                 </Card>
               ) : (
-                <Card icon="db" title="Data inventory" sub="Where personal data is kept" href="/inventory" delay={0.12}>
+                <Card tour="inventory" icon="db" title="Data inventory" sub="Where personal data is kept" href="/inventory" delay={0.12}>
                   {d.sets ? (
                     <>
                       <p className="hub-big"><CountUp value={d.sets} /><small>place{d.sets === 1 ? "" : "s"}</small></p>
@@ -154,7 +153,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
           )}
 
           {/* right column: alerts or activity, plus the AI helper tab (coming soon) */}
-          <section className="hub-card hub-side" style={{ animationDelay: ".26s" }}>
+          <section className="hub-card hub-side" style={{ animationDelay: ".26s" }} data-tour="side">
             <div className="hub-ch">
               <div>
                 <h2><Icon name={side === "ai" ? "log" : me.role === "manager" ? "list" : "bell"} />{side === "ai" ? "AI report helper" : feedTitle}</h2>
@@ -175,7 +174,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                     ? d.audit.map((a) => (
                         <div key={a.id} className="hub-msg">
                           <span className="hub-av" aria-hidden="true" style={{ background: a.actor === "System" ? "#9aa1b8" : avColour(a.actor) }}>{a.actor.charAt(0)}</span>
-                          <div><span className="meta"><b>{a.actor}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{capital(ACTION[a.action] ?? a.action)} {article(AUDIT_WORDS[a.table_name] ?? a.table_name)}</p></div>
+                          <div><span className="meta"><b>{a.actor}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{describeChange(a.table_name, a.action)}</p></div>
                         </div>
                       ))
                     : <Empty icon="list" title="Quiet so far" body="Every change anyone makes is listed here, and can never be edited." />
@@ -197,7 +196,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
 
           {me.role !== "staff" && (
             <>
-              <Card className="wide" icon="alert" title="Incident progress" sub={top ? `${top.code} · ${top.title}` : "The four steps of every breach"} href={top ? "/incidents" : undefined} delay={0.33}>
+              <Card tour="progress" className="wide" icon="alert" title="Incident progress" sub={top ? `${top.code} · ${top.title}` : "The four steps of every breach"} href={top ? "/incidents" : undefined} delay={0.33}>
                 {top ? (
                   <>
                     <div className="hub-figs">
@@ -207,22 +206,13 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                         <div><dt>Stage</dt><dd>{STATUS_LABEL[top.status] ?? top.status}</dd></div>
                       </dl>
                     </div>
-                    <ol className="hub-timeline">
-                      {STEPS.map((st, i) => {
-                        const at = Math.min(3, STEP[top.status] ?? 0);
-                        const when = [top.reportedAt, top.assessedAt, top.notifiedAt, null][i];
-                        return (
-                          <li key={st} data-state={i < at ? "done" : i === at ? "now" : "next"}>
-                            <i aria-hidden="true" />
-                            <b>{i + 1}. {st}</b>
-                            <small>{when ? day.format(new Date(when)) : i === at ? "In progress" : "Not yet"}</small>
-                          </li>
-                        );
-                      })}
-                    </ol>
+                    <IncidentSteps at={Math.min(3, STEP[top.status] ?? 0)} dates={[top.reportedAt, top.assessedAt, top.notifiedAt, null]} />
                   </>
                 ) : (
-                  <Empty icon="alert" title="No open incident" body="When a breach is reported, its four steps show here with the date each was done." />
+                  <>
+                    <p className="muted" style={{ fontSize: 13, margin: "14px 0 4px" }}>No open incident. Click a step to see how every breach is handled.</p>
+                    <IncidentSteps at={null} />
+                  </>
                 )}
               </Card>
               <Card icon="check" title={me.role === "manager" ? "Open tasks" : "Tasks"} sub="Follow-up work during a breach" href="/tasks" className="wide" delay={0.4}>
@@ -252,6 +242,3 @@ function TaskRows({ tasks }: { tasks: { id: string; title: string; due_at: strin
   );
 }
 
-const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-// "an incident" but "a user": u sounding like "you" takes "a".
-const article = (s: string) => (/^(?:[aeio]|u(?!s))/i.test(s) ? "an " : "a ") + s;

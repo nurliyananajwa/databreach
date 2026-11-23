@@ -10,7 +10,7 @@ import Pending from "./hub/Pending";
 export default function HubNav({ items }: { items: { href: string; label: string }[] }) {
   const pathname = usePathname();
   return (
-    <nav className="hub-nav" aria-label="App">
+    <nav className="hub-nav" aria-label="App" data-tour="nav">
       {items.map((it) => {
         const active = pathname === it.href || pathname.startsWith(it.href + "/");
         return (

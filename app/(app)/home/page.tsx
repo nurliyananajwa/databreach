@@ -1,6 +1,7 @@
 import { requirePage, type CurrentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import HomeView from "./HomeView";
+import type { Deadline as ClockDeadline } from "@/components/app/hub/ClockExplorer";
 
 export const metadata = { title: "Home | PDPA Breach Response Tracker" };
 
@@ -10,7 +11,7 @@ type RawIncident = {
 };
 const earliest = (xs?: (string | null)[]) => (xs ?? []).filter((x): x is string => !!x).sort()[0] ?? null;
 
-type Deadline = { due_at: string; incidents: { id: string; code: string; title: string; status: string } | null };
+type Deadline = { due_at: string; incidents: { id: string; code: string; title: string; status: string; aware_at: string; deadlines: ClockDeadline[] } | null };
 
 async function load(me: CurrentUser) {
   const db = await createClient();
@@ -18,7 +19,7 @@ async function load(me: CurrentUser) {
   const names = me.role === "manager" ? db.from("profiles").select("id, full_name") : Promise.resolve({ data: [] });
   const [deadlines, incidents, sets, fields, tasks, approvals, people, invites, alerts, audit] = await Promise.all([
     lead
-      ? db.from("deadlines").select("due_at, incidents(id, code, title, status)").eq("type", "commissioner_72h").eq("status", "open").order("due_at").limit(1)
+      ? db.from("deadlines").select("due_at, incidents(id, code, title, status, aware_at, deadlines(type, due_at, status, provisional, met_at))").eq("type", "commissioner_72h").eq("status", "open").order("due_at").limit(1)
       : Promise.resolve({ data: [] }),
     // Step dates and figures for the progress card come along in the same request.
     db.from("incidents").select("id, code, title, status, reported_by, reported_at, individuals_affected, assessments(assessed_at), notifications(sent_at), incident_data_sets(count)").neq("status", "closed").order("reported_at", { ascending: false }).limit(10),
