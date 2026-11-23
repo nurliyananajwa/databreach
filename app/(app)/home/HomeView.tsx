@@ -9,7 +9,7 @@ const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", hour: "2-digit",
 const STEP: Record<string, number> = { reported: 0, assessing: 1, decided: 2, notified: 3, follow_up: 3, closed: 4 };
 const STEPS = ["Locate", "Assess", "Notify", "Record"];
 const AUDIT_WORDS: Record<string, string> = {
-  data_sets: "data place", data_fields: "data field", incidents: "incident", decisions: "decision", notifications: "notice",
+  organisations: "organisation setting", data_sets: "data place", data_fields: "data field", incidents: "incident", decisions: "decision", notifications: "notice",
   tasks: "task", profiles: "user", invitations: "invitation", assessments: "assessment", deadlines: "deadline",
 };
 const ACTION: Record<string, string> = { insert: "added", update: "changed", delete: "removed" };
@@ -150,7 +150,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                 {me.role === "manager"
                   ? d.audit.length
                     ? d.audit.map((a) => (
-                        <div key={a.id} className="hub-msg"><span className="hub-av" aria-hidden="true">•</span><p>{capital(AUDIT_WORDS[a.table_name] ?? a.table_name)} {ACTION[a.action] ?? a.action}</p><time>{kl.format(new Date(a.created_at))}</time></div>
+                        <div key={a.id} className="hub-msg"><span className="hub-av" aria-hidden="true">{a.actor.charAt(0)}</span><p><b style={{ fontWeight: 600 }}>{a.actor}</b> {ACTION[a.action] ?? a.action} {article(AUDIT_WORDS[a.table_name] ?? a.table_name)}</p><time>{kl.format(new Date(a.created_at))}</time></div>
                       ))
                     : <Empty title="Quiet so far" body="Every change anyone makes will be listed here." />
                   : d.alerts.length
@@ -207,3 +207,4 @@ function TaskRows({ tasks }: { tasks: { id: string; title: string; due_at: strin
 }
 
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const article = (s: string) => (/^[aeiou]/i.test(s) ? "an " : "a ") + s;

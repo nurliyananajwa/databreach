@@ -9,6 +9,7 @@ type Deadline = { due_at: string; incidents: { id: string; code: string; title: 
 async function load(me: CurrentUser) {
   const db = await createClient();
   const lead = me.role !== "staff";
+  const names = me.role === "manager" ? db.from("profiles").select("id, full_name") : Promise.resolve({ data: [] });
   const [deadlines, incidents, sets, fields, tasks, approvals, people, invites, alerts, audit] = await Promise.all([
     lead
       ? db.from("deadlines").select("due_at, incidents(id, code, title, status)").eq("type", "commissioner_72h").eq("status", "open").order("due_at").limit(1)
@@ -21,8 +22,9 @@ async function load(me: CurrentUser) {
     me.role === "manager" ? db.from("profiles").select("id", { count: "exact", head: true }).eq("is_active", true) : Promise.resolve({ count: 0 }),
     me.role === "manager" ? db.from("invitations").select("id", { count: "exact", head: true }).is("accepted_at", null).is("revoked_at", null) : Promise.resolve({ count: 0 }),
     db.from("alerts").select("id, message, level, created_at").is("read_at", null).order("created_at", { ascending: false }).limit(5),
-    me.role === "manager" ? db.from("audit_log").select("id, table_name, action, created_at").order("created_at", { ascending: false }).limit(6) : Promise.resolve({ data: [] }),
+    me.role === "manager" ? db.from("audit_log").select("id, table_name, action, created_at, actor_id").order("created_at", { ascending: false }).limit(6) : Promise.resolve({ data: [] }),
   ]);
+  const people_ = ((await names).data ?? []) as { id: string; full_name: string }[];
   const fieldRows = (fields.data ?? []) as { is_sensitive: boolean }[];
   return {
     deadline: ((deadlines.data ?? []) as unknown as Deadline[])[0] ?? null,
@@ -35,7 +37,10 @@ async function load(me: CurrentUser) {
     people: people.count ?? 0,
     invites: invites.count ?? 0,
     alerts: (alerts.data ?? []) as { id: string; message: string; level: string; created_at: string }[],
-    audit: (audit.data ?? []) as { id: number; table_name: string; action: string; created_at: string }[],
+    audit: ((audit.data ?? []) as { id: number; table_name: string; action: string; created_at: string; actor_id: string | null }[]).map((a) => ({
+      ...a,
+      actor: a.actor_id ? (people_.find((p) => p.id === a.actor_id)?.full_name.split(" ")[0] ?? "Someone") : "System",
+    })),
   };
 }
 
