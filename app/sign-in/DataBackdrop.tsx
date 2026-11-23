@@ -5,7 +5,8 @@ import "./data-backdrop.css";
 
 // Deterministic, fictional values only; this never reads organisational records.
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const CELLS = Array.from({ length: 24 * 32 }, (_, index) => {
+// 40 rows (1520px) so the grid still fills tall screens after drifting up 76px.
+const CELLS = Array.from({ length: 24 * 40 }, (_, index) => {
   const seed = ((index + 17) * 7919 + index * index * 31) % 104729;
   const kind = index % 7;
   const value = kind === 4 ? `${seed % 28 + 1} ${MONTHS[seed % 12]}`
