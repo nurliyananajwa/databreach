@@ -51,6 +51,7 @@
 .hub-me { display: flex; align-items: center; gap: 10px; }
 .hub-chip { display: flex; align-items: center; gap: 8px; padding: 5px 5px 5px 14px; border-radius: 30px; background: #fff; color: var(--ink); font-size: 13px; }
 .hub-av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #fff; background: var(--accent); flex: none; }
+.hub-out:disabled { opacity: .7; cursor: progress; text-decoration: none; }
 .hub-out { color: #d6ebe5; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; padding: 10px 0; background: none; border: 0; cursor: pointer; font: inherit; }
 
 /* page hero (continues the band) */

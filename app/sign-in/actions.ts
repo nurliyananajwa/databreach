@@ -58,6 +58,7 @@ export async function googleSignIn() {
 
 export async function signOut() {
   const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/");
+  // "local" ends this browser's session without waiting on other devices.
+  await supabase.auth.signOut({ scope: "local" });
+  redirect("/sign-in");
 }

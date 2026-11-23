@@ -6,6 +6,7 @@ import { menuFor, ROLE_LABEL } from "@/lib/roles";
 import { signOut } from "@/app/sign-in/actions";
 import HubNav from "@/components/app/HubNav";
 import Icon from "@/components/app/hub/icons";
+import SignOutButton from "@/components/app/SignOutButton";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const me = await getCurrentUser();
@@ -27,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <span className="hub-av" title={me.fullName}>{me.fullName.charAt(0)}</span>
             </span>
             <form action={signOut}>
-              <button type="submit" className="hub-out">Sign out</button>
+              <SignOutButton />
             </form>
           </div>
         </header>
