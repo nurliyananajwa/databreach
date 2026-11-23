@@ -47,6 +47,9 @@
 .hub-nav a[aria-current="page"] .lbl { display: inline; }
 .hub-nav svg { width: 17px; height: 17px; flex: none; }
 .hub-me { display: flex; align-items: center; gap: 10px; }
+.hub-bell { position: relative; width: 40px; height: 40px; border-radius: 50%; background: #ffffff1f; border: 1px solid #ffffff4d; display: grid; place-items: center; color: #fff; transition: background .2s; }
+.hub-bell:hover { background: #ffffff33; }
+.hub-badge { position: absolute; top: -3px; right: -3px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--coral); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--band-2); }
 .hub-chip { display: flex; align-items: center; gap: 8px; padding: 5px 5px 5px 14px; border-radius: 30px; background: #fff; color: var(--ink); font-size: 13px; }
 .hub-av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #fff; background: var(--accent); flex: none; }
 .hub-out:disabled { opacity: .7; cursor: progress; text-decoration: none; }

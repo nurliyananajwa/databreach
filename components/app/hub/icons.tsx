@@ -31,6 +31,6 @@ export default function Icon({ name, className }: { name: IconName; className?: 
 
 // Which icon each menu page uses.
 export const PAGE_ICON: Record<string, IconName> = {
-  "/home": "home", "/dashboard": "chart", "/report": "plus", "/my-reports": "inbox", "/incidents": "alert",
+  "/home": "home", "/reports": "chart", "/report": "plus", "/my-reports": "inbox", "/incidents": "alert",
   "/approvals": "stamp", "/inventory": "db", "/tasks": "check", "/register": "book", "/users": "users", "/audit": "list",
 };
