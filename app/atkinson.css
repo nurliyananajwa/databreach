@@ -1,0 +1,4 @@
+/* Atkinson Hyperlegible: only the sign-in and not-invited pages use it.
+   The landing page and the app load their own fonts. */
+@import "@fontsource/atkinson-hyperlegible/400.css";
+@import "@fontsource/atkinson-hyperlegible/700.css";
