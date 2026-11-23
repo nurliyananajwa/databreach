@@ -1,0 +1,3 @@
+# Design mockups and prototypes are kept for the record, not part of the app.
+# Hide them from GitHub's language bar.
+mockups/** linguist-documentation
