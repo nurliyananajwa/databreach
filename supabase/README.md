@@ -11,6 +11,7 @@
 | `..._06_alerts.sql` | 24 h / 6 h / overdue alerts, run every 5 minutes by pg_cron |
 | `..._07_hardening.sql` | Takes back the access PostgreSQL and Supabase give every new function by default, then grants only what the RLS rules need |
 | `..._08_rls_perf_and_fk_indexes.sql` | Same RLS rules written so `auth.uid()` runs once per query, and indexes on every foreign key |
+| `..._09_realtime.sql` | Publishes `alerts` and `audit_log` to Supabase Realtime for live updates; RLS still decides who receives each event |
 
 ## Changes from the proposal's data dictionary
 1. **New `invitations` table.** A manager invites an email, and the role comes from the invitation. A Google account that wasn't invited sees nothing.
@@ -34,6 +35,6 @@ Last full run: 23 Nov 2026, migrations 01 to 08, **115 passed, 0 failed**.
 
 ## Live project
 - Supabase project `pdpa-tracker` (ref `tfflrmmmtgikhakqcgiy`), region ap-southeast-1 (Singapore), created 17 Nov 2026.
-- Migrations 01 to 07 applied on 17 Nov 2026; migration 08 on 23 Nov 2026. Vault secret `pdpa_enc_key` created inside the database (the value was never printed).
+- Migrations 01 to 07 applied on 17 Nov 2026; migrations 08 and 09 on 23 Nov 2026. Vault secret `pdpa_enc_key` created inside the database (the value was never printed).
 - Security advisor: 23 "SECURITY DEFINER callable by authenticated" warnings. These are intended: they are the app's RPCs, and each one checks the caller's role (checked 23 Nov 2026). "Leaked password protection" is a paid feature and stops mattering once only Google sign-in is used.
 - Performance advisor: clear since migration 08, apart from "unused index" notes, which are expected while there is little data.

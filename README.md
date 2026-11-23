@@ -18,6 +18,7 @@ IMS568 Capstone, Faculty of Information Science, UiTM Puncak Perdana.
 |---|---|---|
 | 1 | Database, sign-in, roles, security rules (RLS), users, audit log | Done |
 | – | Landing page, dashboard design (Breach Response Hub), Next.js 16 | Done |
+| – | Interactive dashboard: search (Ctrl + K), live updates, How it works tour, deadline timeline | Done |
 | 2 | Data inventory | Next |
 | 3 | Incidents, assessment, deadlines | Planned |
 | 4 | Tasks, notification drafts and approval, breach register | Planned |
