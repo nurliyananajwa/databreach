@@ -207,4 +207,5 @@ function TaskRows({ tasks }: { tasks: { id: string; title: string; due_at: strin
 }
 
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const article = (s: string) => (/^[aeiou]/i.test(s) ? "an " : "a ") + s;
+// "an incident" but "a user": u sounding like "you" takes "a".
+const article = (s: string) => (/^(?:[aeio]|u(?!s))/i.test(s) ? "an " : "a ") + s;
