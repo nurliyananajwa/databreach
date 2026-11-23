@@ -31,6 +31,11 @@ async function load(me: CurrentUser) {
     db.from("alerts").select("id, message, level, created_at").is("read_at", null).order("created_at", { ascending: false }).limit(5),
     me.role === "manager" ? db.from("audit_log").select("id, table_name, action, created_at, actor_id").order("created_at", { ascending: false }).limit(6) : Promise.resolve({ data: [] }),
   ]);
+  // A failed request would otherwise just look like "nothing here", so log it.
+  for (const [name, r] of Object.entries({ deadlines, incidents, sets, fields, tasks, approvals, people, invites, alerts, audit })) {
+    const err = (r as { error?: { message: string } | null }).error;
+    if (err) console.error(`[home] ${name} query failed: ${err.message}`);
+  }
   const people_ = ((await names).data ?? []) as { id: string; full_name: string }[];
   const fieldRows = (fields.data ?? []) as { is_sensitive: boolean }[];
   return {
