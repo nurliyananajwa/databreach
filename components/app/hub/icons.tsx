@@ -17,6 +17,8 @@ const P = {
   bell: <><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z" /><path d="M10 20a2 2 0 0 0 4 0" /></>,
   arrow: <path d="M7 17 17 7M9 7h8v8" />,
   shield: <><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-4" /></>,
+  search: <><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></>,
+  sparkle: <><path d="M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7Z" /><path d="M19 3v3M17.5 4.5h3" /></>,
 } as const;
 
 export type IconName = keyof typeof P;
@@ -33,4 +35,5 @@ export default function Icon({ name, className }: { name: IconName; className?: 
 export const PAGE_ICON: Record<string, IconName> = {
   "/home": "home", "/reports": "chart", "/report": "plus", "/my-reports": "inbox", "/incidents": "alert",
   "/approvals": "stamp", "/inventory": "db", "/tasks": "check", "/register": "book", "/users": "users", "/audit": "list",
+  "/notifications": "bell",
 };
