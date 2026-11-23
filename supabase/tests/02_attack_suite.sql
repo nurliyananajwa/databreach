@@ -18,8 +18,9 @@ begin; select tests.login('ahmad.staff@example.test');    set local role authent
 begin; select tests.login('other.manager@example.test');  set local role authenticated; select public.claim_invitation(); commit;
 
 select tests.check('Roles come from the invitation',
+  -- sorted by email: ahmad (staff), farid (dp_lead), najwa (manager), siti (staff)
   (select string_agg(role, ',' order by email) from public.profiles where org_id = '00000000-0000-0000-0000-0000000000a1')
-  = 'staff,manager,dp_lead,staff');
+  = 'staff,dp_lead,manager,staff');
 
 -- ============================================================ 2. anonymous visitor
 begin; set local role anon;
