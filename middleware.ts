@@ -40,11 +40,11 @@ export async function middleware(request: NextRequest) {
   );
 
   // Refreshes the session cookie. Must run before any redirect decision.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() checks the sign-in token's signature on our server, so it does
+  // not need a round trip to Supabase on every page (getUser() always did).
+  const { data } = await supabase.auth.getClaims();
 
-  if (!user) {
+  if (!data?.claims?.sub) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
     url.search = "";

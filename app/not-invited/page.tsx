@@ -1,3 +1,4 @@
+import "../atkinson.css";
 import { signOut } from "@/app/sign-in/actions";
 
 export default function NotInvitedPage() {

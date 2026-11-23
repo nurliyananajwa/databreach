@@ -16,15 +16,15 @@ export type CurrentUser = {
 // The signed-in user's profile, once per request. Redirects if there is none.
 export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/sign-in");
+  // Verified locally from the signed token (no extra trip to Supabase Auth).
+  const { data } = await supabase.auth.getClaims();
+  const userId = data?.claims?.sub;
+  if (!userId) redirect("/sign-in");
 
   const { data: profile } = await supabase
     .from("profiles")
     .select("id, email, full_name, role, org_id, is_active, organisations(name)")
-    .eq("id", user.id)
+    .eq("id", userId)
     .maybeSingle();
 
   // Signed in with Google/email, but never invited (or deactivated).

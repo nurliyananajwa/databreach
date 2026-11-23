@@ -111,6 +111,28 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .filters button{font-size:12px;border:1px solid var(--line);border-radius:20px;padding:6px 12px}
 .filters button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
 
+.ai-msg{display:flex;gap:10px;align-items:flex-start;animation:up .5s both}
+.ai-msg.me{flex-direction:row-reverse}
+.ai-msg .bub{background:#f5f7fb;border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.45;max-width:86%}
+.ai-msg.me .bub{background:#eaf0ff}
+.ai-ic{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;flex:none}
+.ai-ic svg{width:16px;height:16px}
+.conf{height:6px;border-radius:3px;background:#e4e7ee;margin:8px 0 4px;overflow:hidden}
+.conf i{display:block;height:100%;border-radius:3px;background:var(--blue);transform-origin:left;animation:fill .8s both}
+.conf.low i{background:var(--amber)}
+.ai-place{margin-top:8px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--line)}
+.ai-place b{font-weight:600;font-size:12px;display:block;margin-bottom:4px}
+.ai-place span{display:inline-block;font-size:11px;border:1px solid var(--line);border-radius:5px;padding:1px 6px;margin:0 3px 3px 0}
+.ai-place span.r{border-color:#ffc9c9;background:#fff1f1;color:#b42328}
+.ai-act{display:flex;gap:6px;margin-top:10px}
+.ai-act button{font-size:12px;border-radius:20px;padding:6px 12px;border:1px solid var(--line);background:#fff}
+.ai-act .yes{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ai-try{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.ai-try button{font-size:11px;border-radius:14px;padding:4px 10px;background:#f1f3f8;color:#4b5b80}
+.ai-try button[aria-pressed=true]{background:#dfe8ff;color:var(--blue)}
+.ai-box{display:flex;gap:8px;align-items:center;margin-top:10px}
+.ai-box input{flex:1;border:1px solid var(--line);border-radius:20px;padding:9px 14px;font:inherit;font-size:13px;background:#f8f9fc}
+.ai-box button{width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff}
 .rolebar{max-width:1280px;margin:0 auto 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
 .rolebar button{border:1px solid #d5d9e3;border-radius:20px;padding:5px 12px;background:#fff}
 .rolebar button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -144,7 +166,15 @@ const NAVS={officer:[["grid","Overview"],["alert","Incidents"],["db","Inventory"
  manager:[["grid","Overview"],["alert","Incidents"],["check","Approvals"],["book","Register"],["users","Users"]],
  staff:[["grid","Home"],["alert","Report"],["check","My tasks"]]};
 const TABS=[["INC-005","Database copied","30h left",true],["INC-004","Wrong email","Record only"],["INC-003","Laptop stolen","Closed"],["Inventory","6 data places","2 risky"],["Register","3 incidents","Kept 2 years"]];
-let role="officer",tab=0,logFilter="all";
+let role="officer",tab=0,logFilter="all",panel="log",aiEx=0,aiDone=false;
+// Answers recorded from the real model (ai/report_helper on the ai-assistant branch)
+const AI_EX=[
+ ["Laptop with the appointment list kena curi dalam kereta","Aina","Lost or stolen",.84,[["Appointment list",["Name","Phone","Reason for visit"]]]],
+ ["I sent the salary slips to the wrong staff on WhatsApp","Aina","Sent to the wrong person",.89,[["Staff WhatsApp group",["Names","Phone numbers","Photos"]],["Staff payroll",["Name","IC number","Bank account","Salary"]]]],
+ ["Our online shop got hacked and card numbers leaked","Aina","Someone got in without permission",.73,[["Online orders",["Name","Address","Phone","Card details"]]]],
+ ["hmm something weird with the server","Aina","Not sure, please choose",.34,[]],
+];
+const RISKY=["IC number","Bank account","Salary","Card details","Reason for visit","Diagnosis"];
 const bars=(n,on,cls="on",hot=-1,delay=0)=>Array.from({length:n},(_,i)=>`<i class="${i<on?(hot>=0&&i>=hot?"hot":cls):""}" style="animation-delay:${delay+i*.008}s"></i>`).join("");
 
 const LOG=[
@@ -154,6 +184,15 @@ const LOG=[
  ["Tracker","#e5484d","24 hours left. Farid and Dr Lim alerted.","Wed 09:00","alert"],
 ];
 
+function aiPanel(){
+ return `<div class="ch"><div><h3><span class="spark">${ICON.log}</span>AI report helper</h3><p class="online" style="--c:var(--amber)">Coming soon</p></div></div>
+ <div class="msgs" style="justify-content:center;text-align:center;gap:10px">
+  <span class="ai-ic" style="margin:0 auto;width:52px;height:52px">${ICON.log}</span>
+  <p style="font-size:16px;font-weight:500">Coming soon</p>
+  <p class="muted" style="font-size:13px;max-width:240px;margin:0 auto">Suggests the incident type and the data places involved from a staff report. A person always confirms.</p>
+ </div>`;}
+function logPanel(){return `<div class="ch"><div><h3><span class="spark">${ICON.log}</span>Activity log</h3><p class="online">Every action, saved and locked</p></div><button class="go">↗</button></div>
+ <div class="msgs">${LOG.map(([n,c,t,time,k,extra],i)=>`<div class="m ${k==="alert"?"alert":""}" style="animation-delay:${.1+i*.1}s"><span class="av" style="background:${c}">${n[0]}</span><div style="flex:1"><p><b style="font-weight:600">${n}</b> · ${t}${extra||""}</p></div><time>${time}</time></div>`).join("")}</div>`;}
 function render(){
  const r=ROLES[role],h=used();
  document.getElementById("roles").innerHTML=Object.entries(ROLES).map(([k,v])=>`<button aria-pressed="${k===role}" onclick="role='${k}';render()">${v.label}</button>`).join(" ");
@@ -197,10 +236,8 @@ function render(){
    <div class="bars">${bars(60,30,"hot",-1,.3)}</div>
    <div class="nums"><span>scale · sensitive · ID fraud</span><span>3 left</span></div>
   </section>
-  <section class="card log" style="animation-delay:.26s">
-   <div class="ch"><div><h3><span class="spark">${ICON.log}</span>Activity log</h3><p class="online">Every action, saved and locked</p></div><button class="go">↗</button></div>
-   <div class="msgs">${LOG.filter(l=>logFilter==="all"||(logFilter==="alerts"&&l[4]==="alert")||(logFilter==="people"&&l[4]==="people")).map(([n,c,t,time,k,extra],i)=>`<div class="m ${k==="alert"?"alert":""}" style="animation-delay:${.3+i*.12}s"><span class="av" style="background:${c}">${n[0]}</span><div style="flex:1"><p><b style="font-weight:600">${n}</b> · ${t}${extra||""}</p></div><time>${time}</time></div>`).join("")}</div>
-   <div class="filters">${[["all","All"],["people","People"],["alerts","Alerts"]].map(([k,l])=>`<button aria-pressed="${logFilter===k}" onclick="logFilter='${k}';render()">${l}</button>`).join("")}</div>
+  <section class="card log" style="animation-delay:.26s">${panel==="ai"?aiPanel():logPanel()}
+   <div class="filters">${[["ai","AI report helper"],["log","Activity log"]].map(([k,l])=>`<button aria-pressed="${panel===k}" onclick="panel='${k}';render()">${l}</button>`).join("")}</div>
   </section>
   <section class="card" style="grid-column:span 1;animation-delay:.33s">
    <div class="ch"><div><h3>${ICON.alert}INC-005 progress</h3><p class="sub">Four steps · you are on step 2</p></div><button class="go">↗</button></div>
