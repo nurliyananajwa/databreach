@@ -66,19 +66,19 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
           <span>Signed in as <b>{me.role === "dp_lead" ? "Compliance Officer" : me.role === "manager" ? "Manager" : "Staff"}</b></span>
           <span className={d.deadline ? "warn" : "ok"}>{d.deadline ? "Clock running" : "All clear"}</span>
         </>}
-        below={
-          <nav className="hub-places" aria-label="Quick places">
-            {tabs.map((t) => (
-              <Link key={t.title + t.href} href={t.href} aria-current={t.current ? "true" : undefined}>
-                <Icon name={t.icon} />
-                <span><b>{t.title}</b><small>{t.sub}</small></span>
-                {t.metric && t.metric[1] !== "0" && <span className="count" aria-label={`${t.metric[1]} open`}>{t.metric[1]}</span>}
-                <Pending />
-              </Link>
-            ))}
-          </nav>
-        }
       />
+
+      {/* folder tabs: the current one rises and joins the sheet */}
+      <nav className="hub-tabs" aria-label="Quick places">
+        {tabs.map((t) => (
+          <Link key={t.title + t.href} href={t.href} className="hub-tab" aria-current={t.current ? "true" : undefined}>
+            <span className="ic"><Icon name={t.icon} /></span>
+            <span style={{ minWidth: 0 }}><b>{t.title}</b><small>{t.sub}</small></span>
+            {t.metric && t.metric[1] !== "0" && <span className="metric"><b>{t.metric[1]}</b> {t.metric[0]}</span>}
+            <Pending />
+          </Link>
+        ))}
+      </nav>
 
       <main id="main" className="hub-main">
         <div className="hub-grid">

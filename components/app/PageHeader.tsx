@@ -2,14 +2,12 @@
 // Pages without their own hero (Users, Inventory...) get the same look for free.
 const today = new Intl.DateTimeFormat("en-MY", { weekday: "long", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" });
 
-export default function PageHeader({ title, intro, eyebrow, big = false, ring, meta, below, children }: {
+export default function PageHeader({ title, intro, eyebrow, big = false, ring, meta, children }: {
   title: string; intro?: string; eyebrow?: string; big?: boolean;
   /** Hours used on the 72-hour clock, or null for "all clear". Leave out for no ring. */
   ring?: number | null;
   /** Small status line under the intro (Home: role and status). */
   meta?: React.ReactNode;
-  /** Row at the bottom of the header (Home: the place switcher). */
-  below?: React.ReactNode;
   children?: React.ReactNode;
 }) {
   return (
@@ -24,7 +22,6 @@ export default function PageHeader({ title, intro, eyebrow, big = false, ring, m
         {ring !== undefined && <ClockRing used={ring} />}
         {children && <div className="actions">{children}</div>}
       </div>
-      {below && <div className="hub-below">{below}</div>}
     </div>
   );
 }

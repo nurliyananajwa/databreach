@@ -163,7 +163,7 @@
 /* page hero (continues the band) */
 .hub-hero { position: relative; z-index: 3; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 14px 30px 30px; }
 .hub-hero > div:first-child { max-width: 560px; min-width: 300px; }
-.hub-hero.big { align-items: center; padding-top: 10px; padding-bottom: 18px; }
+.hub-hero.big { align-items: center; padding-top: 10px; padding-bottom: 96px; }
 .hub-hero small { font-size: 13px; color: var(--navy-2); }
 .hub-hero h1 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(40px, 5vw, 66px); letter-spacing: -.01em; line-height: 1; margin-top: 6px; color: var(--navy); }
 .hub-hero p { color: var(--navy-2); margin-top: 10px; max-width: 440px; line-height: 1.55; }
@@ -186,16 +186,27 @@
 .hub-ring-label { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); white-space: nowrap; background: #fff; border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--navy-2); box-shadow: 0 6px 16px #13206b1f; }
 .hub-ring-label b { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 18px; color: var(--navy); }
 
-/* Home: the place switcher at the foot of the header */
-.hub-below { position: relative; z-index: 3; padding: 0 30px 18px; }
-.hub-places { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 5px; border-radius: 18px; background: #ffffff59; border: 1px solid #ffffffcc; backdrop-filter: blur(10px); }
-.hub-places a { position: relative; display: flex; align-items: center; gap: 9px; padding: 8px 14px 8px 10px; border-radius: 14px; color: var(--navy); text-decoration: none; transition: background .2s; }
-.hub-places a:hover { background: #ffffff8c; }
-.hub-places a[aria-current="true"] { background: #fff; box-shadow: 0 6px 16px #13206b1a; }
-.hub-places svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
-.hub-places b { display: block; font-weight: 600; font-size: 13px; line-height: 1.2; }
-.hub-places small { display: block; font-size: 11px; color: var(--navy-2); }
-.hub-places .count { margin-left: 4px; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 6px; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; }
+/* folder tabs: sit on the band, the current one rises and joins the sheet */
+.hub-tabs { position: relative; z-index: 4; display: flex; align-items: flex-end; gap: 12px; padding: 0 30px; margin-top: calc(-58px - var(--sheet)); height: 58px; }
+.hub-tab { flex: 1; min-width: 0; max-width: 270px; height: 58px; border-radius: 20px 20px 0 0; background: #ffffff6b; border: 1px solid #ffffffcc; border-bottom: 0; display: flex; align-items: center; gap: 10px; padding: 0 14px; color: var(--navy); text-decoration: none; transition: background .25s; backdrop-filter: blur(8px); }
+.hub-tab:hover { background: #ffffffa6; }
+.hub-tab .ic { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #fff; background: #ffffff8c; display: grid; place-items: center; flex: none; }
+.hub-tab .ic svg { width: 16px; height: 16px; }
+.hub-tab b { display: block; font-weight: 600; font-size: 13px; }
+.hub-tab small { display: block; font-size: 11px; color: var(--navy-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The current tab is only a little taller and grows out of the sheet:
+   the small curved "feet" join it to the sheet so it doesn't float. */
+.hub-tab[aria-current="true"] { position: relative; background: var(--bg); color: var(--ink); height: 68px; border-color: var(--bg); backdrop-filter: none; overflow: visible; }
+.hub-tab[aria-current="true"]::before, .hub-tab[aria-current="true"]::after { content: ""; position: absolute; bottom: 0; width: 20px; height: 20px; pointer-events: none; }
+.hub-tab[aria-current="true"]::before { left: -20px; background: radial-gradient(circle at 0 0, transparent 20px, var(--bg) 20.5px); }
+.hub-tab[aria-current="true"]::after { right: -20px; background: radial-gradient(circle at 100% 0, transparent 20px, var(--bg) 20.5px); }
+/* the first tab sits by the sheet's own rounded corner, so no left foot there */
+.hub-tab[aria-current="true"]:first-child::before { display: none; }
+.hub-tab[aria-current="true"] .ic { background: var(--accent); border-color: var(--accent); color: #fff; border-radius: 10px; }
+.hub-tab[aria-current="true"] small { color: var(--muted); }
+.hub-tab .metric { margin-left: auto; flex: none; font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 12px; padding: 3px 9px; white-space: nowrap; }
+.hub-tab .metric b { display: inline; font-size: 12px; font-weight: 700; color: var(--accent); }
+.hub-tabs + .hub-main { margin-top: 26px; }
 
 @keyframes hub-pulse { 45%, 70% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -260; } }
 
@@ -278,7 +289,7 @@
 @media (prefers-reduced-motion: reduce) { .hub-pending { animation: none !important; background: var(--accent); } }
 
 /* existing pages: content placed straight after the header gets page padding */
-.hub-frame > :not(.hub-band):not(.hub-main):not(a) { position: relative; z-index: 3; margin: calc(-1 * var(--sheet) + 22px) 30px 40px; }
+.hub-frame > :not(.hub-band):not(.hub-main):not(.hub-tabs):not(a) { position: relative; z-index: 3; margin: calc(-1 * var(--sheet) + 22px) 30px 40px; }
 /* existing pages (Users...) use bg-sheet boxes: give them the card look */
 .hub .bg-sheet { border-radius: var(--r) !important; border-color: transparent !important; background: #fff !important; box-shadow: 0 10px 30px #13206b0d; }
 /* existing pages: plain content gets the card look */
@@ -306,9 +317,8 @@
   .hub-ring { width: 150px; height: 150px; margin: 4px 0 0; align-self: center; }
   .hub-shield { width: 70px; }
   .hub-ring-label { bottom: 10px; }
-  .hub-below { padding: 0 18px 18px; }
-  .hub-places { display: flex; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; }
-  .hub-places a { flex: none; }
+  .hub-tabs { padding: 0 18px; overflow-x: auto; height: 68px; margin-top: calc(-68px - var(--sheet)); }
+  .hub-tab { flex: 0 0 auto; max-width: 220px; }
   .hub-grid { grid-template-columns: minmax(0, 1fr); }
   .hub-grid > .hub-card, .hub-grid > .hub-card.wide { grid-column: 1 / -1; }
 }
