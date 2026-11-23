@@ -196,15 +196,13 @@
 .hub-timeline small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hub-timeline li[data-state="now"] small { color: var(--accent); }
 
-/* loading outline while a page is fetched */
-.hub-skel { background: linear-gradient(90deg, #e9ebf3 25%, #f5f6fa 50%, #e9ebf3 75%); background-size: 200% 100%; animation: hub-shimmer 1.3s linear infinite; border-radius: 10px; }
-.hub-band .hub-skel { background: linear-gradient(90deg, #ffffff55 25%, #ffffffa0 50%, #ffffff55 75%); background-size: 200% 100%; }
-.hub-card.skel { animation: none; min-height: 210px; display: flex; flex-direction: column; gap: 14px; }
-.hub-card.skel:hover { transform: none; }
-@keyframes hub-shimmer { to { background-position: -200% 0; } }
+/* thin bar across the top while a clicked link's page loads */
+.hub-pending { position: fixed; z-index: 100; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--accent), var(--coral), transparent); background-size: 50% 100%; background-repeat: no-repeat; animation: hub-pending 1s ease-in-out infinite; pointer-events: none; }
+@keyframes hub-pending { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+@media (prefers-reduced-motion: reduce) { .hub-pending { animation: none !important; background: var(--accent); } }
 
 /* existing pages: content placed straight after the header gets page padding */
-.hub-frame > :not(.hub-band):not(.hub-main):not(.hub-tabs):not(.hub-loading):not(a) { position: relative; z-index: 3; margin: calc(-1 * var(--sheet) + 22px) 30px 40px; }
+.hub-frame > :not(.hub-band):not(.hub-main):not(.hub-tabs):not(a) { position: relative; z-index: 3; margin: calc(-1 * var(--sheet) + 22px) 30px 40px; }
 /* existing pages (Users...) use bg-sheet boxes: give them the card look */
 .hub .bg-sheet { border-radius: var(--r) !important; border-color: transparent !important; background: #fff !important; box-shadow: 0 10px 30px #13206b0d; }
 /* existing pages: plain content gets the card look */

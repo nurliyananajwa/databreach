@@ -4,6 +4,7 @@ import PageHeader from "@/components/app/PageHeader";
 import Icon, { type IconName } from "@/components/app/hub/icons";
 import { Bars, Card, Empty } from "@/components/app/hub/ui";
 import CountUp from "@/components/app/hub/CountUp";
+import Pending from "@/components/app/hub/Pending";
 import type { HomeData } from "./page";
 
 const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
@@ -72,6 +73,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             <span className="ic"><Icon name={t.icon} /></span>
             <span style={{ minWidth: 0 }}><b>{t.title}</b><small>{t.sub}</small></span>
             {t.metric && <span className="metric"><b>{t.metric[1]}</b> {t.metric[0]}</span>}
+            <Pending />
           </Link>
         ))}
       </nav>
@@ -82,7 +84,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             <>
               <Card icon="plus" title="Report a breach" sub="Lost, sent to the wrong person, or seen by someone who shouldn't" className="" delay={0.05}>
                 <p className="hub-big" style={{ fontSize: 34 }}>Something happened?</p>
-                <Link href="/report" className="hub-btn">Report it now →</Link>
+                <Link href="/report" className="hub-btn">Report it now →<Pending /></Link>
               </Card>
               <Card icon="inbox" title="My reports" sub="What happened after you reported" href="/my-reports" delay={0.12}>
                 {open.length ? <p className="hub-big"><CountUp value={open.length} /><small>open</small></p> : <Empty icon="inbox" title="Nothing reported" body="Reports you make will show their progress here." />}

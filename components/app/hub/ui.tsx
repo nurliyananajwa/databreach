@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Icon, { type IconName } from "./icons";
+import Pending from "./Pending";
 
 export function Card({ icon, title, sub, href, delay = 0, className = "", children }: {
   icon: IconName; title: string; sub?: string; href?: string; delay?: number; className?: string; children: React.ReactNode;
@@ -11,7 +12,7 @@ export function Card({ icon, title, sub, href, delay = 0, className = "", childr
           <h2><Icon name={icon} />{title}</h2>
           {sub && <p className="sub">{sub}</p>}
         </div>
-        {href && <Link href={href} className="hub-go" aria-label={`Open ${title}`}><Icon name="arrow" className="size-4" /></Link>}
+        {href && <Link href={href} className="hub-go" aria-label={`Open ${title}`}><Icon name="arrow" className="size-4" /><Pending /></Link>}
       </div>
       {children}
     </section>
@@ -36,7 +37,7 @@ export function Empty({ title, body, href, cta, icon = "check" }: { title: strin
       <span className="ic" aria-hidden="true"><Icon name={icon} /></span>
       <strong>{title}</strong>
       <p>{body}</p>
-      {href && cta && <Link href={href} className="hub-btn soft">{cta} →</Link>}
+      {href && cta && <Link href={href} className="hub-btn soft">{cta} →<Pending /></Link>}
     </div>
   );
 }
