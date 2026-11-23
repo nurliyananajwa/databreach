@@ -1,3 +1,4 @@
+import "../atkinson.css";
 import Link from "next/link";
 import { devLoginEnabled, googleEnabled } from "@/lib/dev-login";
 import { googleSignIn } from "./actions";

@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@import "@fontsource/atkinson-hyperlegible/400.css";
-@import "@fontsource/atkinson-hyperlegible/700.css";
 
 /* Official-form palette: navy ink on cool paper, stamp red, register green */
 @theme {
