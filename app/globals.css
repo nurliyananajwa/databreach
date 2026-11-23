@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
-/* Official-form palette: navy ink on cool paper, stamp red, register green */
+/* Base styles for every page. The landing page, the sign-in page and the
+   signed-in app each load their own stylesheet on top of this.
+   These colours are Tailwind classes (bg-sheet, text-muted…) used by the
+   pages not yet in the new style: Users and Not invited. They match the
+   app palette: ink text, blue for good, coral-red for problems. */
 @theme {
-  --color-paper: #f5f7f6;
+  --color-paper: #f4f5f9;
   --color-sheet: #ffffff;
-  --color-ink: #17213a;
-  --color-muted: #586176;
-  --color-rule: #cfd6de;
-  --color-wash: #e8eef0;
-  --color-stamp: #b3261e;
-  --color-met: #26704f;
+  --color-ink: #191b20;
+  --color-muted: #6b6e74;
+  --color-rule: #e6e8ee;
+  --color-stamp: #d4432c; /* errors, deactivated */
+  --color-met: #2855ff;   /* success, active */
 
   --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
 }
@@ -21,11 +24,8 @@
 html {
   scroll-behavior: smooth;
 }
-
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  html { scroll-behavior: auto; }
 }
 
 body {
@@ -40,55 +40,4 @@ body {
 :focus-visible {
   outline: 3px solid var(--color-ink);
   outline-offset: 3px;
-}
-/* on navy sections the outline turns white; white cards inside switch back */
-.on-dark :focus-visible { outline-color: #fff; }
-.on-dark .on-light :focus-visible { outline-color: var(--color-ink); }
-
-/* the response clock's stamp */
-@keyframes stamp-in {
-  0% { opacity: 0; transform: rotate(-14deg) scale(1.6); }
-  60% { opacity: 1; transform: rotate(-8deg) scale(0.94); }
-  100% { opacity: 1; transform: rotate(-8deg) scale(1); }
-}
-.stamp-in {
-  animation: stamp-in 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .stamp-in { animation: none; transform: rotate(-8deg); }
-}
-
-/* ---------------------------------------------------------------- landing v2 */
-
-/* board cards rest at a slight angle */
-.board-item > button { transform: rotate(var(--r, 0deg)); }
-.board-item > button:hover, .board-item > button[aria-expanded="true"] { transform: rotate(0deg) scale(1.05); }
-.board-viewport::-webkit-scrollbar { height: 0; width: 0; }
-.board-viewport { scrollbar-width: none; }
-
-/* one-time reveal on scroll */
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1); }
-.reveal.is-shown { opacity: 1; transform: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-}
-
-/* ---------------------------------------------------------------- hero */
-@keyframes panel-in { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
-.panel-in { animation: panel-in 450ms cubic-bezier(0.2, 0.8, 0.2, 1) 250ms both; }
-@media (prefers-reduced-motion: reduce) { .panel-in { animation: none; } }
-
-/* ---------------------------------------------------------------- console */
-@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.console-in > p { animation: rise 320ms ease-out both; }
-.chip-in { animation: rise 280ms ease-out both; }
-.rule-in { animation: rise 300ms ease-out both; }
-.verdict-in { animation: rise 420ms ease-out 820ms both; }
-.ring-draw { transition: stroke-dashoffset 1s linear; }
-@keyframes ring-fill { from { stroke-dashoffset: 326.7; } }
-.verdict-in .ring-draw { animation: ring-fill 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 900ms both; }
-
-@media (prefers-reduced-motion: reduce) {
-  .console-in > p, .chip-in, .rule-in, .verdict-in, .verdict-in .ring-draw { animation: none; }
 }

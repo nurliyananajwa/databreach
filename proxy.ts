@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { supabaseEnv } from "@/lib/supabase/env";
 
 // Pages anyone can open without signing in.
 const PUBLIC_PATHS = ["/", "/sign-in", "/not-invited", "/auth", "/opengraph-image"];
@@ -17,16 +18,10 @@ export async function proxy(request: NextRequest) {
   // Public pages need no session, so they work even before setup is finished.
   if (isPublic(request.nextUrl.pathname)) return response;
 
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
-    throw new Error(
-      "Supabase settings are missing. Put the .env.local file in the project folder " +
-        "(the same folder as package.json), then stop and restart `npm run dev`.",
-    );
-  }
-
+  const { url, key } = supabaseEnv(); // clear message if .env.local is missing
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {
