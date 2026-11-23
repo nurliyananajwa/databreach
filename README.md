@@ -7,10 +7,10 @@ All businesses, people and data in this project are fictional. The system gives 
 legal advice and never sends notifications.
 
 ## Tech
-Next.js 15 (App Router, TypeScript), React 19, Tailwind CSS 4, Supabase (PostgreSQL, RLS, Auth, Vault).
+Next.js 16 (App Router, TypeScript), React 19, Tailwind CSS 4, Supabase (PostgreSQL, RLS, Auth, Vault).
 
 ## Run it on your laptop
-You need [Node.js 20 or newer](https://nodejs.org).
+You need [Node.js 20.9 or newer](https://nodejs.org).
 
 ```bash
 git clone https://github.com/nurliyananajwa/databreach.git
@@ -30,7 +30,7 @@ Open http://localhost:3000. To sign in before Google sign-in is set up, use **De
 | Folder | What is inside |
 |---|---|
 | `app/` | Pages: the landing page, sign-in, and the signed-in app in `app/(app)/` |
-| `components/` | Shared parts such as the response clock, side menu and page header |
+| `components/` | Shared parts such as the top menu, page header and dashboard cards |
 | `lib/` | Supabase client, current-user helpers, role menu |
 | `supabase/migrations/` | Every database change, in order |
 | `supabase/tests/` | RLS attack suite and scenario tests (local only) |
