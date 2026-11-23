@@ -40,13 +40,13 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
   const tabs: { href: string; icon: IconName; title: string; sub: string; current?: boolean; metric?: [string, string] }[] =
     me.role === "staff"
       ? [
-          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true, metric: ["My open reports", String(open.length)] },
+          { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
           { href: "/report", icon: "plus", title: "Report", sub: "About 2 minutes" },
           { href: "/my-reports", icon: "inbox", title: "My reports", sub: `${open.length} open` },
           { href: "/tasks", icon: "check", title: "My tasks", sub: `${d.tasks.length} to do` },
         ]
       : [
-          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true, metric: ["Open incidents", String(open.length)] },
+          { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
           ...open.slice(0, 2).map((i) => ({ href: "/incidents", icon: "alert" as IconName, title: i.code, sub: STATUS_LABEL[i.status] ?? i.status })),
           { href: "/inventory", icon: "db", title: "Inventory", sub: `${d.sets} data place${d.sets === 1 ? "" : "s"}` },
           { href: "/register", icon: "book", title: "Register", sub: "Kept 2 years" },
@@ -71,7 +71,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
           <Link key={t.title + t.href} href={t.href} className="hub-tab" aria-current={t.current ? "true" : undefined}>
             <span className="ic"><Icon name={t.icon} /></span>
             <span style={{ minWidth: 0 }}><b>{t.title}</b><small>{t.sub}</small></span>
-            {t.metric && <span className="metric">{t.metric[0]} <b>{t.metric[1]}</b></span>}
+            {t.metric && <span className="metric"><b>{t.metric[1]}</b> {t.metric[0]}</span>}
           </Link>
         ))}
       </nav>
