@@ -8,7 +8,10 @@ function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || (p !== "/" && pathname.startsWith(p + "/")));
 }
 
-export async function middleware(request: NextRequest) {
+// Next.js 16: this file was middleware.ts. It runs on the Node.js runtime.
+// It refreshes the session and sends signed-out visitors to /sign-in; every
+// page also checks the user itself (requirePage), so this is not the only guard.
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   // Public pages need no session, so they work even before setup is finished.

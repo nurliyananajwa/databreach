@@ -3,11 +3,18 @@ import type { CurrentUser } from "@/lib/auth";
 import PageHeader from "@/components/app/PageHeader";
 import Icon, { type IconName } from "@/components/app/hub/icons";
 import { Bars, Card, Empty } from "@/components/app/hub/ui";
+import CountUp from "@/components/app/hub/CountUp";
+import Pending from "@/components/app/hub/Pending";
 import type { HomeData } from "./page";
 
 const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 const STEP: Record<string, number> = { reported: 0, assessing: 1, decided: 2, notified: 3, follow_up: 3, closed: 4 };
 const STEPS = ["Locate", "Assess", "Notify", "Record"];
+const STATUS_LABEL: Record<string, string> = { reported: "Reported", assessing: "Assessing", decided: "Decided", notified: "Notified", follow_up: "Follow-up", closed: "Closed" };
+const day = new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
+// One colour per person in the activity log, picked from their name.
+const AV = ["#2855ff", "#ff6b4d", "#13206b", "#7b61ff", "#c2410c"];
+const avColour = (name: string) => AV[[...name].reduce((n, c) => n + c.charCodeAt(0), 0) % AV.length];
 const AUDIT_WORDS: Record<string, string> = {
   organisations: "organisation setting", data_sets: "data place", data_fields: "data field", incidents: "incident", decisions: "decision", notifications: "notice",
   tasks: "task", profiles: "user", invitations: "invitation", assessments: "assessment", deadlines: "deadline",
@@ -31,20 +38,24 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         : { t: "Breach Response Hub", p: open.length ? `${open.length} open incident${open.length > 1 ? "s" : ""}, no deadline running right now.` : `Hello, ${first}. No open incidents. A good time to keep your data inventory up to date.` };
 
   // ---- folder tabs: open incidents first, then the main places ----
-  const tabs: { href: string; icon: IconName; title: string; sub: string; current?: boolean }[] =
+  const tabs: { href: string; icon: IconName; title: string; sub: string; current?: boolean; metric?: [string, string] }[] =
     me.role === "staff"
       ? [
-          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true },
+          { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
           { href: "/report", icon: "plus", title: "Report", sub: "About 2 minutes" },
           { href: "/my-reports", icon: "inbox", title: "My reports", sub: `${open.length} open` },
           { href: "/tasks", icon: "check", title: "My tasks", sub: `${d.tasks.length} to do` },
         ]
       : [
-          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true },
-          ...open.slice(0, 2).map((i) => ({ href: "/incidents", icon: "alert" as IconName, title: i.code, sub: i.title })),
+          { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
+          ...open.slice(0, 2).map((i) => ({ href: "/incidents", icon: "alert" as IconName, title: i.code, sub: STATUS_LABEL[i.status] ?? i.status })),
           { href: "/inventory", icon: "db", title: "Inventory", sub: `${d.sets} data place${d.sets === 1 ? "" : "s"}` },
           { href: "/register", icon: "book", title: "Register", sub: "Kept 2 years" },
         ];
+
+  const waitH = d.oldestDraft ? Math.floor((now - new Date(d.oldestDraft).getTime()) / 3.6e6) : 0;
+  const unassessed = open.filter((i) => i.status === "reported").length;
+  const top = open[0];
 
   const side = panel === "ai" ? "ai" : "feed";
   const feedTitle = me.role === "manager" ? "Activity log" : "Alerts";
@@ -53,7 +64,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
     <>
       <PageHeader title={greeting.t} intro={greeting.p} eyebrow={me.orgName} big art>
         <span className="hub-pill-light">Role: <b>{me.role === "dp_lead" ? "Compliance Officer" : me.role === "manager" ? "Manager" : "Staff"}</b></span>
-        {me.role !== "staff" && <span className="hub-pill-light">Open: <b>{open.length} incident{open.length === 1 ? "" : "s"}</b></span>}
+        <span className="hub-pill-light">Status: {d.deadline ? <b className="warn">Clock running</b> : <b className="ok">All clear</b>}</span>
       </PageHeader>
 
       <nav className="hub-tabs" aria-label="Quick places">
@@ -61,6 +72,8 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
           <Link key={t.title + t.href} href={t.href} className="hub-tab" aria-current={t.current ? "true" : undefined}>
             <span className="ic"><Icon name={t.icon} /></span>
             <span style={{ minWidth: 0 }}><b>{t.title}</b><small>{t.sub}</small></span>
+            {t.metric && <span className="metric"><b>{t.metric[1]}</b> {t.metric[0]}</span>}
+            <Pending />
           </Link>
         ))}
       </nav>
@@ -71,13 +84,13 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             <>
               <Card icon="plus" title="Report a breach" sub="Lost, sent to the wrong person, or seen by someone who shouldn't" className="" delay={0.05}>
                 <p className="hub-big" style={{ fontSize: 34 }}>Something happened?</p>
-                <Link href="/report" className="hub-btn">Report it now →</Link>
+                <Link href="/report" className="hub-btn">Report it now →<Pending /></Link>
               </Card>
               <Card icon="inbox" title="My reports" sub="What happened after you reported" href="/my-reports" delay={0.12}>
-                {open.length ? <p className="hub-big">{open.length}<small>open</small></p> : <Empty title="Nothing reported" body="Reports you make will show their progress here." />}
+                {open.length ? <p className="hub-big"><CountUp value={open.length} /><small>open</small></p> : <Empty icon="inbox" title="Nothing reported" body="Reports you make will show their progress here." />}
               </Card>
               <Card icon="check" title="My tasks" sub="Given to you during a breach" href="/tasks" delay={0.19}>
-                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty title="No tasks" body="You're all clear." />}
+                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty icon="check" title="No tasks" body="Nothing has been given to you. You're all clear." />}
               </Card>
             </>
           ) : (
@@ -85,46 +98,56 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
               <Card icon="clock" title="72-hour clock" sub={d.deadline ? `${d.deadline.incidents?.code} · due ${kl.format(new Date(d.deadline.due_at))}` : "Commissioner deadline"} href={d.deadline ? "/incidents" : undefined} delay={0.05}>
                 {d.deadline ? (
                   <>
-                    <p className="hub-big">{Math.floor(hoursUsed)}<small>h used</small><span className={`hub-dot ${hoursUsed >= 48 ? "r" : "a"}`}>!</span></p>
+                    <p className="hub-big"><CountUp value={Math.floor(hoursUsed)} /><small>h used</small><span className="hub-dot warn">!</span></p>
                     <div className="hub-legend"><span>{Math.floor(hoursLeft!)} h left</span><span>72 h</span></div>
                     <Bars n={72} on={Math.floor(hoursUsed)} hotFrom={48} />
                   </>
                 ) : (
-                  <Empty title="No clock running" body="When a breach is reported, its 72-hour countdown appears here." />
+                  <Empty icon="clock" title="No clock running" body="When a breach is reported, its 72-hour countdown starts here." />
                 )}
               </Card>
 
               {me.role === "manager" ? (
                 <Card icon="stamp" title="Waiting for you" sub="Notice drafts to approve" href="/approvals" delay={0.12}>
                   {d.approvals ? (
-                    <p className="hub-big">{d.approvals}<small>to approve</small><span className="hub-dot r">!</span></p>
+                    <>
+                      <p className="hub-big"><CountUp value={d.approvals} /><small>to approve</small><span className="hub-dot warn">!</span></p>
+                      <div className="hub-legend"><span>Oldest waiting {waitH} h</span><span>72 h</span></div>
+                      <Bars n={72} on={Math.min(72, waitH)} hotFrom={24} />
+                    </>
                   ) : (
-                    <Empty title="Nothing to approve" body="Notice drafts appear here. The clock keeps running while they wait." />
+                    <Empty icon="stamp" title="Nothing to approve" body="Notice drafts wait here for you. The clock keeps running while they wait." />
                   )}
                 </Card>
               ) : (
                 <Card icon="db" title="Data inventory" sub="Where personal data is kept" href="/inventory" delay={0.12}>
                   {d.sets ? (
                     <>
-                      <p className="hub-big">{d.sets}<small>place{d.sets === 1 ? "" : "s"}</small></p>
+                      <p className="hub-big"><CountUp value={d.sets} /><small>place{d.sets === 1 ? "" : "s"}</small></p>
                       <div className="hub-legend"><span>Sensitive fields: {d.fieldSensitive}</span><span>All fields: {d.fieldTotal}</span></div>
-                      <Bars n={48} on={d.fieldTotal ? Math.round((d.fieldSensitive / d.fieldTotal) * 48) : 0} tone="hot" />
+                      <Bars n={48} on={d.fieldTotal ? Math.round((d.fieldSensitive / d.fieldTotal) * 48) : 0} />
                     </>
                   ) : (
-                    <Empty title="Start your inventory" body="List where personal data lives. Incidents start from this list." href="/inventory" cta="Add a data place" />
+                    <Empty icon="db" title="Start your inventory" body="List where personal data lives. Incidents start from this list." href="/inventory" cta="Add a data place" />
                   )}
                 </Card>
               )}
 
               {me.role === "manager" ? (
-                <Card icon="users" title="Your team" sub="Invited people and their roles" href="/users" delay={0.19}>
-                  <p className="hub-big">{d.people}<small>active</small><span className="hub-dot g">✓</span></p>
+                <Card icon="users" title="Your team" sub="People and roles" href="/users" delay={0.19}>
+                  <p className="hub-big"><CountUp value={d.people} /><small>active</small><span className="hub-dot g">✓</span></p>
                   <div className="hub-legend"><span>Active</span><span>{d.invites} invite{d.invites === 1 ? "" : "s"} pending</span></div>
-                  <Bars n={48} on={Math.round((d.people / Math.max(1, d.people + d.invites)) * 48)} tone="ok" />
+                  <Bars n={48} on={Math.round((d.people / Math.max(1, d.people + d.invites)) * 48)} />
                 </Card>
               ) : (
                 <Card icon="alert" title="Open incidents" sub="Not closed yet" href="/incidents" delay={0.19}>
-                  {open.length ? <p className="hub-big">{open.length}<small>open</small></p> : <Empty title="No open incidents" body="You're all clear." />}
+                  {open.length ? (
+                    <>
+                      <p className="hub-big"><CountUp value={open.length} /><small>open</small></p>
+                      <div className="hub-legend"><span>Not assessed yet: {unassessed}</span><span>Open: {open.length}</span></div>
+                      <Bars n={48} on={Math.round((unassessed / open.length) * 48)} />
+                    </>
+                  ) : <Empty icon="alert" title="No open incidents" body="Nothing to respond to right now." href="/report" cta="Report a breach" />}
                 </Card>
               )}
             </>
@@ -150,14 +173,20 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                 {me.role === "manager"
                   ? d.audit.length
                     ? d.audit.map((a) => (
-                        <div key={a.id} className="hub-msg"><span className="hub-av" aria-hidden="true">{a.actor.charAt(0)}</span><p><b style={{ fontWeight: 600 }}>{a.actor}</b> {ACTION[a.action] ?? a.action} {article(AUDIT_WORDS[a.table_name] ?? a.table_name)}</p><time>{kl.format(new Date(a.created_at))}</time></div>
+                        <div key={a.id} className="hub-msg">
+                          <span className="hub-av" aria-hidden="true" style={{ background: a.actor === "System" ? "#9aa1b8" : avColour(a.actor) }}>{a.actor.charAt(0)}</span>
+                          <div><span className="meta"><b>{a.actor}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{capital(ACTION[a.action] ?? a.action)} {article(AUDIT_WORDS[a.table_name] ?? a.table_name)}</p></div>
+                        </div>
                       ))
-                    : <Empty title="Quiet so far" body="Every change anyone makes will be listed here." />
+                    : <Empty icon="list" title="Quiet so far" body="Every change anyone makes is listed here, and can never be edited." />
                   : d.alerts.length
                     ? d.alerts.map((a) => (
-                        <div key={a.id} className={`hub-msg${a.level !== "info" ? " alert" : ""}`}><span className="hub-av" aria-hidden="true">!</span><p>{a.message}</p><time>{kl.format(new Date(a.created_at))}</time></div>
+                        <div key={a.id} className={`hub-msg${a.level !== "info" ? " alert" : ""}`}>
+                          <span className="hub-av" aria-hidden="true">!</span>
+                          <div><span className="meta"><b>{a.level !== "info" ? "Deadline" : "Reminder"}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{a.message}</p></div>
+                        </div>
                       ))
-                    : <Empty title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
+                    : <Empty icon="bell" title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
               </div>
             )}
             <div className="hub-switch">
@@ -168,19 +197,36 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
 
           {me.role !== "staff" && (
             <>
-              <Card icon="alert" title="Incident progress" sub={open[0] ? `${open[0].code} · ${open[0].title}` : "The four steps of every breach"} href={open[0] ? "/incidents" : undefined} delay={0.33}>
-                <p className="hub-big" style={{ fontSize: 38 }}>{open[0] ? STEPS[Math.min(3, STEP[open[0].status] ?? 0)] : "Ready"}</p>
-                <div className="hub-steps">
-                  {STEPS.map((s, i) => {
-                    const at = open[0] ? STEP[open[0].status] ?? 0 : -1;
-                    return (
-                      <div key={s}><div className="l"><i style={{ width: i < at ? "100%" : i === at ? "50%" : "0%", background: i < at ? "var(--ink)" : undefined }} /></div><small>{i + 1}. {s}</small></div>
-                    );
-                  })}
-                </div>
+              <Card className="wide" icon="alert" title="Incident progress" sub={top ? `${top.code} · ${top.title}` : "The four steps of every breach"} href={top ? "/incidents" : undefined} delay={0.33}>
+                {top ? (
+                  <>
+                    <div className="hub-figs">
+                      <p className="hub-big">{top.people !== null ? <CountUp value={top.people} /> : "?"}<small>people affected</small></p>
+                      <dl>
+                        <div><dt>Data places</dt><dd>{top.places}</dd></div>
+                        <div><dt>Stage</dt><dd>{STATUS_LABEL[top.status] ?? top.status}</dd></div>
+                      </dl>
+                    </div>
+                    <ol className="hub-timeline">
+                      {STEPS.map((st, i) => {
+                        const at = Math.min(3, STEP[top.status] ?? 0);
+                        const when = [top.reportedAt, top.assessedAt, top.notifiedAt, null][i];
+                        return (
+                          <li key={st} data-state={i < at ? "done" : i === at ? "now" : "next"}>
+                            <i aria-hidden="true" />
+                            <b>{i + 1}. {st}</b>
+                            <small>{when ? day.format(new Date(when)) : i === at ? "In progress" : "Not yet"}</small>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </>
+                ) : (
+                  <Empty icon="alert" title="No open incident" body="When a breach is reported, its four steps show here with the date each was done." />
+                )}
               </Card>
-              <Card icon="check" title={me.role === "manager" ? "Open tasks" : "Tasks"} sub="Follow-up work during a breach" href="/tasks" className="span2" delay={0.4}>
-                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty title="No open tasks" body="Tasks given during an incident appear here with their owner and due date." />}
+              <Card icon="check" title={me.role === "manager" ? "Open tasks" : "Tasks"} sub="Follow-up work during a breach" href="/tasks" className="wide" delay={0.4}>
+                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty icon="check" title="No open tasks" body="Tasks given during an incident appear here with their owner and due date." />}
               </Card>
             </>
           )}
