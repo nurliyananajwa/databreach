@@ -2,11 +2,11 @@ import Link from "next/link";
 import Icon, { type IconName } from "./icons";
 import Pending from "./Pending";
 
-export function Card({ icon, title, sub, href, delay = 0, className = "", children }: {
-  icon: IconName; title: string; sub?: string; href?: string; delay?: number; className?: string; children: React.ReactNode;
+export function Card({ icon, title, sub, href, delay = 0, className = "", tour, children }: {
+  icon: IconName; title: string; sub?: string; href?: string; delay?: number; className?: string; tour?: string; children: React.ReactNode;
 }) {
   return (
-    <section className={`hub-card ${className}`} style={{ animationDelay: `${delay}s` }}>
+    <section className={`hub-card ${className}`} style={{ animationDelay: `${delay}s` }} data-tour={tour}>
       <div className="hub-ch">
         <div>
           <h2><Icon name={icon} />{title}</h2>

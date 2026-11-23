@@ -10,6 +10,7 @@ export function BellLink({ unread }: { unread: number }) {
     <Link
       href="/notifications"
       className="hub-bell"
+      data-tour="bell"
       aria-current={here ? "page" : undefined}
       aria-label={unread ? `Notifications, ${unread} unread` : "Notifications"}
     >
