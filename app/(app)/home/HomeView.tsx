@@ -85,10 +85,10 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                 <Link href="/report" className="hub-btn">Report it now →</Link>
               </Card>
               <Card icon="inbox" title="My reports" sub="What happened after you reported" href="/my-reports" delay={0.12}>
-                {open.length ? <p className="hub-big"><CountUp value={open.length} /><small>open</small></p> : <Empty title="Nothing reported" body="Reports you make will show their progress here." />}
+                {open.length ? <p className="hub-big"><CountUp value={open.length} /><small>open</small></p> : <Empty icon="inbox" title="Nothing reported" body="Reports you make will show their progress here." />}
               </Card>
               <Card icon="check" title="My tasks" sub="Given to you during a breach" href="/tasks" delay={0.19}>
-                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty title="No tasks" body="You're all clear." />}
+                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty icon="check" title="No tasks" body="Nothing has been given to you. You're all clear." />}
               </Card>
             </>
           ) : (
@@ -101,7 +101,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                     <Bars n={72} on={Math.floor(hoursUsed)} hotFrom={48} />
                   </>
                 ) : (
-                  <Empty title="No clock running" body="When a breach is reported, its 72-hour countdown appears here." />
+                  <Empty icon="clock" title="No clock running" body="When a breach is reported, its 72-hour countdown starts here." />
                 )}
               </Card>
 
@@ -114,7 +114,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                       <Bars n={72} on={Math.min(72, waitH)} hotFrom={24} />
                     </>
                   ) : (
-                    <Empty title="Nothing to approve" body="Notice drafts appear here. The clock keeps running while they wait." />
+                    <Empty icon="stamp" title="Nothing to approve" body="Notice drafts wait here for you. The clock keeps running while they wait." />
                   )}
                 </Card>
               ) : (
@@ -126,7 +126,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                       <Bars n={48} on={d.fieldTotal ? Math.round((d.fieldSensitive / d.fieldTotal) * 48) : 0} />
                     </>
                   ) : (
-                    <Empty title="Start your inventory" body="List where personal data lives. Incidents start from this list." href="/inventory" cta="Add a data place" />
+                    <Empty icon="db" title="Start your inventory" body="List where personal data lives. Incidents start from this list." href="/inventory" cta="Add a data place" />
                   )}
                 </Card>
               )}
@@ -145,7 +145,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                       <div className="hub-legend"><span>Not assessed yet: {unassessed}</span><span>Open: {open.length}</span></div>
                       <Bars n={48} on={Math.round((unassessed / open.length) * 48)} />
                     </>
-                  ) : <Empty title="No open incidents" body="You're all clear." />}
+                  ) : <Empty icon="alert" title="No open incidents" body="Nothing to respond to right now." href="/report" cta="Report a breach" />}
                 </Card>
               )}
             </>
@@ -176,7 +176,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                           <div><span className="meta"><b>{a.actor}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{capital(ACTION[a.action] ?? a.action)} {article(AUDIT_WORDS[a.table_name] ?? a.table_name)}</p></div>
                         </div>
                       ))
-                    : <Empty title="Quiet so far" body="Every change anyone makes will be listed here." />
+                    : <Empty icon="list" title="Quiet so far" body="Every change anyone makes is listed here, and can never be edited." />
                   : d.alerts.length
                     ? d.alerts.map((a) => (
                         <div key={a.id} className={`hub-msg${a.level !== "info" ? " alert" : ""}`}>
@@ -184,7 +184,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                           <div><span className="meta"><b>{a.level !== "info" ? "Deadline" : "Reminder"}</b><time>{kl.format(new Date(a.created_at))}</time></span><p>{a.message}</p></div>
                         </div>
                       ))
-                    : <Empty title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
+                    : <Empty icon="bell" title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
               </div>
             )}
             <div className="hub-switch">
@@ -220,11 +220,11 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                     </ol>
                   </>
                 ) : (
-                  <Empty title="No open incident" body="When a breach is reported, its four steps show here with the date each was done." />
+                  <Empty icon="alert" title="No open incident" body="When a breach is reported, its four steps show here with the date each was done." />
                 )}
               </Card>
               <Card icon="check" title={me.role === "manager" ? "Open tasks" : "Tasks"} sub="Follow-up work during a breach" href="/tasks" className="wide" delay={0.4}>
-                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty title="No open tasks" body="Tasks given during an incident appear here with their owner and due date." />}
+                {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty icon="check" title="No open tasks" body="Tasks given during an incident appear here with their owner and due date." />}
               </Card>
             </>
           )}

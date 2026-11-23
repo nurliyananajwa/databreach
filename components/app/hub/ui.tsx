@@ -29,9 +29,11 @@ export function Bars({ n = 48, on, tone = "on", hotFrom }: { n?: number; on: num
   );
 }
 
-export function Empty({ title, body, href, cta }: { title: string; body: string; href?: string; cta?: string }) {
+// Empty card: an icon, what this card will show, and one next step if there is one.
+export function Empty({ title, body, href, cta, icon = "check" }: { title: string; body: string; href?: string; cta?: string; icon?: IconName }) {
   return (
     <div className="hub-empty">
+      <span className="ic" aria-hidden="true"><Icon name={icon} /></span>
       <strong>{title}</strong>
       <p>{body}</p>
       {href && cta && <Link href={href} className="hub-btn soft">{cta} →</Link>}
