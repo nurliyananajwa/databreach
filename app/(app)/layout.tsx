@@ -22,7 +22,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <a href="#main" className="sr-only focus:not-sr-only">Skip to content</a>
       {/* The pale band starts here; each page's header continues it. */}
       <div className="hub-frame">
-      <div className="hub-band">
+      <div className="hub-band hub-band-top">
         <header className="hub-bar">
           <Link href="/home" className="hub-logo">
             <i><Icon name="shield" className="size-5" /></i>PDPA Tracker
