@@ -240,7 +240,12 @@
 .hub-card { background: var(--card); border-radius: var(--r); padding: 18px 20px; box-shadow: 0 1px 2px #13206b0a, 0 10px 30px #13206b0d; animation: hub-up .6s cubic-bezier(.2,.8,.2,1) backwards; transition: transform .25s, box-shadow .25s; }
 .hub-card:hover { transform: translateY(-3px); box-shadow: 0 1px 2px #13206b0a, 0 18px 40px #13206b1a; }
 @keyframes hub-up { from { opacity: 0; transform: translateY(14px); } }
-.hub-ch { display: flex; align-items: flex-start; gap: 8px; }
+/* title and View link share the first line; the line under the title uses the full card width */
+.hub-ch { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(30px, auto); column-gap: 10px; align-items: center; }
+.hub-ch > div { display: contents; }
+.hub-ch h2 { grid-row: 1; grid-column: 1; min-width: 0; }
+.hub-ch .hub-view { grid-row: 1; grid-column: 2; align-self: center; margin: 0; }
+.hub-ch .sub { grid-row: 2; grid-column: 1 / -1; }
 .hub-ch h2 { font-weight: 600; font-size: 15px; display: flex; gap: 8px; align-items: center; }
 .hub-ch h2 svg { width: 17px; height: 17px; color: var(--accent); }
 .hub-ch .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
@@ -317,6 +322,11 @@
 /* existing pages: plain content gets the card look */
 
 /* Below 1000px there is no room for the picture beside the title. */
+/* medium screens: three cards per row, the side panel moves below them */
+@media (max-width: 1240px) {
+  .hub-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .hub-grid > .hub-side { grid-column: 1 / -1; grid-row: auto; order: 1; }
+}
 @media (max-width: 1000px) {
   .hub-ring { width: 180px; height: 180px; }
   .hub-shield { width: 86px; }
