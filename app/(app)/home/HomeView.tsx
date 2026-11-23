@@ -31,16 +31,16 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         : { t: "Breach Response Hub", p: open.length ? `${open.length} open incident${open.length > 1 ? "s" : ""}, no deadline running right now.` : `Hello, ${first}. No open incidents. A good time to keep your data inventory up to date.` };
 
   // ---- folder tabs: open incidents first, then the main places ----
-  const tabs: { href: string; icon: IconName; title: string; sub: string; current?: boolean }[] =
+  const tabs: { href: string; icon: IconName; title: string; sub: string; current?: boolean; metric?: [string, string] }[] =
     me.role === "staff"
       ? [
-          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true },
+          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true, metric: ["My open reports", String(open.length)] },
           { href: "/report", icon: "plus", title: "Report", sub: "About 2 minutes" },
           { href: "/my-reports", icon: "inbox", title: "My reports", sub: `${open.length} open` },
           { href: "/tasks", icon: "check", title: "My tasks", sub: `${d.tasks.length} to do` },
         ]
       : [
-          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true },
+          { href: "/home", icon: "home", title: "Overview", sub: me.orgName, current: true, metric: ["Open incidents", String(open.length)] },
           ...open.slice(0, 2).map((i) => ({ href: "/incidents", icon: "alert" as IconName, title: i.code, sub: i.title })),
           { href: "/inventory", icon: "db", title: "Inventory", sub: `${d.sets} data place${d.sets === 1 ? "" : "s"}` },
           { href: "/register", icon: "book", title: "Register", sub: "Kept 2 years" },
@@ -53,7 +53,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
     <>
       <PageHeader title={greeting.t} intro={greeting.p} eyebrow={me.orgName} big art>
         <span className="hub-pill-light">Role: <b>{me.role === "dp_lead" ? "Compliance Officer" : me.role === "manager" ? "Manager" : "Staff"}</b></span>
-        {me.role !== "staff" && <span className="hub-pill-light">Open: <b>{open.length} incident{open.length === 1 ? "" : "s"}</b></span>}
+        <span className="hub-pill-light">Status: {d.deadline ? <b className="warn">Clock running</b> : <b className="ok">All clear</b>}</span>
       </PageHeader>
 
       <nav className="hub-tabs" aria-label="Quick places">
@@ -61,6 +61,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
           <Link key={t.title + t.href} href={t.href} className="hub-tab" aria-current={t.current ? "true" : undefined}>
             <span className="ic"><Icon name={t.icon} /></span>
             <span style={{ minWidth: 0 }}><b>{t.title}</b><small>{t.sub}</small></span>
+            {t.metric && <span className="metric">{t.metric[0]} <b>{t.metric[1]}</b></span>}
           </Link>
         ))}
       </nav>
@@ -168,7 +169,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
 
           {me.role !== "staff" && (
             <>
-              <Card icon="alert" title="Incident progress" sub={open[0] ? `${open[0].code} · ${open[0].title}` : "The four steps of every breach"} href={open[0] ? "/incidents" : undefined} delay={0.33}>
+              <Card className="wide" icon="alert" title="Incident progress" sub={open[0] ? `${open[0].code} · ${open[0].title}` : "The four steps of every breach"} href={open[0] ? "/incidents" : undefined} delay={0.33}>
                 <p className="hub-big" style={{ fontSize: 38 }}>{open[0] ? STEPS[Math.min(3, STEP[open[0].status] ?? 0)] : "Ready"}</p>
                 <div className="hub-steps">
                   {STEPS.map((s, i) => {
@@ -179,7 +180,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                   })}
                 </div>
               </Card>
-              <Card icon="check" title={me.role === "manager" ? "Open tasks" : "Tasks"} sub="Follow-up work during a breach" href="/tasks" className="span2" delay={0.4}>
+              <Card icon="check" title={me.role === "manager" ? "Open tasks" : "Tasks"} sub="Follow-up work during a breach" href="/tasks" className="wide" delay={0.4}>
                 {d.tasks.length ? <TaskRows tasks={d.tasks} /> : <Empty title="No open tasks" body="Tasks given during an incident appear here with their owner and due date." />}
               </Card>
             </>
