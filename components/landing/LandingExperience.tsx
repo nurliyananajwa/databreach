@@ -37,21 +37,10 @@ function Icon({ name }: { name: string }) {
   </svg>;
 }
 
-const FIELD_DETAILS = [
-  {name:"Full name",source:"Customer profiles",question:"What other details identify the same person?",detail:"A name gives context. Confirm which linked records were exposed."},
-  {name:"Email address",source:"Booking and order forms",question:"Who received or accessed the address list?",detail:"Check the source and whether contact details left authorised access."},
-  {name:"Payment details",source:"Billing and payroll records",question:"Were the payment records actually readable?",detail:"Confirm exactly which financial fields were accessible and how they link to a person."},
-  {name:"Phone number",source:"Delivery and contact lists",question:"Did the list include other identifying details?",detail:"Confirm the people involved and the destination of any shared data."},
-  {name:"Identity number",source:"Onboarding and identity files",question:"Which identity fields were exposed, and with what other data?",detail:"Review the combination of fields and who could access them."},
-  {name:"Health information",source:"Patient and consultation records",question:"What health information was accessible, and to whom?",detail:"Identify the affected records and the extent of access before recording the assessment."},
-] as const;
-function DataScene({active,onSelect,motion}:{active:string|null;onSelect:(name:string|null)=>void;motion:boolean}) {
+function DataScene({motion}:{motion:boolean}) {
   const scene=useRef<HTMLDivElement|null>(null);
   useEffect(()=>{const node=scene.current;if(!node)return;const observer=new IntersectionObserver(([entry])=>{node.dataset.visible=entry.isIntersecting?"true":"false";},{rootMargin:"80px"});observer.observe(node);return()=>observer.disconnect();},[]);
-  const selected=FIELD_DETAILS.find(f=>f.name===active);
-  const trigger=useRef<HTMLButtonElement|null>(null);
-  function close(){onSelect(null);if(trigger.current?.isConnected)trigger.current.focus();}
-  return <div ref={scene} className="bl-data-scene" data-chapter="0" data-active={!!active} onKeyDown={e=>{if(e.key==='Escape'&&active){e.preventDefault();close();}}} onPointerMove={e=>{if(!motion||e.pointerType!=="mouse")return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--mx",((e.clientX-r.left)/r.width-.5)*10+"px");e.currentTarget.style.setProperty("--my",((e.clientY-r.top)/r.height-.5)*8+"px");e.currentTarget.style.setProperty("--tx",((e.clientX-r.left)/r.width-.5)*18+"deg");e.currentTarget.style.setProperty("--ty",((e.clientY-r.top)/r.height-.5)*-14+"deg");}} onPointerLeave={e=>{for(const v of ["--mx","--my"])e.currentTarget.style.setProperty(v,"0px");for(const v of ["--tx","--ty"])e.currentTarget.style.setProperty(v,"0deg");}}>
+  return <div ref={scene} className="bl-data-scene" data-chapter="0" onPointerMove={e=>{if(!motion||e.pointerType!=="mouse")return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--mx",((e.clientX-r.left)/r.width-.5)*10+"px");e.currentTarget.style.setProperty("--my",((e.clientY-r.top)/r.height-.5)*8+"px");e.currentTarget.style.setProperty("--tx",((e.clientX-r.left)/r.width-.5)*18+"deg");e.currentTarget.style.setProperty("--ty",((e.clientY-r.top)/r.height-.5)*-14+"deg");}} onPointerLeave={e=>{for(const v of ["--mx","--my"])e.currentTarget.style.setProperty(v,"0px");for(const v of ["--tx","--ty"])e.currentTarget.style.setProperty(v,"0deg");}}>
     <div className="bl-scene-floor" aria-hidden="true"/>
     <div className="bl-record-object" aria-hidden="true"><div className="bl-glass-layer bl-layer-back"/><div className="bl-glass-layer bl-layer-coral"/><div className="bl-record-face"><div className="bl-record-topline"><span>PDPA</span><span>DEMO</span></div><div className="bl-record-glyph"><i/><i/><i/><i/></div><span className="bl-record-name">PERSONAL DATA</span><span className="bl-record-sub">From exposure<br/>to clarity.</span><div className="bl-record-bars"><i/><i/><i/></div></div></div>
   </div>;
@@ -66,7 +55,6 @@ export default function LandingExperience() {
   const [role, setRole] = useState(1);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [motion, setMotion] = useState(true);
-  const [activeField, setActiveField] = useState<string|null>(null);
   const [elapsed, setElapsed] = useState(12);
   useEffect(()=>{
     const preference=window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -91,24 +79,18 @@ export default function LandingExperience() {
 
   function toggleMotion(){setMotion(!motion);}
   const root=useRef<HTMLDivElement>(null);
-  // 2. as the hero leaves the screen, the camera "flies into" the card (--fly 0..1)
+  // As the hero leaves the screen, the camera "flies into" the card (--fly 0..1)
   useEffect(()=>{const el=root.current;const hero=el?.querySelector<HTMLElement>('.bl-story');if(!el||!hero)return;let raf=0;
     const update=()=>{raf=0;const b=hero.getBoundingClientRect().bottom;const p=Math.min(1,Math.max(0,(innerHeight*0.95-b)/(innerHeight*0.6)));hero.style.setProperty('--fly',p.toFixed(3));};
     const on=()=>{if(!raf)raf=requestAnimationFrame(update);};addEventListener('scroll',on,{passive:true});addEventListener('resize',on);update();
     return()=>{removeEventListener('scroll',on);removeEventListener('resize',on);cancelAnimationFrame(raf);};},[]);
-  // 1. entry moment: plays once per visit, skippable, never for reduced motion
-  const [intro,setIntro]=useState<'show'|'leave'|'gone'>('show');
-  useEffect(()=>{let seen=false;try{seen=sessionStorage.getItem('bl-intro')==='1';sessionStorage.setItem('bl-intro','1');}catch{}
-    if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches){setIntro('gone');return;}
-    const a=setTimeout(()=>setIntro('leave'),1900),b=setTimeout(()=>setIntro('gone'),2700);return()=>{clearTimeout(a);clearTimeout(b);};},[]);
-  const skipIntro=()=>{setIntro('leave');setTimeout(()=>setIntro('gone'),500);};
   return <div ref={root} className={'breach-landing '+(motion?'':'bl-motion-off')}>
     <a className="bl-skip" href="#main">Skip to content</a>
     <header className="bl-header bl-wrap"><Link href="/" className="bl-brand" aria-label="PDPA Breach Response Tracker"><span className="bl-brand-symbol" aria-hidden="true"><i/><i/><i/><i/></span><span>PDPA<span className="bl-brand-sub">Breach Response Tracker</span></span></Link><nav aria-label="Main"><a className="bl-nav-demo" href="#scenario-controls">Try the demo</a><a href="#team">The people</a><Link className="bl-signin" href="/sign-in">Sign in <Icon name="arrow"/></Link></nav></header>
     <main id="main">
       <section className="bl-story" aria-labelledby="bl-title"><div className="bl-story-sticky">
         <div className="bl-hero-heading bl-wrap"><h1 id="bl-title">72 hours to report<br/>a data breach.<br/>Be ready.</h1><p className="bl-hero-subtitle">Know where your personal data is, decide fast, and keep the proof. Built for Malaysian SMEs.</p><div className="bl-hero-actions"><a href="#scenario-controls" className="bl-button bl-button-dark">Try the demo <Icon name="arrow"/></a></div></div>
-        <DataScene active={activeField} onSelect={setActiveField} motion={motion}/>
+        <DataScene motion={motion}/>
         <div className="bl-story-bottom bl-wrap"><div className="bl-story-tools"><button aria-pressed={!motion} onClick={toggleMotion}>{motion?"Pause motion":"Enable motion"}</button></div></div>
       </div></section>
       <HoursStory motion={motion}/>

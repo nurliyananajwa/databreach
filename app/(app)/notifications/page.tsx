@@ -31,13 +31,15 @@ export default async function Page() {
               {alerts.map((a) => (
                 <div key={a.id} className={`hub-msg${a.level !== "info" && !a.read_at ? " alert" : ""}`} style={{ opacity: a.read_at ? 0.6 : 1 }}>
                   <span className="hub-av" aria-hidden="true">!</span>
-                  <p>{a.message}{!a.read_at && <span className="sr-only"> (unread)</span>}</p>
-                  <time>{kl.format(new Date(a.created_at))}</time>
+                  <div>
+                    <span className="meta"><b>{a.level !== "info" ? "Deadline" : "Reminder"}{!a.read_at && <span className="sr-only"> (unread)</span>}</b><time>{kl.format(new Date(a.created_at))}</time></span>
+                    <p>{a.message}</p>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <Empty title="No notifications" body="You'll be told when a breach is reported, a notice needs approval, a task is given to you, and 24 and 6 hours before a deadline." />
+            <Empty icon="bell" title="No notifications" body="You'll be told when a breach is reported, a notice needs approval, a task is given to you, and 24 and 6 hours before a deadline." />
           )}
         </div>
       </main>

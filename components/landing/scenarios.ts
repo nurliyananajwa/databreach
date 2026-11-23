@@ -111,18 +111,3 @@ export function assess(s: Scenario): { rules: RuleResult[]; verdict: Verdict } {
   const scale = rules[0].met === true;
   return { rules, verdict: harm ? "both" : scale ? "commissioner" : "register" };
 }
-
-export const VERDICT_TEXT: Record<Verdict, { title: string; body: string }> = {
-  both: {
-    title: "Tell the Commissioner and the people affected",
-    body: "This sample flags both notification routes. The Compliance Officer confirms the decision and applicable deadlines.",
-  },
-  commissioner: {
-    title: "Tell the Commissioner",
-    body: "This sample flags the Commissioner route. Notification to affected people needs a separate review.",
-  },
-  register: {
-    title: "Record it in your breach register",
-    body: "The sample has no automatic flags. The Compliance Officer must still review the context and record the decision.",
-  },
-};

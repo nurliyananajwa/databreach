@@ -17,9 +17,10 @@ export async function devSignIn(_prev: SignInState, formData: FormData): Promise
   if (!devLoginEnabled() || !process.env.DEV_TEST_PASSWORD) {
     return { error: "Developer sign-in is turned off." };
   }
-  const role = String(formData.get("role")) as keyof typeof TEST_ACCOUNTS;
-  const email = TEST_ACCOUNTS[role];
-  if (!email) return { error: "Unknown test account." };
+  const role = String(formData.get("role"));
+  // Only the three listed roles; a crafted value like "constructor" is refused.
+  if (!Object.hasOwn(TEST_ACCOUNTS, role)) return { error: "Unknown test account." };
+  const email = TEST_ACCOUNTS[role as keyof typeof TEST_ACCOUNTS];
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
