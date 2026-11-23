@@ -1,3 +1,4 @@
+import { BellLink } from "@/components/app/BellLink";
 import "@fontsource-variable/manrope/wght.css";
 import "./hub.css";
 import Link from "next/link";
@@ -27,10 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </Link>
           <HubNav items={items} />
           <div className="hub-me">
-            <Link href="/notifications" className="hub-bell" aria-label={unread ? `Notifications, ${unread} unread` : "Notifications"}>
-              <Icon name="bell" className="size-5" />
-              {!!unread && <span className="hub-badge" aria-hidden="true">{unread > 9 ? "9+" : unread}</span>}
-            </Link>
+            <BellLink unread={unread ?? 0} />
             <span className="hub-chip">
               <span className="role">{ROLE_LABEL[me.role]}</span>
               <span className="hub-av" title={me.fullName}>{me.fullName.charAt(0)}</span>
