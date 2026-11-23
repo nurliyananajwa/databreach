@@ -6,7 +6,7 @@ insert into public.organisations (id, name) values
  ('00000000-0000-0000-0000-0000000000b2', 'Harbour Logistics Sdn Bhd');
 
 insert into auth.users (id, email, raw_user_meta_data) values
- ('00000000-0000-0000-0000-000000000001', 'aisyah.manager@example.test', '{"full_name":"Aisyah (Manager)"}'),
+ ('00000000-0000-0000-0000-000000000001', 'najwa.manager@example.test', '{"full_name":"Najwa (Manager)"}'),
  ('00000000-0000-0000-0000-000000000002', 'farid.lead@example.test',     '{"full_name":"Farid (DP Lead)"}'),
  ('00000000-0000-0000-0000-000000000003', 'siti.staff@example.test',     '{"full_name":"Siti (Staff)"}'),
  ('00000000-0000-0000-0000-000000000004', 'ahmad.staff@example.test',    '{"full_name":"Ahmad (Staff)"}'),

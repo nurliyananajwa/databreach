@@ -6,7 +6,7 @@ import { devSignIn, type SignInState } from "./actions";
 import { ROLE_LABEL } from "@/lib/roles";
 
 const ACCOUNTS = [
-  { role: "manager", label: ROLE_LABEL.manager, who: "Aisyah" },
+  { role: "manager", label: ROLE_LABEL.manager, who: "Najwa" },
   { role: "dp_lead", label: ROLE_LABEL.dp_lead, who: "Farid" },
   { role: "staff", label: ROLE_LABEL.staff, who: "Siti" },
 ];
