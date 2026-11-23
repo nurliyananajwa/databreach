@@ -174,7 +174,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                   {STEPS.map((s, i) => {
                     const at = open[0] ? STEP[open[0].status] ?? 0 : -1;
                     return (
-                      <div key={s}><div className="l"><i style={{ width: i < at ? "100%" : i === at ? "50%" : "0%", background: i < at ? "var(--green)" : undefined }} /></div><small>{i + 1}. {s}</small></div>
+                      <div key={s}><div className="l"><i style={{ width: i < at ? "100%" : i === at ? "50%" : "0%", background: i < at ? "var(--ink)" : undefined }} /></div><small>{i + 1}. {s}</small></div>
                     );
                   })}
                 </div>
