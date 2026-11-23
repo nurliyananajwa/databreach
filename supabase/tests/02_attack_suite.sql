@@ -11,7 +11,7 @@ select tests.must_fail('Not-invited Google account cannot get in', 'select publi
 commit;
 
 do $$ begin perform 1; end $$;
-begin; select tests.login('aisyah.manager@example.test'); set local role authenticated; select public.claim_invitation(); commit;
+begin; select tests.login('najwa.manager@example.test'); set local role authenticated; select public.claim_invitation(); commit;
 begin; select tests.login('farid.lead@example.test');     set local role authenticated; select public.claim_invitation(); commit;
 begin; select tests.login('siti.staff@example.test');     set local role authenticated; select public.claim_invitation(); commit;
 begin; select tests.login('ahmad.staff@example.test');    set local role authenticated; select public.claim_invitation(); commit;
@@ -171,7 +171,7 @@ begin; select tests.login('siti.staff@example.test'); set local role authenticat
 select tests.must_fail('Staff cannot approve a draft', format($q$select public.approve_notification(%L)$q$, :'n1'));
 commit;
 
-begin; select tests.login('aisyah.manager@example.test'); set local role authenticated;
+begin; select tests.login('najwa.manager@example.test'); set local role authenticated;
 select public.approve_notification(:'n1');
 select tests.must_fail('Manager cannot record notifications as sent',
   format($q$select public.record_notification_sent(%L, now(), 'Email')$q$, :'n1'));
@@ -224,7 +224,7 @@ select tests.must_fail('Audit log cannot be deleted', $q$delete from public.audi
 select tests.check('Audit log never contains encrypted text',
   (select count(*) = 0 from public.audit_log where details::text like '%description_enc%'));
 
-begin; select tests.login('aisyah.manager@example.test'); set local role authenticated;
+begin; select tests.login('najwa.manager@example.test'); set local role authenticated;
 select tests.check('Manager reads the audit trail of every step',
   (select count(distinct table_name) >= 8 from public.audit_log));
 commit;
@@ -245,7 +245,7 @@ select public.record_decision(:'inc2', true, true, 'Financial and identity data 
 select public.save_notification_draft(:'inc2', 'commissioner', public.prefill_notification(:'inc2')) as n2 \gset
 select public.submit_notification(:'n2');
 commit;
-begin; select tests.login('aisyah.manager@example.test'); set local role authenticated; select public.approve_notification(:'n2'); commit;
+begin; select tests.login('najwa.manager@example.test'); set local role authenticated; select public.approve_notification(:'n2'); commit;
 begin; select tests.login('farid.lead@example.test'); set local role authenticated;
 select tests.must_fail('Late Commissioner notice requires a reason for the delay',
   format($q$select public.record_notification_sent(%L, now(), 'Email')$q$, :'n2'));

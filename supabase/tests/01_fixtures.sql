@@ -16,7 +16,7 @@ insert into auth.users (id, email, raw_user_meta_data) values
 
 -- first manager of each org is created by the administrator (service role)
 insert into public.invitations (org_id, email, role) values
- ('00000000-0000-0000-0000-0000000000a1', 'aisyah.manager@example.test', 'manager'),
+ ('00000000-0000-0000-0000-0000000000a1', 'najwa.manager@example.test', 'manager'),
  ('00000000-0000-0000-0000-0000000000a1', 'farid.lead@example.test',     'dp_lead'),
  ('00000000-0000-0000-0000-0000000000a1', 'siti.staff@example.test',     'staff'),
  ('00000000-0000-0000-0000-0000000000a1', 'ahmad.staff@example.test',    'staff'),
