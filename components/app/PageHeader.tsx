@@ -41,13 +41,13 @@ function ClockRing({ used }: { used: number | null }) {
   return (
     <div className="hub-ring" role="img" aria-label={used === null ? "No deadline clock running" : `${Math.floor(h)} of 72 hours used`}>
       <svg viewBox="0 0 240 240" className="hub-ring-svg">
-        <circle cx="120" cy="120" r={R} fill="none" stroke="#ffffff1f" strokeWidth="12" />
+        <circle cx="120" cy="120" r={R} fill="none" stroke="#ffffffa6" strokeWidth="12" />
         {used !== null && (
-          <circle className="arc" cx="120" cy="120" r={R} fill="none" stroke={hot ? "#ff6b4d" : "#8fa6ff"} strokeWidth="12" strokeLinecap="round"
+          <circle className="arc" cx="120" cy="120" r={R} fill="none" stroke={hot ? "#ff6b4d" : "#8b6cf0"} strokeWidth="12" strokeLinecap="round"
             strokeDasharray={`${(h / 72) * C} ${C}`} transform="rotate(-90 120 120)" style={{ ["--c" as string]: C }} />
         )}
         {Array.from({ length: 12 }, (_, i) => (
-          <line key={i} x1="120" y1="8" x2="120" y2={i % 3 ? 14 : 18} stroke="#ffffff66" strokeWidth="2" strokeLinecap="round" transform={`rotate(${i * 30} 120 120)`} />
+          <line key={i} x1="120" y1="8" x2="120" y2={i % 3 ? 14 : 18} stroke="#ffffffe6" strokeWidth="2" strokeLinecap="round" transform={`rotate(${i * 30} 120 120)`} />
         ))}
       </svg>
       <GlassShield />
@@ -61,7 +61,7 @@ function GlassShield() {
   return (
     <svg className="hub-shield" viewBox="62 26 136 176" aria-hidden="true">
       <defs>
-        <linearGradient id="g-shield" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".98" /><stop offset=".5" stopColor="#c9d5ff" stopOpacity=".8" /><stop offset="1" stopColor="#5f7cff" stopOpacity=".85" /></linearGradient>
+        <linearGradient id="g-shield" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".98" /><stop offset=".5" stopColor="#ddd0ff" stopOpacity=".8" /><stop offset="1" stopColor="#8b6cf0" stopOpacity=".85" /></linearGradient>
         <radialGradient id="g-shine" cx=".3" cy=".25" r=".6"><stop offset="0" stopColor="#fff" stopOpacity=".9" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></radialGradient>
         <filter id="g-glow" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
         <clipPath id="g-clip"><path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" /></clipPath>
@@ -70,7 +70,7 @@ function GlassShield() {
       <path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" fill="url(#g-shine)" />
       <path d="M100 62 130 50" stroke="#fff" strokeWidth="4" strokeLinecap="round" opacity=".9" />
       <g clipPath="url(#g-clip)">
-        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#2855ff" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" filter="url(#g-glow)" opacity=".7" />
+        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#6d3fd8" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" filter="url(#g-glow)" opacity=".7" />
         <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
       </g>
     </svg>
