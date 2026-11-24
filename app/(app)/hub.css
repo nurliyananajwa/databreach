@@ -416,11 +416,6 @@
 .hub-hero.big .hub-ring::before { content: ""; position: absolute; left: 50%; top: 50%; width: 1500px; height: 1500px; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; border-radius: 50%;
   background: repeating-radial-gradient(circle, #ffffff00 0 58px, #ffffff1c 59px 60px, #ffffff00 61px 118px);
   -webkit-mask: radial-gradient(circle, #000 30%, transparent 70%); mask: radial-gradient(circle, #000 30%, transparent 70%); }
-/* Home header text sits centred over the first two folder tabs (2 x 270px + 12px gap) */
-@media (min-width: 1001px) {
-  .hub-hero.big > div:first-child { width: 552px; max-width: 552px; text-align: center; }
-  .hub-hero.big .hub-meta { justify-content: center; }
-}
 @media (max-width: 1240px) {
   .hub-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .hub-grid > .hub-side { grid-column: 1 / -1; grid-row: auto; order: 1; }
