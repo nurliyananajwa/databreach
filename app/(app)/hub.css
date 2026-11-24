@@ -656,7 +656,7 @@
 
 /* ---------- Report a breach (Sprint 3) ---------- */
 .rep-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; align-items: start; }
-.rep-side { display: grid; gap: 16px; }
+.rep-side { display: grid; gap: 16px; position: sticky; top: 16px; }
 .rep-form { padding: 22px 24px; display: grid; gap: 22px; }
 .rep-form:hover, .rep-sent:hover { transform: none; }
 .rep-step { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; min-width: 0; }
@@ -686,7 +686,7 @@
 .rep-sets label.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-hover); font-weight: 600; }
 .rep-sets input { width: 16px; height: 16px; accent-color: var(--accent); }
 .rep-form .hub-btn[type="submit"] { margin-top: 0; border: 0; cursor: pointer; font: inherit; font-size: 14px; font-weight: 600; padding: 11px 20px; }
-.rep-next { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 8px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.rep-next { list-style: decimal; margin: 10px 0 0; padding-left: 18px; display: grid; gap: 8px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
 .rep-side-p { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin: 8px 0 0; }
 .rep-sent { display: grid; justify-items: start; gap: 8px; padding: 28px; }
 .rep-sent .ic { width: 44px; height: 44px; border-radius: 14px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
@@ -696,4 +696,21 @@
 .rep-sent p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 0; max-width: 56ch; }
 .rep-sent-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .rep-sent-actions .hub-btn { border: 0; cursor: pointer; font: inherit; font-size: 13px; }
-@media (max-width: 1000px) { .rep-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1000px) { .rep-grid { grid-template-columns: 1fr; } .rep-side { position: static; } }
+.rep-when-read { margin: 0; font-size: 13px; color: var(--ink-2); background: var(--accent-soft); border-radius: 10px; padding: 9px 12px; }
+.rep-when-read b { color: var(--accent-hover); font-weight: 600; }
+
+/* ---------- My reports (Staff) ---------- */
+.mr-list { list-style: none; margin: 14px 0 6px; padding: 0; display: grid; gap: 12px; }
+.mr-list > li { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px; }
+.mr-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.mr-top .code { font-size: 12px; font-weight: 600; color: var(--accent); }
+.mr-top b { font-weight: 600; font-size: 15px; }
+.mr-type { font-size: 12px; color: var(--muted); background: var(--bg); border-radius: 12px; padding: 1px 8px; }
+.mr-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.mr-steps li { font-size: 11px; color: var(--muted); padding-top: 8px; border-top: 4px solid #e7eaf3; border-radius: 2px; }
+.mr-steps li.done { border-top-color: var(--accent-line); color: var(--ink-2); }
+.mr-steps li.now { border-top-color: var(--accent); color: var(--accent-hover); font-weight: 600; }
+.mr-now { margin: 0; font-size: 13px; color: var(--ink-2); }
+.mr-now span { color: var(--muted); }
+@media (max-width: 640px) { .mr-steps li { font-size: 10px; } }

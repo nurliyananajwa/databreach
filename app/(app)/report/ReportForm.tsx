@@ -20,6 +20,16 @@ export default function ReportForm({ sets, followHref }: { sets: { id: string; n
   const [sentKey, setSentKey] = useState<string | null>(null);
   const today = nowKL().date;
 
+  // Read the date back in words, in Malaysian time: the boxes follow the
+  // browser's language, which can show American order (11/24/2026, 11:47 PM).
+  const when = (() => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(f.date) || !/^\d{2}:\d{2}$/.test(f.time)) return null;
+    const at = new Date(`${f.date}T${f.time}:00+08:00`);
+    if (Number.isNaN(at.getTime())) return null;
+    const fmt = new Intl.DateTimeFormat("en-MY", { weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: KL });
+    return { found: fmt.format(at), due: fmt.format(new Date(at.getTime() + 72 * 3.6e6)) };
+  })();
+
   // A warning only: a report must never be blocked when the clock is running,
   // but people are reminded not to paste the personal data itself.
   const realData = looksLikeRealData(f.title) || looksLikeRealData(f.description);
@@ -65,7 +75,11 @@ export default function ReportForm({ sets, followHref }: { sets: { id: string; n
           <label><span className="sr-only">Time</span><input type="time" name="time" required value={f.time} onChange={(e) => setF({ ...f, time: e.target.value })} /></label>
           <button type="button" className="hub-btn soft" onClick={() => setF({ ...f, ...nowKL() })}>Just now</button>
         </div>
-        <p className="rep-hint">The 72-hour clock counts from this time, not from when you send the report. Malaysian time.</p>
+        {when ? (
+          <p className="rep-when-read" role="status">
+            Found out <b>{when.found}</b>. The Commissioner must be told by <b>{when.due}</b>.
+          </p>
+        ) : <p className="rep-hint">The 72-hour clock counts from this time, not from when you send the report. Malaysian time.</p>}
       </fieldset>
 
       <fieldset className="rep-step">

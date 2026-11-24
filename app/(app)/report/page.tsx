@@ -2,6 +2,7 @@ import { requirePage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/app/PageHeader";
 import ReportForm from "./ReportForm";
+import Icon from "@/components/app/hub/icons";
 
 export const metadata = { title: "Report a breach | PDPA Breach Response Tracker" };
 
@@ -18,7 +19,7 @@ export default async function Page() {
           <ReportForm sets={sets} followHref={me.role === "staff" ? "/my-reports" : "/incidents"} />
           <aside className="rep-side">
             <section className="hub-card">
-              <div className="hub-ch"><div><h2>What happens next</h2></div></div>
+              <div className="hub-ch"><div><h2><Icon name="log" />What happens next</h2></div></div>
               <ol className="rep-next">
                 <li>The Compliance Officer is told straight away.</li>
                 <li>They check which data actually left your control.</li>
@@ -26,7 +27,7 @@ export default async function Page() {
               </ol>
             </section>
             <section className="hub-card">
-              <div className="hub-ch"><div><h2>Don&apos;t wait to be sure</h2></div></div>
+              <div className="hub-ch"><div><h2><Icon name="clock" />Don&apos;t wait to be sure</h2></div></div>
               <p className="rep-side-p">A report that turns out to be nothing is fine. A late report can break the 72-hour rule.</p>
             </section>
           </aside>
