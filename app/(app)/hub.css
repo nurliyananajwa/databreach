@@ -414,6 +414,8 @@
 
 /* Below 1000px there is no room for the picture beside the title. */
 /* medium screens: three cards per row, the side panel moves below them */
+/* header text starts in line with the icons inside the folder tabs below */
+@media (min-width: 641px) { .hub-hero > div:first-child { margin-left: 34px; } }
 @media (max-width: 640px) { .hub-hero.big .hub-ring::before { display: none; } } /* on phones they would run through the text */
 /* Home header: faint orbit lines spread from the shield across the band */
 .hub-hero.big .hub-ring::before { content: ""; position: absolute; left: 50%; top: 50%; width: 1500px; height: 1500px; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; border-radius: 50%;
