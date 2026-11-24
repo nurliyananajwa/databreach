@@ -633,3 +633,23 @@
 .hub-attn a:hover { filter: brightness(.97); }
 .hub-attn p { font-size: 13px; color: var(--muted); margin: 0; }
 @media (max-width: 1240px) { .hub-attn { margin-top: 12px; } }
+
+/* Phones: no grey scrollbars on the sliding menu and tabs; the data set list
+   becomes stacked rows instead of a table you scroll sideways. */
+.hub-nav, .hub-tabs { scrollbar-width: none; }
+.hub-nav::-webkit-scrollbar, .hub-tabs::-webkit-scrollbar { display: none; }
+.hub-nav a, .hub-nav .lbl { white-space: nowrap; }
+@media (max-width: 640px) {
+  .inv-table-wrap { overflow: visible; margin: 6px 0 0; padding: 0; }
+  .inv-table, .inv-table tbody { display: block; }
+  .inv-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .inv-table tbody tr { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .inv-table tbody tr:last-child { border-bottom: 0; }
+  .inv-table th, .inv-table td { padding: 0; border: 0; min-width: 0; }
+  .inv-table tbody th { grid-column: 1 / -1; }
+  .inv-table td { font-size: 13px; }
+  .inv-table td:nth-child(2), .inv-table td:nth-child(3) { grid-column: 1 / -1; }
+  .inv-table tbody tr { grid-template-columns: auto 1fr; }
+  .inv-table td.num::after { content: attr(data-label); margin-left: 4px; color: var(--muted); }
+  .inv-table td.num { text-align: left; }
+}

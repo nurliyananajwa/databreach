@@ -54,3 +54,14 @@ export async function requireRole(...roles: Role[]): Promise<CurrentUser> {
   if (!roles.includes(me.role)) notFound();
   return me;
 }
+
+// Page titles for role-limited pages. Someone without access sees
+// "Page not found" in the browser tab too, so the title does not give away
+// that the page exists.
+export function titleFor(href: string, title: string) {
+  return async () => {
+    const me = await getCurrentUser();
+    const ok = href === "/inventory/new" ? me.role === "dp_lead" : rolesFor(href).includes(me.role);
+    return { title: `${ok ? title : "Page not found"} | PDPA Breach Response Tracker` };
+  };
+}

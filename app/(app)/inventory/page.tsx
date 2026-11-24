@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requirePage } from "@/lib/auth";
+import { requirePage, titleFor } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/app/PageHeader";
 import type { Tab } from "@/components/app/PageTabs";
@@ -9,7 +9,7 @@ import Icon from "@/components/app/hub/icons";
 import { firstName } from "@/lib/names";
 import InventoryList, { type Row } from "./InventoryList";
 
-export const metadata = { title: "Data inventory | PDPA Breach Response Tracker" };
+export const generateMetadata = titleFor("/inventory", "Data inventory");
 
 type DbRow = {
   id: string; code: string; name: string; storage_location: string; status: "active" | "archived";

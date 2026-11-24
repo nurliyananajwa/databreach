@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requirePage } from "@/lib/auth";
+import { requirePage, titleFor } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY, type Category, type FieldInput } from "@/lib/inventory";
 import PageHeader from "@/components/app/PageHeader";
@@ -10,7 +10,7 @@ import DataSetEditor from "../DataSetEditor";
 import ArchiveForm from "./ArchiveForm";
 import { activePeople } from "../people";
 
-export const metadata = { title: "Data set | PDPA Breach Response Tracker" };
+export const generateMetadata = titleFor("/inventory", "Data set");
 
 const kl = new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 const num = new Intl.NumberFormat("en-MY");
