@@ -11,7 +11,7 @@ export default async function Page() {
   const people = await activePeople();
   return (
     <>
-      <PageHeader eyebrow="Data inventory" title="New data set" intro="Describe one place where personal data is kept, then list its fields. You can change everything later." />
+      <PageHeader here="/inventory" eyebrow="Data inventory" title="New data set" intro="Describe one place where personal data is kept, then list its fields. You can change everything later." />
       <main id="main" className="hub-main">
         <Link href="/inventory" className="hub-back">← Back to the inventory</Link>
         <DataSetEditor people={people} values={{ name: "", storage_location: "", access: "", purpose: "", retention: "", owner: "", processor: "", records: "", fields: [] }} />

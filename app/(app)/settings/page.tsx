@@ -9,7 +9,7 @@ export default async function Page() {
   const me = await requirePage("/settings");
   return (
     <>
-      <PageHeader title="Settings" intro="Your own details. Every change is written to the activity log." />
+      <PageHeader here="/settings" title="Settings" intro="Your own details. Every change is written to the activity log." />
       <SettingsView name={me.fullName} email={me.email} role={ROLE_LABEL[me.role]} org={me.orgName} />
     </>
   );

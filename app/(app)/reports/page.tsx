@@ -14,7 +14,7 @@ export default async function Page() {
   await requirePage("/reports");
   return (
     <>
-      <PageHeader title="Reports" intro="Generate a report of your incidents by type and status, then download it." />
+      <PageHeader here="/reports" title="Reports" intro="Generate a report of your incidents by type and status, then download it." />
       <main id="main" className="hub-main">
         <div className="hub-card" style={{ maxWidth: 760 }}>
           <span className="hub-tag">Coming in Sprint 5</span>

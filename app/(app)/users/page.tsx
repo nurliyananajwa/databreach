@@ -24,12 +24,13 @@ export default async function UsersPage() {
 
   return (
     <>
-      <PageHeader
+      <PageHeader here="/users"
         title="Users"
         intro="Invite people with their Google account and give each one a role. Only invited accounts can see anything."
       />
 
-      <section className="mt-8 max-w-4xl rounded-md border border-rule bg-sheet p-6" aria-labelledby="invite-heading">
+      <main id="main" className="hub-main">
+      <section className="hub-card" aria-labelledby="invite-heading">
         <h2 id="invite-heading" className="text-lg font-bold">Invite someone</h2>
         <p className="mt-1 mb-5 text-sm text-muted">
           They get access the first time they sign in with this Google account.
@@ -37,7 +38,7 @@ export default async function UsersPage() {
         <InviteForm />
       </section>
 
-      <section className="mt-10 max-w-5xl" aria-labelledby="people-heading">
+      <section className="hub-card mt-4" aria-labelledby="people-heading">
         <h2 id="people-heading" className="text-lg font-bold">People ({users?.length ?? 0})</h2>
         {usersError && <p role="alert" className="mt-3 text-stamp">Could not load users: {usersError.message}</p>}
         <div className="mt-4 overflow-x-auto rounded-md border border-rule bg-sheet">
@@ -87,7 +88,7 @@ export default async function UsersPage() {
         </div>
       </section>
 
-      <section className="mt-10 max-w-5xl" aria-labelledby="pending-heading">
+      <section className="hub-card mt-4" aria-labelledby="pending-heading">
         <h2 id="pending-heading" className="text-lg font-bold">Waiting to sign in ({invites?.length ?? 0})</h2>
         {invites && invites.length > 0 ? (
           <ul className="mt-4 divide-y divide-rule rounded-md border border-rule bg-sheet">
@@ -107,6 +108,7 @@ export default async function UsersPage() {
           <p className="mt-3 text-muted">Nobody is waiting. Invite someone above.</p>
         )}
       </section>
+      </main>
     </>
   );
 }

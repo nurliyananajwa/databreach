@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CurrentUser } from "@/lib/auth";
 import PageHeader from "@/components/app/PageHeader";
+import type { Tab } from "@/components/app/PageTabs";
 import Icon, { type IconName } from "@/components/app/hub/icons";
 import { Bars, Card, Empty, Meter } from "@/components/app/hub/ui";
 import CountUp from "@/components/app/hub/CountUp";
@@ -33,7 +34,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         : { t: `Hello, ${first}.`, p: open.length ? `${open.length} open incident${open.length > 1 ? "s" : ""}, no deadline running right now.` : "No open incidents. A good time to keep your data inventory up to date." };
 
   // ---- folder tabs: open incidents first, then the main places ----
-  const tabs: { href: string; icon: IconName; title: string; sub: string; current?: boolean; metric?: [string, string] }[] =
+  const tabs: Tab[] =
     me.role === "staff"
       ? [
           { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
@@ -62,6 +63,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         intro={greeting.p}
         eyebrow={me.orgName}
         big
+        tabs={tabs}
         ring={d.deadline ? hoursUsed : null}
         action={
           me.role === "staff"
@@ -76,17 +78,6 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         </>}
       />
 
-      {/* folder tabs: the current one rises and joins the sheet */}
-      <nav className="hub-tabs" aria-label="Quick places">
-        {tabs.map((t) => (
-          <Link key={t.title + t.href} href={t.href} className="hub-tab" aria-current={t.current ? "true" : undefined}>
-            <span className="ic"><Icon name={t.icon} /></span>
-            <span style={{ minWidth: 0 }}><b>{t.title}</b><small>{t.sub}</small></span>
-            {t.metric && t.metric[1] !== "0" && <span className="metric"><b>{t.metric[1]}</b> {t.metric[0]}</span>}
-            <Pending />
-          </Link>
-        ))}
-      </nav>
 
       <main id="main" className="hub-main">
         <div className="hub-grid">

@@ -8,7 +8,7 @@ export default async function Page() {
   await requirePage("/audit");
   return (
     <>
-      <PageHeader title="Audit log" intro="Who changed what, and when." />
+      <PageHeader here="/audit" title="Audit log" intro="Who changed what, and when." />
       <ComingSoon sprint={5} what="Every change in the system, newest first, with filters by user and record." />
     </>
   );

@@ -1,11 +1,18 @@
 import Link from "next/link";
+import PageTabs, { TabStrip, type Tab } from "@/components/app/PageTabs";
 
-// The top of every signed-in page: continues the navy band with a big serif title.
-// Pages without their own hero (Users, Inventory...) get the same look for free.
+// The top of every signed-in page: the gradient band with a big serif title,
+// then the folder tabs (the current page's tab is raised and joins the sheet).
 const today = new Intl.DateTimeFormat("en-MY", { weekday: "long", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" });
 
-export default function PageHeader({ title, intro, eyebrow, big = false, ring, meta, action, children }: {
+export default function PageHeader({ title, intro, eyebrow, big = false, ring, meta, action, here, hereSub, tabs, children }: {
   title: string; intro?: string; eyebrow?: string; big?: boolean;
+  /** The menu page this belongs to: its folder tab is raised. Sub-pages pass their parent ("/inventory"). */
+  here?: string;
+  /** Replaces the raised tab's small line, e.g. "3 data sets". */
+  hereSub?: string;
+  /** Home only: its own tab list (it shows open incidents). */
+  tabs?: Tab[];
   /** Hours used on the 72-hour clock, or null for "all clear". Leave out for no ring. */
   ring?: number | null;
   /** Small status line under the intro (Home: role and status). */
@@ -14,9 +21,11 @@ export default function PageHeader({ title, intro, eyebrow, big = false, ring, m
   action?: { href: string; label: string; urgent?: boolean; tour?: string };
   children?: React.ReactNode;
 }) {
+  const tabbed = Boolean(here || tabs);
   return (
+    <>
     <div className="hub-band hub-band-page" style={{ marginTop: -1 }}>
-      <div className={`hub-hero${big ? " big" : ""}`}>
+      <div className={`hub-hero${big ? " big" : ""}${tabbed ? " tabbed" : ""}`}>
         <div>
           <small>{eyebrow ?? today.format(new Date())}</small>
           <h1>{title}</h1>
@@ -28,6 +37,8 @@ export default function PageHeader({ title, intro, eyebrow, big = false, ring, m
         {children && <div className="actions">{children}</div>}
       </div>
     </div>
+    {tabs ? <TabStrip tabs={tabs} /> : here ? <PageTabs here={here} sub={hereSub} /> : null}
+    </>
   );
 }
 

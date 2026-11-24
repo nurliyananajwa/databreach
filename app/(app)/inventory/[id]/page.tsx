@@ -53,6 +53,7 @@ export default async function Page({ params, searchParams }: {
   return (
     <>
       <PageHeader
+        here="/inventory"
         eyebrow={`Data inventory · ${set.code}`}
         title={set.name}
         intro={old
