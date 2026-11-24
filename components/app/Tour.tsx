@@ -10,7 +10,7 @@ type Step = { target: string; title: string; body: string; roles?: Role[] };
 // with data-tour="...") and explains it in a sentence or two. Steps whose
 // part is not on screen for this role are skipped.
 const STEPS: Step[] = [
-  { target: "nav", title: "The menu", body: "Every page you can use. Hover an icon to see its name. You only see the pages your role is allowed to open." },
+  { target: "nav", title: "The menu", body: "Every page you can use. You only see the pages your role is allowed to open." },
   { target: "search", title: "Search", body: "Press Ctrl + K anywhere to jump to a page or do something, like reporting a breach." },
   { target: "bell", title: "Notifications", body: "Reminders 24 hours and 6 hours before a deadline, and anything that needs you." },
   { target: "report", title: "Report a breach", body: "If something goes wrong with personal data, report it here straight away, even if you are not sure. The Compliance Officer takes it from there.", roles: ["staff"] },

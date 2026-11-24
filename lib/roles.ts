@@ -6,19 +6,19 @@ export const ROLE_LABEL: Record<Role, string> = {
   manager: "Manager",
 };
 
-export type MenuItem = { href: string; label: string; roles: Role[]; inMenu?: boolean };
+export type MenuItem = { href: string; label: string; short?: string; roles: Role[]; inMenu?: boolean }; // short: name in the top menu
 
 // One list drives the menu AND the page guards, so they cannot disagree.
 // The database enforces the same rules again with RLS.
 export const MENU: MenuItem[] = [
   { href: "/home", label: "Home", roles: ["staff", "dp_lead", "manager"] },
-  { href: "/report", label: "Report a breach", roles: ["staff", "dp_lead", "manager"] },
+  { href: "/report", label: "Report a breach", short: "Report", roles: ["staff", "dp_lead", "manager"] },
   { href: "/my-reports", label: "My reports", roles: ["staff"] },
   { href: "/incidents", label: "Incidents", roles: ["dp_lead", "manager"] },
   { href: "/approvals", label: "Approvals", roles: ["manager"] },
-  { href: "/inventory", label: "Data inventory", roles: ["dp_lead", "manager"] },
+  { href: "/inventory", label: "Data inventory", short: "Inventory", roles: ["dp_lead", "manager"] },
   { href: "/tasks", label: "Tasks", roles: ["staff", "dp_lead", "manager"] },
-  { href: "/register", label: "Breach register", roles: ["dp_lead", "manager"] },
+  { href: "/register", label: "Breach register", short: "Register", roles: ["dp_lead", "manager"] },
   { href: "/reports", label: "Reports", roles: ["dp_lead", "manager"] },
   { href: "/users", label: "Users", roles: ["manager"] },
   { href: "/audit", label: "Audit log", roles: ["manager"] },
