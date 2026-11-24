@@ -7,8 +7,7 @@ import { activePeople } from "../people";
 export const metadata = { title: "New data set | PDPA Breach Response Tracker" };
 
 export default async function Page() {
-  await requireRole("dp_lead");
-  const people = await activePeople();
+  const [, people] = await Promise.all([requireRole("dp_lead"), activePeople()]);
   return (
     <>
       <PageHeader here="/inventory" eyebrow="Data inventory" title="New data set" intro="Describe one place where personal data is kept, then list its fields. You can change everything later." />

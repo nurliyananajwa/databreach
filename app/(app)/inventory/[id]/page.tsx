@@ -24,13 +24,15 @@ type Snapshot = {
 export default async function Page({ params, searchParams }: {
   params: Promise<{ id: string }>; searchParams: Promise<{ v?: string; saved?: string }>;
 }) {
-  const me = await requirePage("/inventory");
   const { id } = await params;
   const sp = await searchParams;
   if (!UUID.test(id)) notFound();
 
+  // Everything is fetched together with the sign-in check (one trip, not three).
   const db = await createClient();
-  const [{ data: set }, { data: fields }, { data: versions }, { data: names }] = await Promise.all([
+  const [me, people, { data: set }, { data: fields }, { data: versions }, { data: names }] = await Promise.all([
+    requirePage("/inventory"),
+    activePeople(),
     db.from("data_sets").select("id, code, name, storage_location, access_description, purpose, retention_period, owner_id, processor_name, approx_records, status, version_no, updated_at").eq("id", id).maybeSingle(),
     db.from("data_fields").select("id, field_name, category, is_sensitive").eq("data_set_id", id).order("field_name"),
     db.from("data_set_versions").select("version_no, changed_at, changed_by, snapshot").eq("data_set_id", id).order("version_no", { ascending: false }),
@@ -69,7 +71,7 @@ export default async function Page({ params, searchParams }: {
           <div className="inv-main">
             {lead && !old && !archived ? (
               <DataSetEditor
-                people={await activePeople()}
+                people={people}
                 values={{
                   id: set.id, name: set.name, storage_location: set.storage_location, access: set.access_description ?? "",
                   purpose: set.purpose, retention: set.retention_period ?? "", owner: set.owner_id ?? "",

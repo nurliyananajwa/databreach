@@ -16,12 +16,14 @@ type DbRow = {
 };
 
 export default async function Page() {
-  const me = await requirePage("/inventory");
+  // The list query starts at the same time as the sign-in check instead of
+  // after it (one trip to Supabase saved). RLS still decides what it returns.
   const db = await createClient();
-  const { data, error } = await db
+  const listing = db
     .from("data_sets")
     .select("id, code, name, storage_location, status, approx_records, updated_at, owner:profiles!data_sets_owner_id_fkey(full_name, is_active), data_fields(is_sensitive)")
     .order("code");
+  const [me, { data, error }] = await Promise.all([requirePage("/inventory"), listing]);
 
   const rows: Row[] = ((data ?? []) as unknown as DbRow[]).map((d) => ({
     id: d.id,
