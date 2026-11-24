@@ -143,8 +143,6 @@
 .hub-flip a[aria-current="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
 .hub-flip .hub-tag { font-weight: 600; }
 /* the switch already names the panel, so its title is for screen readers only */
-.hub-side .hub-ch h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.hub-side .hub-ch .sub { grid-row: 1; grid-column: 1; }
 .hub-back { display: inline-block; margin-top: 14px; font-size: 12px; color: var(--accent); text-decoration: none; }
 .hub-back:hover { text-decoration: underline; }
 
@@ -449,7 +447,7 @@
 .inv-flag { display: inline-block; font-size: 11px; font-weight: 600; line-height: 1.5; color: var(--muted); background: var(--bg); border-radius: 12px; padding: 1px 8px; white-space: nowrap; }
 .inv-flag.sens { color: var(--sens-text); background: var(--accent-soft); }
 .inv-flag.warn { color: var(--warn-text); background: var(--warn-soft); }
-.hub-owner-warn { margin-left: 10px; vertical-align: middle; text-decoration: none; }
+.hub-owner-warn { margin-left: 10px; vertical-align: middle; text-decoration: none; font-family: var(--font-body); letter-spacing: 0; }
 .hub-owner-warn:hover { text-decoration: underline; }
 
 .inv-empty { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; align-items: center; padding: 26px 28px; }
