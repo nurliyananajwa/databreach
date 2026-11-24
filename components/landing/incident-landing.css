@@ -37,3 +37,33 @@
 
 .pdpa-landing{line-height:normal;color-scheme:dark;min-height:100svh}
 .pdpa-landing .about{color-scheme:light}
+
+
+/* ---- Lilac theme (matches the signed-in app): light, violet accent, coral only for the breach ---- */
+.pdpa-landing{font-family:"Manrope Variable",system-ui,sans-serif;color:#1d1f2b;background:linear-gradient(90deg,#d9ccff 0%,#e9c9f2 50%,#f7cfe0 100%);--blue:#6d3fd8;--muted:#4a4f63;color-scheme:light}
+.pdpa-landing h1,.pdpa-landing h2{font-family:"Fraunces Variable",Georgia,serif;font-weight:500;letter-spacing:-.03em}
+.pdpa-landing h1{line-height:1.04}.pdpa-landing h1 span{color:#6d3fd8}
+.pdpa-landing a:focus-visible,.pdpa-landing button:focus-visible{outline-color:#6d3fd8}
+.pdpa-landing .mark{background:#6d3fd8}.pdpa-landing .mark i{background:#fff}.pdpa-landing .mark i:last-child{background:#ff6b4d}
+.pdpa-landing .outline{border-color:#ffffffd9;background:#ffffff80;color:#1d1f2b}.pdpa-landing .outline:hover{background:#fff}
+.pdpa-landing .primary{background:#6d3fd8;color:#fff;box-shadow:0 14px 30px #6d3fd840}.pdpa-landing .primary:hover{background:#5a2fc0}
+.pdpa-landing .replay{color:#4a4f63}
+.pdpa-landing .visual:before{background:radial-gradient(ellipse,#ffffff99,transparent 66%)}
+.pdpa-landing .tag{color:#6b5f8f;border-bottom-color:#b9a3ff}.pdpa-landing .tag b{font-family:inherit;color:#1d1f2b}
+.pdpa-landing .caption,.pdpa-landing .story-phase{color:#6b5f8f}
+.pdpa-landing .more{color:#4a4f63}.pdpa-landing .more:hover{color:#1d1f2b}
+.pdpa-landing .motion{border-color:#ffffffd9;background:#ffffff80;color:#4a4f63}.pdpa-landing .motion:hover{background:#fff}
+.pdpa-landing .incident{border:1px solid #fff;background:linear-gradient(135deg,#ffffffe6,#ffffffc7);box-shadow:0 28px 60px #6d3fd82e,inset 0 1px 0 #fff;color:#1d1f2b}
+.pdpa-landing .record-top{color:#6b5f8f;border-bottom-color:#e7e0f7}
+.pdpa-landing .record-top span:last-child{color:#b3411f;background:#fff1ed}
+.pdpa-landing .record-note{color:#6b6e74}
+.pdpa-landing .record-steps li{border-top-color:#eee8fb;color:#1d1f2b}
+.pdpa-landing .check{border-color:#6d3fd855;background:#f1ebff;color:#6d3fd8}
+.pdpa-landing .about{background:#fbf9ff;color:#1d1f2b}.pdpa-landing .about-copy p{color:#4a4f63}
+.pdpa-landing .text-link{color:#6d3fd8;border-bottom-color:#b9a3ff}.pdpa-landing .text-link:hover{border-color:#6d3fd8}
+.pdpa-landing footer p{color:#4a4f63}.pdpa-landing footer strong{color:#1d1f2b}
+.pdpa-landing .skip{background:#fff;color:#1d1f2b}
+/* the headline is on screen from the start (faint), so the page is never half empty; it brightens when the record appears */
+.pdpa-landing[data-enhanced="true"] .intro{opacity:.4;transform:none}
+.pdpa-landing[data-enhanced="true"] .hero[data-stage="ready"] .intro,.pdpa-landing[data-enhanced="true"] .intro:focus-within,.pdpa-landing[data-enhanced="true"] .intro:hover{opacity:1}
+.pdpa-landing .about h2{font-size:clamp(38px,4.2vw,60px);text-wrap:balance}

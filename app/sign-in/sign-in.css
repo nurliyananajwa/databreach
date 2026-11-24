@@ -59,3 +59,22 @@
 @media (prefers-reduced-motion: reduce) {
   .pdpa-auth *, .pdpa-auth *::before, .pdpa-auth *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---- Lilac theme (matches the landing page and the app) ---- */
+.pdpa-auth { --pa-ink: #1d1f2b; --pa-muted: #4a4f63; --pa-blue: #6d3fd8; color-scheme: light;
+  background: linear-gradient(90deg, #d9ccff 0%, #e9c9f2 50%, #f7cfe0 100%); font-family: "Manrope Variable", system-ui, sans-serif; }
+.pa-brand { color: #1d1f2b; } .pa-brand small { color: #4a4f63; }
+.pa-brand-mark { background: #6d3fd8; } .pa-brand-mark i { background: #fff; } .pa-brand-mark i:last-child { background: #ff6b4d; }
+.pa-panel { border-color: #fff; background: linear-gradient(135deg, #ffffffeb, #ffffffd1); box-shadow: 0 30px 70px #6d3fd826, inset 0 1px 0 #fff; backdrop-filter: none; }
+.pa-panel h1 { font-family: "Fraunces Variable", Georgia, serif; font-weight: 500; letter-spacing: -.02em; }
+.pa-google-button { background: #6d3fd8; border-color: #6d3fd8; color: #fff; }
+.pa-google-button:hover:not(:disabled) { background: #5a2fc0; box-shadow: 0 12px 28px #6d3fd840; }
+.pa-google-button:active:not(:disabled) { background: #4f28a8; box-shadow: none; }
+.pa-google-button:disabled { background: #e7defb; color: #6b5f8f; border-color: #d9ccff; }
+.pa-return { color: #4a4f63; } .pa-return:hover { color: #1d1f2b; }
+.pdpa-auth :is(a, button, summary):focus-visible { outline-color: #6d3fd8; }
+.pa-dev-access { border-top-color: #eee8fb; } .pa-dev-access summary { color: #4a4f63; }
+.pa-account-button { border-color: #e2d9f7; background: #fbf9ff; color: #1d1f2b; }
+.pa-account-button:hover:not(:disabled) { background: #f1ebff; border-color: #6d3fd8; }
+.pa-account-button span:last-child { color: #6d3fd8; }
+.pa-error, .pa-dev .pa-error { background: #fff1ed; color: #9a3412; border-color: #ffc9bb; }

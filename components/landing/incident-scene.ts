@@ -51,9 +51,9 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
         ctx.translate(w / 2, h * .79);
         ctx.scale(1, .19);
         const radius = Math.min(w * .38, 175), shadow = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
-        shadow.addColorStop(0, 'rgba(0,3,13,.85)');
-        shadow.addColorStop(.4, 'rgba(3,8,23,.55)');
-        shadow.addColorStop(1, 'rgba(0,3,13,0)');
+        shadow.addColorStop(0, 'rgba(109,63,216,.28)');
+        shadow.addColorStop(.4, 'rgba(109,63,216,.12)');
+        shadow.addColorStop(1, 'rgba(109,63,216,0)');
         ctx.fillStyle = shadow;
         ctx.beginPath();
         ctx.arc(0, 0, radius, 0, Math.PI * 2);
@@ -73,7 +73,7 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
                 [[-.33, -.33, -.33], [-.33, -.33, .33], [.33, -.33, .33], [.33, -.33, -.33]],
                 [[-.33, -.33, .33], [.33, -.33, .33], [.33, .33, .33], [-.33, .33, .33]]
             ];
-            faces.forEach((face, i) => { const p = face.map(v => q(...v)), g = ctx.createLinearGradient(p[0].x, p[0].y, p[2].x, p[2].y); g.addColorStop(0, i === 2 ? 'rgba(203,227,255,.36)' : 'rgba(116,165,255,.2)'); g.addColorStop(.48, 'rgba(71,111,192,.05)'); g.addColorStop(1, 'rgba(67,109,193,.2)'); ctx.shadowColor = '#86b7ff'; ctx.shadowBlur = i === 2 ? 14 : 4; polygon(p, g, i === 2 ? '#d8eaff' : 'rgba(159,196,255,.7)', i === 2 ? 1.7 : 1); });
+            faces.forEach((face, i) => { const p = face.map(v => q(...v)), g = ctx.createLinearGradient(p[0].x, p[0].y, p[2].x, p[2].y); g.addColorStop(0, i === 2 ? 'rgba(255,255,255,.75)' : 'rgba(217,204,255,.45)'); g.addColorStop(.48, 'rgba(233,201,242,.18)'); g.addColorStop(1, 'rgba(185,160,255,.35)'); ctx.shadowColor = '#b9a3ff'; ctx.shadowBlur = i === 2 ? 14 : 4; polygon(p, g, i === 2 ? '#ffffff' : 'rgba(139,108,240,.55)', i === 2 ? 1.7 : 1); });
             ctx.shadowBlur = 0;
         }
         ctx.globalAlpha = fade;
@@ -82,10 +82,10 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
             return { ...q(x, y, z), p, i };
         }).sort((a, b) => b.z - a.z).forEach(({ x, y, k, p, i }) => {
             const s = (p.accent ? 4 : 2.6) * k;
-            ctx.fillStyle = p.accent ? '#ffb29d' : '#b6d1ff';
+            ctx.fillStyle = p.accent ? '#ff6b4d' : '#8b6cf0';
             ctx.fillRect(x - s / 2, y - s / 2, s, s);
             if (escape > .6 && gather < .65 && i % 18 === 0) {
-                ctx.fillStyle = '#9cb7e1';
+                ctx.fillStyle = '#7a6ba3';
                 ctx.font = '10px Consolas,monospace';
                 ctx.fillText(String(1000 + i * 37), x + 8, y);
             }

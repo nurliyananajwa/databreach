@@ -3,6 +3,8 @@ import { devLoginEnabled, googleEnabled } from "@/lib/dev-login";
 import { googleSignIn } from "./actions";
 import DevSignIn from "./DevSignIn";
 import DataBackdrop from "./DataBackdrop";
+import "@fontsource-variable/manrope/wght.css";
+import "@fontsource-variable/fraunces/wght.css";
 import "./sign-in.css";
 
 const ERRORS: Record<string, string> = {
