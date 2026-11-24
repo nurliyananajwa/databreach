@@ -1,0 +1,154 @@
+/* Landing page: the breach story (contained data, escape, one incident record).
+   Colours and fonts come from the theme in app/globals.css. */
+
+/* ---------- base ---------- */
+.pdpa-landing { margin: 0; min-height: 100svh; font-family: var(--font-body); line-height: normal; color: var(--ink); background: var(--brand-gradient); color-scheme: light; }
+.pdpa-landing * { box-sizing: border-box; }
+.pdpa-landing button { font: inherit; line-height: normal; cursor: pointer; }
+.pdpa-landing a { color: inherit; }
+.pdpa-landing a:focus-visible, .pdpa-landing button:focus-visible { outline: 3px solid var(--accent); outline-offset: 6px; }
+.pdpa-landing .wrap { width: min(1440px, 100%); margin: auto; padding-inline: clamp(24px, 5.3vw, 88px); }
+.pdpa-landing h1, .pdpa-landing h2 { margin: 0; font-family: var(--font-display); font-weight: 500; letter-spacing: -.03em; }
+.pdpa-landing .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.pdpa-landing .skip { position: absolute; left: 20px; top: 8px; z-index: 10; transform: translateY(-180%); padding: 14px; background: #fff; color: var(--ink); }
+.pdpa-landing .skip:focus { transform: none; }
+
+/* ---------- header ---------- */
+.pdpa-landing header { height: 110px; display: flex; justify-content: space-between; align-items: center; }
+.pdpa-landing .brand { display: flex; gap: 12px; align-items: center; text-decoration: none; }
+.pdpa-landing .mark { display: grid; grid-template-columns: repeat(2, 10px); place-content: center; gap: 4px; width: 38px; height: 38px; border-radius: 12px; background: var(--accent); }
+.pdpa-landing .mark i { height: 10px; border-radius: 2px; background: #fff; }
+.pdpa-landing .mark i:last-child { border-radius: 50%; background: var(--coral); }
+.pdpa-landing .brand strong { font-size: 17px; }
+.pdpa-landing .brand small { display: block; margin-top: 3px; font-size: 12px; color: var(--ink-2); }
+.pdpa-landing .outline { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 12px 24px; border: 1px solid #ffffffd9; border-radius: 99px; background: #ffffff80; color: var(--ink); text-decoration: none; }
+.pdpa-landing .outline:hover { background: #fff; }
+
+/* ---------- hero ---------- */
+.pdpa-landing .hero { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 20px; min-height: calc(100svh - 110px); padding-top: 30px; padding-bottom: 100px; }
+/* The headline is on screen from the start, faint while the story plays, so
+   the page is never half empty; it brightens when the record appears.
+   Without JavaScript (no data-enhanced) it is simply fully visible. */
+.pdpa-landing .intro { z-index: 1; transition: opacity 1s ease, transform 1s cubic-bezier(.16, 1, .3, 1); }
+.pdpa-landing[data-enhanced="true"] .intro { opacity: .4; }
+.pdpa-landing[data-enhanced="true"] .hero[data-stage="ready"] .intro,
+.pdpa-landing[data-enhanced="true"] .intro:focus-within,
+.pdpa-landing[data-enhanced="true"] .intro:hover { opacity: 1; }
+.pdpa-landing .eyebrow { margin: 0 0 28px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+.pdpa-landing h1 { font-size: clamp(56px, 6.6vw, 100px); line-height: 1.04; }
+.pdpa-landing h1 span { color: var(--accent); }
+.pdpa-landing .description { max-width: 33ch; margin: 30px 0 34px; font-size: 19px; line-height: 1.65; color: var(--ink-2); }
+.pdpa-landing .hero-actions { display: flex; gap: 22px; align-items: center; }
+.pdpa-landing .primary { display: inline-flex; gap: 24px; align-items: center; min-height: 58px; padding: 18px 25px; border: 0; border-radius: 99px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600; text-decoration: none; box-shadow: 0 14px 30px #6d3fd840; transition: transform .2s, background .2s; }
+.pdpa-landing .primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
+.pdpa-landing .primary:active { transform: none; }
+.pdpa-landing .arrow { font-size: 22px; font-weight: 400; }
+.pdpa-landing .replay { min-height: 44px; padding: 10px 0; border: 0; background: none; color: var(--ink-2); text-decoration: underline; text-underline-offset: 5px; }
+
+/* the animated story */
+.pdpa-landing .visual { position: relative; height: 610px; min-width: 0; touch-action: pan-y; isolation: isolate; }
+.pdpa-landing .visual::before { content: ""; position: absolute; inset: 8% -5%; z-index: -1; pointer-events: none; background: radial-gradient(ellipse, #ffffff99, transparent 66%); }
+.pdpa-landing canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.pdpa-landing .story-phase { position: absolute; top: 5%; left: 0; right: 0; text-align: center; font: 10px Consolas, monospace; letter-spacing: .16em; text-transform: uppercase; color: #6b5f8f; }
+.pdpa-landing .caption { position: absolute; bottom: 24px; left: 0; right: 0; text-align: center; font: 10px Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; color: #6b5f8f; }
+.pdpa-landing .tag { position: absolute; padding: 8px 0; border-bottom: 1px solid var(--accent-line); font: 10px/1.6 Consolas, monospace; color: #6b5f8f; pointer-events: none; transition: opacity .4s; }
+.pdpa-landing .tag b { display: block; font: 400 13px/1.7 Consolas, monospace; color: var(--ink); }
+.pdpa-landing .tag.one { top: 13%; left: 2%; }
+.pdpa-landing .tag.two { top: 31%; right: 0; }
+.pdpa-landing .tag.three { bottom: 16%; left: 7%; }
+.pdpa-landing .hero[data-stage="escaping"] .tag, .pdpa-landing .hero[data-stage="ready"] .tag { opacity: 0; }
+
+/* the incident record at the end of the story */
+.pdpa-landing .incident { position: absolute; left: 50%; top: 46%; width: min(340px, 90%); padding: 26px; border: 1px solid #fff; border-radius: 18px; background: linear-gradient(135deg, #ffffffe6, #ffffffc7); color: var(--ink); box-shadow: 0 28px 60px #6d3fd82e, inset 0 1px 0 #fff; backdrop-filter: blur(16px);
+  opacity: 0; visibility: hidden; transform: translate(-50%, -43%) scale(.92); transition: opacity .9s ease, transform 1.3s cubic-bezier(.16, 1, .3, 1), visibility .9s; }
+.pdpa-landing .hero[data-stage="ready"] .incident { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+.pdpa-landing .record-top { display: flex; align-items: center; justify-content: space-between; padding-bottom: 24px; border-bottom: 1px solid #e7e0f7; font: 10px Consolas, monospace; letter-spacing: .09em; color: #6b5f8f; }
+.pdpa-landing .record-top span:last-child { padding: 6px 9px; border-radius: 20px; background: var(--coral-soft); color: var(--coral-text); }
+.pdpa-landing .incident h2 { margin: 22px 0 8px; font-size: 25px; line-height: 1.15; letter-spacing: -.04em; }
+.pdpa-landing .record-note { margin: 0 0 24px; font-size: 12px; color: #6b6e74; }
+.pdpa-landing .record-steps { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.pdpa-landing .record-steps li { display: flex; align-items: center; gap: 12px; min-height: 54px; border-top: 1px solid #eee8fb; font-size: 14px; color: var(--ink); }
+.pdpa-landing .check { display: grid; place-items: center; flex: none; width: 23px; height: 23px; border: 1px solid #6d3fd855; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 12px; }
+
+/* bottom of the hero: scroll hint and motion control */
+.pdpa-landing .hero-bottom { position: absolute; bottom: 28px; left: clamp(24px, 5.3vw, 88px); right: clamp(24px, 5.3vw, 88px); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.pdpa-landing .more { display: flex; align-items: center; gap: 14px; min-height: 44px; font-size: 13px; text-decoration: none; color: var(--ink-2); }
+.pdpa-landing .more:hover { color: var(--ink); }
+.pdpa-landing .motion { min-height: 44px; padding: 10px 16px; border: 1px solid #ffffffd9; border-radius: 99px; background: #ffffff80; color: var(--ink-2); font-size: 12px; }
+.pdpa-landing .motion:hover { background: #fff; }
+.pdpa-landing .motion:disabled { cursor: default; }
+
+/* ---------- about ---------- */
+.pdpa-landing .about { padding-block: 100px 110px; background: #fbf9ff; color: var(--ink); color-scheme: light; }
+.pdpa-landing .about-inner { display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-items: end; }
+.pdpa-landing .about h2 { font-size: clamp(38px, 4.2vw, 60px); line-height: 1.08; text-wrap: balance; }
+.pdpa-landing .about-copy { max-width: 38ch; }
+.pdpa-landing .about-copy p { margin: 0 0 24px; font-size: 19px; line-height: 1.7; color: var(--ink-2); }
+.pdpa-landing .text-link { display: inline-flex; gap: 20px; align-items: center; min-height: 44px; padding: 8px 0; border: 0; border-bottom: 1px solid var(--accent-line); background: none; color: var(--accent); font-size: 15px; }
+.pdpa-landing .text-link:hover { border-color: var(--accent); }
+
+/* ---------- footer ---------- */
+.pdpa-landing footer { display: flex; justify-content: space-between; align-items: center; gap: 32px; padding-block: 34px 38px; }
+.pdpa-landing footer strong { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 400; color: var(--ink); }
+.pdpa-landing footer p { max-width: 54ch; margin: 0; font-size: 12px; line-height: 1.7; color: var(--ink-2); }
+.pdpa-landing .top-link { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 12px; white-space: nowrap; text-decoration: none; }
+
+/* ---------- sizes ---------- */
+@media (min-width: 1600px) {
+  .pdpa-landing .hero { min-height: 800px; }
+  .pdpa-landing .visual { height: 660px; }
+}
+@media (max-width: 900px) {
+  .pdpa-landing header { height: 90px; }
+  /* one column: the story on top, the headline under it */
+  .pdpa-landing .hero { display: flex; flex-direction: column; gap: 0; min-height: auto; padding-top: 10px; padding-bottom: 110px; }
+  .pdpa-landing .hero .visual { order: 1; }
+  .pdpa-landing .hero .intro { order: 2; }
+  .pdpa-landing .intro { width: 100%; text-align: center; }
+  .pdpa-landing h1 { font-size: clamp(58px, 10vw, 86px); }
+  .pdpa-landing .description { margin: 24px auto 30px; }
+  .pdpa-landing .hero-actions { justify-content: center; }
+  .pdpa-landing .visual { width: min(600px, 100%); height: 390px; margin: 0 auto 12px; }
+  .pdpa-landing .incident { top: 48%; }
+  .pdpa-landing .caption { bottom: 14px; }
+  .pdpa-landing .hero-bottom { bottom: 20px; }
+  .pdpa-landing .about { padding-block: 76px; }
+  .pdpa-landing .about-inner { gap: 40px; }
+  .pdpa-landing .about-copy p { font-size: 17px; }
+}
+@media (max-width: 580px) {
+  .pdpa-landing .wrap { padding-inline: 24px; }
+  .pdpa-landing .brand { gap: 9px; }
+  .pdpa-landing .brand strong { font-size: 15px; }
+  .pdpa-landing .brand small { font-size: 10px; }
+  .pdpa-landing .mark { width: 32px; height: 32px; }
+  .pdpa-landing .outline { padding: 11px 18px; font-size: 13px; }
+  .pdpa-landing .eyebrow { margin-bottom: 24px; font-size: 10px; letter-spacing: .11em; }
+  .pdpa-landing h1 { font-size: clamp(47px, 12.4vw, 70px); }
+  .pdpa-landing .description { max-width: 29ch; font-size: 16px; }
+  .pdpa-landing .hero-actions { gap: 18px; }
+  .pdpa-landing .primary { min-height: 54px; padding: 15px 22px; font-size: 14px; }
+  .pdpa-landing .visual { height: 360px; }
+  .pdpa-landing .story-phase { top: 3%; }
+  .pdpa-landing .caption { bottom: 0; font-size: 9px; }
+  .pdpa-landing .tag { font-size: 9px; }
+  .pdpa-landing .tag b { font-size: 11px; }
+  .pdpa-landing .tag.one { top: 8%; left: 0; }
+  .pdpa-landing .tag.two { top: 25%; right: 0; }
+  .pdpa-landing .tag.three { bottom: 10%; left: 0; }
+  .pdpa-landing .incident { width: min(320px, 94%); padding: 22px; }
+  .pdpa-landing .incident h2 { font-size: 24px; }
+  .pdpa-landing .hero-bottom { left: 24px; right: 24px; }
+  .pdpa-landing .more { gap: 8px; font-size: 11px; }
+  .pdpa-landing .motion { padding-inline: 12px; font-size: 11px; }
+  .pdpa-landing .about { padding-block: 64px 68px; }
+  .pdpa-landing .about-inner { grid-template-columns: 1fr; gap: 28px; }
+  .pdpa-landing .about-copy p { font-size: 17px; }
+  .pdpa-landing footer { align-items: flex-start; gap: 20px; padding-block: 28px; }
+  .pdpa-landing footer p { font-size: 11px; }
+  .pdpa-landing .top-link { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdpa-landing *, .pdpa-landing *::before, .pdpa-landing *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .pdpa-landing[data-enhanced="true"] .intro { opacity: 1; }
+}

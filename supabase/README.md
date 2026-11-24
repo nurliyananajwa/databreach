@@ -12,6 +12,7 @@
 | `..._07_hardening.sql` | Takes back the access PostgreSQL and Supabase give every new function by default, then grants only what the RLS rules need |
 | `..._08_rls_perf_and_fk_indexes.sql` | Same RLS rules written so `auth.uid()` runs once per query, and indexes on every foreign key |
 | `..._09_realtime.sql` | Publishes `alerts` and `audit_log` to Supabase Realtime for live updates; RLS still decides who receives each event |
+| `..._10_update_my_name.sql` | `update_my_name`: a signed-in person changes only their own display name (2 to 100 characters). Profiles still have no UPDATE policy |
 
 ## Changes from the proposal's data dictionary
 1. **New `invitations` table.** A manager invites an email, and the role comes from the invitation. A Google account that wasn't invited sees nothing.
@@ -29,12 +30,12 @@ Also: `exposed_fields.sensitive_snapshot`, `criteria.method` and `criteria.sourc
 - Supabase gives new public functions and tables to `anon` by default. Every new migration must revoke that again, the way migrations 02 and 05 do.
 
 ## Testing locally
-`tests/run_local.sh` (also `npm run db:test`) rebuilds a throwaway local database, applies every migration and runs `tests/02_attack_suite.sql`: 115 checks covering the RLS attack tests for each role, the full incident lifecycle, the 10 assessment scenarios and the 20 deadline times. It needs PostgreSQL 16 listening on `/tmp`, port 54329 (change with `PGHOST` / `PGPORT`). The `tests/` files are for local testing only and must never be run on Supabase.
+`tests/run_local.sh` (also `npm run db:test`) rebuilds a throwaway local database, applies every migration and runs `tests/02_attack_suite.sql`: 122 checks covering the RLS attack tests for each role, the full incident lifecycle, the 10 assessment scenarios and the 20 deadline times. It needs PostgreSQL 16 listening on `/tmp`, port 54329 (change with `PGHOST` / `PGPORT`). The `tests/` files are for local testing only and must never be run on Supabase.
 
-Last full run: 23 Nov 2026, migrations 01 to 08, **115 passed, 0 failed**.
+Last full run: 24 Nov 2026, migrations 01 to 10, **122 passed, 0 failed**.
 
 ## Live project
 - Supabase project `pdpa-tracker` (ref `tfflrmmmtgikhakqcgiy`), region ap-southeast-1 (Singapore), created 17 Nov 2026.
-- Migrations 01 to 07 applied on 17 Nov 2026; migrations 08 and 09 on 23 Nov 2026. Vault secret `pdpa_enc_key` created inside the database (the value was never printed).
+- Migrations 01 to 07 applied on 17 Nov 2026; migrations 08 and 09 on 23 Nov 2026; migration 10 on 24 Nov 2026. Vault secret `pdpa_enc_key` created inside the database (the value was never printed).
 - Security advisor: 23 "SECURITY DEFINER callable by authenticated" warnings. These are intended: they are the app's RPCs, and each one checks the caller's role (checked 23 Nov 2026). "Leaked password protection" is a paid feature and stops mattering once only Google sign-in is used.
 - Performance advisor: clear since migration 08, apart from "unused index" notes, which are expected while there is little data.

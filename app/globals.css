@@ -1,10 +1,44 @@
 @import "tailwindcss";
 
-/* Base styles for every page. The landing page, the sign-in page and the
-   signed-in app each load their own stylesheet on top of this.
-   These colours are Tailwind classes (bg-sheet, text-muted…) used by the
-   pages not yet in the new style: Users and Not invited. They match the
-   app palette: ink text, blue for good, coral-red for problems. */
+/* ---------------------------------------------------------------------------
+   Theme: the ONE place for the brand colours and fonts.
+   The landing page, the sign-in page and the signed-in app all read these
+   variables, so a new colour scheme is a change to this block only.
+   Rule: coral is only for deadlines, breaches and errors.
+   --------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* page and header gradient, left to right */
+  --brand-1: #d9ccff;           /* lilac */
+  --brand-2: #e9c9f2;           /* orchid */
+  --brand-3: #f7cfe0;           /* soft pink */
+  --brand-gradient: linear-gradient(90deg, var(--brand-1) 0%, var(--brand-2) 50%, var(--brand-3) 100%);
+
+  /* accent: links, buttons, the current item (white text on it: 6.5:1) */
+  --accent: #6d3fd8;
+  --accent-hover: #5a2fc0;
+  --accent-light: #8b6cf0;      /* rings, dots, bars */
+  --accent-line: #b9a3ff;       /* underlines, faint outlines */
+  --accent-soft: #f1ebff;       /* tinted backgrounds */
+
+  /* text */
+  --ink: #1d1f2b;               /* main text on the gradient */
+  --ink-2: #4a4f63;             /* secondary text on the gradient (6.5:1) */
+
+  /* deadlines, breaches, errors */
+  --coral: #ff6b4d;
+  --coral-strong: #d2401f;      /* buttons with white text (4.7:1) */
+  --coral-text: #b3411f;        /* coral text on light backgrounds */
+  --coral-soft: #fff1ed;
+  --coral-line: #ffc9bb;
+
+  --font-body: "Manrope Variable", system-ui, sans-serif;
+  --font-display: "Fraunces Variable", Georgia, serif;
+}
+
+/* Tailwind colour names (bg-sheet, text-muted, text-met…) for the pages
+   built with utility classes: Users and Not invited. */
 @theme {
   --color-paper: #f4f5f9;
   --color-sheet: #ffffff;
@@ -12,13 +46,9 @@
   --color-muted: #6b6e74;
   --color-rule: #e6e8ee;
   --color-stamp: #d4432c; /* errors, deactivated */
-  --color-met: #2855ff;   /* success, active */
+  --color-met: #6d3fd8;   /* success, active: same as --accent */
 
   --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
-}
-
-:root {
-  color-scheme: light;
 }
 
 html {
