@@ -44,7 +44,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
       : [
           { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
           ...open.slice(0, 2).map((i) => ({ href: "/incidents", icon: "alert" as IconName, title: i.code, sub: STATUS_LABEL[i.status] ?? i.status })),
-          { href: "/inventory", icon: "db", title: "Inventory", sub: `${d.sets} data place${d.sets === 1 ? "" : "s"}` },
+          { href: "/inventory", icon: "db", title: "Inventory", sub: `${d.sets} data set${d.sets === 1 ? "" : "s"}` },
           { href: "/register", icon: "book", title: "Register", sub: "Kept 2 years" },
         ];
 
@@ -133,12 +133,12 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                 <Card tour="inventory" icon="db" title="Data inventory" sub="Where personal data is kept" href="/inventory" delay={0.12}>
                   {d.sets ? (
                     <>
-                      <p className="hub-big"><CountUp value={d.sets} /><small>place{d.sets === 1 ? "" : "s"}</small></p>
+                      <p className="hub-big"><CountUp value={d.sets} /><small>data set{d.sets === 1 ? "" : "s"}</small>{d.noOwner > 0 && <Link href="/inventory" className="inv-flag warn hub-owner-warn">{d.noOwner} without an owner</Link>}</p>
                       <div className="hub-legend"><span>Sensitive fields: {d.fieldSensitive}</span><span>All fields: {d.fieldTotal}</span></div>
                       <Meter value={d.fieldSensitive} max={d.fieldTotal} label={`${d.fieldSensitive} of ${d.fieldTotal} fields are sensitive`} />
                     </>
                   ) : (
-                    <Empty icon="db" title="Start your inventory" body="List where personal data lives. Incidents start from this list." href="/inventory" cta="Add a data place" />
+                    <Empty icon="db" title="Start your inventory" body="List where personal data lives. Incidents start from this list." href="/inventory" cta="Add a data set" />
                   )}
                 </Card>
               )}
@@ -179,7 +179,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
               <div className="hub-soon">
                 <span className="ic"><Icon name="log" /></span>
                 <strong>Coming soon</strong>
-                <p>Suggests the incident type and the data places involved from a staff report. A person always confirms.</p>
+                <p>Suggests the incident type and the data sets involved from a staff report. A person always confirms.</p>
               </div>
             ) : (
               <div className="hub-ledger">

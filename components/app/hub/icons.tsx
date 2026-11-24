@@ -16,6 +16,7 @@ const P = {
   list: <><path d="M9 6h11M9 12h11M9 18h11M4 6h.5M4 12h.5M4 18h.5" /></>,
   bell: <><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z" /><path d="M10 20a2 2 0 0 0 4 0" /></>,
   chev: <path d="m9 6 6 6-6 6" />,
+  x: <path d="M6 6l12 12M18 6 6 18" />,
   exit: <><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9" /></>,
   pen: <path d="M4 20h4L19 9l-4-4L4 16v4ZM13 7l4 4" />,
   mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,

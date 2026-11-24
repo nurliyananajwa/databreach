@@ -1,0 +1,149 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { requirePage } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
+import { CATEGORY, type Category, type FieldInput } from "@/lib/inventory";
+import PageHeader from "@/components/app/PageHeader";
+import Icon from "@/components/app/hub/icons";
+import DataSetEditor from "../DataSetEditor";
+import ArchiveForm from "./ArchiveForm";
+import { activePeople } from "../people";
+
+export const metadata = { title: "Data set | PDPA Breach Response Tracker" };
+
+const kl = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" });
+const num = new Intl.NumberFormat("en-MY");
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+type Snapshot = {
+  name: string; storage_location: string; access_description: string | null; purpose: string;
+  retention_period: string | null; owner_id: string | null; processor_name: string | null; approx_records: number | null;
+  status: string; fields: { field_name: string; category: Category; is_sensitive: boolean }[];
+};
+
+export default async function Page({ params, searchParams }: {
+  params: Promise<{ id: string }>; searchParams: Promise<{ v?: string; saved?: string }>;
+}) {
+  const me = await requirePage("/inventory");
+  const { id } = await params;
+  const sp = await searchParams;
+  if (!UUID.test(id)) notFound();
+
+  const db = await createClient();
+  const [{ data: set }, { data: fields }, { data: versions }, { data: names }] = await Promise.all([
+    db.from("data_sets").select("id, code, name, storage_location, access_description, purpose, retention_period, owner_id, processor_name, approx_records, status, version_no, updated_at").eq("id", id).maybeSingle(),
+    db.from("data_fields").select("id, field_name, category, is_sensitive").eq("data_set_id", id).order("field_name"),
+    db.from("data_set_versions").select("version_no, changed_at, changed_by, snapshot").eq("data_set_id", id).order("version_no", { ascending: false }),
+    db.from("profiles").select("id, full_name"),
+  ]);
+  if (!set) notFound(); // also what RLS gives another organisation
+
+  const who = new Map((names ?? []).map((p) => [p.id as string, p.full_name as string]));
+  const lead = me.role === "dp_lead";
+  const archived = set.status === "archived";
+  const asked = sp.v ? Number(sp.v) : null;
+  const old = asked && asked !== set.version_no ? versions?.find((v) => v.version_no === asked) : undefined;
+  if (asked && asked !== set.version_no && !old) notFound();
+
+  // What to show: an old version (read-only), the editor (Compliance Officer), or a read-only view (Manager).
+  const snap: Snapshot = old
+    ? (old.snapshot as Snapshot)
+    : { ...set, fields: (fields ?? []) as Snapshot["fields"] };
+
+  return (
+    <>
+      <PageHeader
+        eyebrow={`Data inventory · ${set.code}`}
+        title={set.name}
+        intro={old
+          ? `You are looking at version ${old.version_no}, saved ${kl.format(new Date(old.changed_at))}. It cannot be changed.`
+          : `Version ${set.version_no}, last changed ${kl.format(new Date(set.updated_at))}.`}
+      />
+      <main id="main" className="hub-main">
+        <Link href={old ? `/inventory/${id}` : "/inventory"} className="hub-back">← {old ? "Back to the current version" : "Back to the inventory"}</Link>
+        {sp.saved === "new" && !old && <p role="status" className="hub-msg-ok inv-banner"><Icon name="check" className="size-4" />Data set created as version 1.</p>}
+        {archived && !old && <p className="inv-banner inv-archived"><Icon name="lock" className="size-4" />Archived. Restore it to make changes.</p>}
+
+        <div className="inv-detail">
+          <div className="inv-main">
+            {lead && !old && !archived ? (
+              <DataSetEditor
+                people={await activePeople()}
+                values={{
+                  id: set.id, name: set.name, storage_location: set.storage_location, access: set.access_description ?? "",
+                  purpose: set.purpose, retention: set.retention_period ?? "", owner: set.owner_id ?? "",
+                  processor: set.processor_name ?? "", records: set.approx_records?.toString() ?? "",
+                  fields: (fields ?? []).map((f): FieldInput => ({ id: f.id, name: f.field_name, category: f.category as Category, sensitive: f.is_sensitive })),
+                }}
+              />
+            ) : (
+              <ReadOnly snap={snap} owner={snap.owner_id ? who.get(snap.owner_id) ?? "A former user" : null} />
+            )}
+          </div>
+
+          <aside className="inv-side">
+            <section className="hub-card" aria-labelledby="hist-h">
+              <h2 id="hist-h" className="inv-h"><Icon name="clock" />Version history</h2>
+              <p className="inv-sub">Every save is kept and can never be edited.</p>
+              <ol className="inv-history">
+                {(versions ?? []).map((v) => {
+                  const current = v.version_no === set.version_no;
+                  const here = old ? v.version_no === old.version_no : current;
+                  return (
+                    <li key={v.version_no} aria-current={here ? "true" : undefined}>
+                      <Link href={current ? `/inventory/${id}` : `/inventory/${id}?v=${v.version_no}`}>
+                        <b>Version {v.version_no}{current ? " (current)" : ""}</b>
+                        <span>{v.changed_by ? who.get(v.changed_by) ?? "A former user" : "System"} · {kl.format(new Date(v.changed_at))}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+            {lead && !old && (
+              <section className="hub-card"><ArchiveForm id={set.id} archived={archived} /></section>
+            )}
+          </aside>
+        </div>
+      </main>
+    </>
+  );
+}
+
+function ReadOnly({ snap, owner }: { snap: Snapshot; owner: string | null }) {
+  const rows: [string, string | null][] = [
+    ["Where it is kept", snap.storage_location],
+    ["Owner", owner],
+    ["Approximate number of records", snap.approx_records === null ? null : num.format(snap.approx_records)],
+    ["Purpose", snap.purpose],
+    ["Who can access it", snap.access_description],
+    ["Retention period", snap.retention_period],
+    ["Processor", snap.processor_name],
+  ];
+  return (
+    <>
+      <section className="hub-card" aria-labelledby="ro-details">
+        <h2 id="ro-details" className="inv-h"><Icon name="db" />Details</h2>
+        <dl className="inv-dl">
+          {rows.map(([k, v]) => (
+            <div key={k}><dt>{k}</dt><dd>{v ?? <span className={k === "Owner" ? "inv-flag warn" : "inv-muted"}>{k === "Owner" ? "No owner" : "Not recorded"}</span>}</dd></div>
+          ))}
+        </dl>
+      </section>
+      <section className="hub-card" aria-labelledby="ro-fields">
+        <h2 id="ro-fields" className="inv-h"><Icon name="list" />Personal data fields ({snap.fields.length})</h2>
+        {snap.fields.length === 0 ? <p className="inv-sub">No fields listed.</p> : (
+          <ul className="inv-ro-fields">
+            {snap.fields.map((f) => (
+              <li key={f.field_name}>
+                <b>{f.field_name}</b>
+                <span>{CATEGORY[f.category]?.label ?? f.category}</span>
+                {f.is_sensitive && <span className="inv-flag sens">Sensitive</span>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </>
+  );
+}

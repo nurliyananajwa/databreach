@@ -392,6 +392,89 @@ begin; select tests.login('stranger@example.test'); set local role authenticated
 select tests.must_fail('Someone without a profile cannot use it', $q$ select public.update_my_name('Hacker Name') $q$);
 commit;
 
+-- ============================================================ 12. inventory page saves (Sprint 2)
+begin; select tests.login('farid.lead@example.test'); set local role authenticated;
+select public.save_data_set(null, '  Employee bank details ', 'Payroll system (cloud)', 'HR and finance team', 'Paying salaries',
+  '7 years after leaving', '00000000-0000-0000-0000-000000000002', 'PayCloud Sdn Bhd', 340,
+  '[{"name":"Full name","category":"other"},{"name":"Bank account number","category":"financial"},
+    {"name":"Medical notes","category":"sensitive","sensitive":false}]') as ds_new \gset
+commit;
+select tests.check('A new data set gets the next code and version 1',
+  (select code = 'DS-004' and version_no = 1 and name = 'Employee bank details' from public.data_sets where id = :'ds_new'));
+select tests.check('A sensitive category always sets the sensitive flag',
+  (select is_sensitive from public.data_fields where data_set_id = :'ds_new' and field_name = 'Medical notes'));
+
+begin; select tests.login('farid.lead@example.test'); set local role authenticated;
+select public.save_data_set(:'ds_new', 'Employee bank details', 'Payroll system (cloud, restricted)', 'HR and finance team',
+  'Paying salaries', '7 years after leaving', '00000000-0000-0000-0000-000000000002', 'PayCloud Sdn Bhd', 340,
+  (select jsonb_agg(x) from (
+     select jsonb_build_object('id', id, 'name', case when field_name = 'Full name' then 'Employee name' else field_name end,
+                               'category', category, 'sensitive', is_sensitive) x
+     from public.data_fields where data_set_id = :'ds_new' and field_name <> 'Medical notes'
+     union all select '{"name":"Salary","category":"financial"}'::jsonb) s));
+commit;
+select tests.check('One save (details + rename + add + remove) = exactly one new version',
+  (select max(version_no) = 2 and count(*) = 2 from public.data_set_versions where data_set_id = :'ds_new'));
+select tests.check('The saved version holds the final field list',
+  (select snapshot -> 'fields' @> '[{"field_name":"Employee name"},{"field_name":"Salary"}]'
+      and not snapshot -> 'fields' @> '[{"field_name":"Medical notes"}]'
+   from public.data_set_versions where data_set_id = :'ds_new' and version_no = 2));
+
+begin; select tests.login('farid.lead@example.test'); set local role authenticated;
+select public.save_data_set(:'ds_new', 'Employee bank details', 'Payroll system (cloud, restricted)', 'HR and finance team',
+  'Paying salaries', '7 years after leaving', '00000000-0000-0000-0000-000000000002', 'PayCloud Sdn Bhd', 340,
+  (select jsonb_agg(jsonb_build_object('id', id, 'name', field_name, 'category', category, 'sensitive', is_sensitive))
+   from public.data_fields where data_set_id = :'ds_new'));
+commit;
+select tests.check('Saving without changes makes no new version',
+  (select max(version_no) = 2 from public.data_set_versions where data_set_id = :'ds_new'));
+
+begin; select tests.login('farid.lead@example.test'); set local role authenticated;
+select tests.must_fail('Two fields with the same name are refused',
+  $q$select public.save_data_set(null, 'Test set', 'x', null, 'x', null, null, null, null,
+     '[{"name":"Email","category":"contact"},{"name":" email ","category":"contact"}]')$q$);
+select tests.must_fail('A real value instead of a field name is refused (metadata only)',
+  $q$select public.save_data_set(null, 'Test set', 'x', null, 'x', null, null, null, null, '[{"name":"siti@gmail.com","category":"contact"}]')$q$);
+select tests.must_fail('An IC or phone number instead of a field name is refused',
+  $q$select public.save_data_set(null, 'Test set', 'x', null, 'x', null, null, null, null, '[{"name":"901231-14-5678","category":"identity"}]')$q$);
+select tests.must_fail('A field without a valid category is refused',
+  $q$select public.save_data_set(null, 'Test set', 'x', null, 'x', null, null, null, null, '[{"name":"Email","category":"secret"}]')$q$);
+select tests.must_fail('A data set without a storage location is refused',
+  $q$select public.save_data_set(null, 'Test set', '  ', null, 'x', null, null, null, null, '[]')$q$);
+select tests.must_fail('An owner from another organisation is refused',
+  $q$select public.save_data_set(null, 'Test set', 'x', null, 'x', null, '00000000-0000-0000-0000-000000000005', null, null, '[]')$q$);
+select tests.must_fail('A field id from another data set is refused',
+  format($q$select public.save_data_set(%L, 'Employee bank details', 'x', null, 'x', null, null, null, null,
+     (select jsonb_build_array(jsonb_build_object('id', f.id, 'name', 'Stolen', 'category', 'other'))
+      from public.data_fields f join public.data_sets d on d.id = f.data_set_id where d.code = 'DS-001' limit 1))$q$, :'ds_new'));
+select public.set_data_set_status(:'ds_new', true);
+select tests.must_fail('An archived data set cannot be edited until restored',
+  format($q$select public.save_data_set(%L, 'Employee bank details', 'x', null, 'x', null, null, null, null, '[]')$q$, :'ds_new'));
+commit;
+begin; select tests.login('siti.staff@example.test'); set local role authenticated;
+select tests.check('Archived data sets are not offered when reporting',
+  not exists (select 1 from public.list_data_set_names() where id = :'ds_new'));
+commit;
+
+begin; select tests.login('farid.lead@example.test'); set local role authenticated;
+select public.set_data_set_status(:'ds_new', false);
+commit;
+select tests.check('Restoring makes it active again', (select status = 'active' from public.data_sets where id = :'ds_new'));
+
+begin; select tests.login('najwa.manager@example.test'); set local role authenticated;
+select tests.check('The manager can read the inventory', (select count(*) >= 4 from public.data_sets));
+select tests.must_fail('The manager cannot change the inventory',
+  format($q$select public.save_data_set(%L, 'Renamed', 'x', null, 'x', null, null, null, null, '[]')$q$, :'ds_new'));
+select tests.must_fail('The manager cannot archive a data set', format($q$select public.set_data_set_status(%L, true)$q$, :'ds_new'));
+commit;
+begin; select tests.login('siti.staff@example.test'); set local role authenticated;
+select tests.must_fail('Staff cannot save a data set',
+  $q$select public.save_data_set(null, 'Sneaky', 'x', null, 'x', null, null, null, null, '[]')$q$);
+commit;
+begin; select tests.login('other.manager@example.test'); set local role authenticated;
+select tests.must_fail('Another organisation cannot archive it', format($q$select public.set_data_set_status(%L, true)$q$, :'ds_new'));
+commit;
+
 select tests.check('Incident codes are unique and run in order',
   (select count(*) = count(distinct code) from public.incidents where code like 'INC-%'));
 

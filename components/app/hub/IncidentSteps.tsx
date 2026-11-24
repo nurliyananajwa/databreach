@@ -8,7 +8,7 @@ const day = new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", h
 const STEPS = [
   {
     name: "Locate",
-    what: "Find what was exposed: link the incident to the data places in your inventory, then confirm which fields actually left your control.",
+    what: "Find what was exposed: link the incident to the data sets in your inventory, then confirm which fields actually left your control.",
     who: "Staff report it; the Compliance Officer confirms",
     system: "Starts the 72-hour clock from the moment the business became aware.",
   },
