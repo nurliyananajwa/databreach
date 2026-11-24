@@ -100,7 +100,7 @@ export default function SearchButton({ items, actions = [], markRead }: { items:
             ))}
             {!results.length && <li className="none">Nothing matches “{q}”.</li>}
           </ul>
-          <p className="hub-search-foot">Searching data places and incidents comes with Sprints 2 and 3.</p>
+          <p className="hub-search-foot">Searching data sets and incidents comes with Sprint 3.</p>
         </div>
       </dialog>
     </>

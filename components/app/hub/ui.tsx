@@ -52,7 +52,7 @@ export function Empty({ title, body, href, cta, icon = "check" }: { title: strin
       <span className="ic" aria-hidden="true"><Icon name={icon} /></span>
       <strong>{title}</strong>
       <p>{body}</p>
-      {href && cta && <Link href={href} className="hub-btn soft">{cta} →<Pending /></Link>}
+      {href && cta && <Link href={href} className="hub-btn soft">{cta}<Pending /></Link>}
     </div>
   );
 }

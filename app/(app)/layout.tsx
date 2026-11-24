@@ -16,6 +16,7 @@ import LiveUpdates from "@/components/app/LiveUpdates";
 import Tour from "@/components/app/Tour";
 import { Suspense } from "react";
 import Pending from "@/components/app/hub/Pending";
+import Motion from "@/components/app/Motion";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const me = await getCurrentUser();
@@ -23,7 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Search lists every page this role may open, including ones not in the menu.
   const searchable = MENU.filter((m) => m.roles.includes(me.role)).map(({ href, label }) => ({ href, label }));
   const actions: Action[] = [
-    ...(me.role === "manager" ? [{ label: "Invite someone", icon: "users", href: "/users#invite-heading" } as Action] : []),
+    ...(me.role === "manager" ? [{ label: "Invite someone", icon: "users", href: "/users?view=invites#invite-heading" } as Action] : []),
     { label: "Mark all notifications as read", icon: "bell", run: "markRead" },
     { label: "Ask AI (coming soon)", icon: "sparkle", href: "/home?panel=ai" },
     { label: "Show the How it works tour", icon: "log", run: "tour" },
@@ -60,6 +61,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <LiveUpdates userId={me.id} role={me.role} />
       {/* useSearchParams needs a Suspense boundary; the tour renders nothing until started */}
       <Suspense fallback={null}><Tour userId={me.id} role={me.role} /></Suspense>
+      <Suspense fallback={null}><Motion /></Suspense>
     </div>
   );
 }
