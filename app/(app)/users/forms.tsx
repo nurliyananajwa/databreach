@@ -15,8 +15,8 @@ function Submit({ children, tone = "solid" }: { children: React.ReactNode; tone?
       disabled={pending}
       className={
         tone === "solid"
-          ? "rounded-md bg-ink px-4 py-2 font-bold text-white hover:bg-[#25335a] disabled:opacity-60"
-          : "rounded-md border-2 border-ink px-3 py-1.5 text-sm font-bold hover:bg-ink hover:text-white disabled:opacity-60"
+          ? "hub-btn !mt-0 cursor-pointer border-0 font-semibold disabled:opacity-60"
+          : "rounded-full border border-[#d6dae6] bg-white px-3 py-1.5 text-sm font-semibold transition-colors hover:border-[#6d3fd8] hover:bg-[#f1ebff] hover:text-[#6d3fd8] disabled:opacity-60"
       }
     >
       {pending ? "Saving…" : children}
