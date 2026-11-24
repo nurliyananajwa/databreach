@@ -593,3 +593,35 @@
 .inv-about dd { margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; }
 .hub-view { max-width: none; }
 .hub-pending-h { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+
+/* ---------- Motion: small "pops" on things you touch ----------
+   Page and tab transitions live in components/app/Motion.tsx. */
+.hub { --spring: cubic-bezier(.34, 1.56, .64, 1); }
+/* cards pop in with a little overshoot, and lift and tilt slightly on hover */
+.hub-card { animation: hub-pop .55s var(--spring) backwards; transition: transform .3s var(--spring), box-shadow .25s; }
+@keyframes hub-pop { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+.hub-card:hover { transform: translateY(-4px) rotate(-.4deg); }
+.hub-card:has(input:focus, textarea:focus, select:focus):hover, .inv-editor .hub-card:hover, .hub-view:hover, .inv-list:hover { transform: none; } /* forms and long lists stay still */
+/* buttons, tabs and menu icons squash a little when pressed */
+.hub-btn, .hub-cta, .hub-tab, .hub-nav a, .inv-remove, .hub-acct .hub-chip { transition-property: transform, gap, background, color, box-shadow; transition-duration: .25s; transition-timing-function: var(--spring); }
+.hub-btn:active, .hub-cta:active, .hub-nav a:active, .inv-remove:active, .hub-acct .hub-chip:active { transform: scale(.94); }
+.hub-tab:active { transform: translateY(2px); }
+.hub-tab:not([aria-current]):hover { transform: translateY(-3px); }
+/* rows in lists slide a touch on hover so they feel clickable */
+.inv-table tbody tr > * { transition: background .2s; }
+.inv-table tbody th a b, .hub-row b { transition: color .2s; }
+.inv-history a, .inv-row-link { transition: background .2s, transform .25s var(--spring); }
+.inv-history a:hover, .inv-row-link:hover { transform: translateX(3px); }
+
+/* loading placeholders (app/(app)/loading.tsx) */
+.hub-skel { display: block; border-radius: 10px; background: #ffffff8c; position: relative; overflow: hidden; }
+.hub-skel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.hub-skel-card { height: 180px; position: relative; overflow: hidden; }
+.hub-skel::after, .hub-skel-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, #f1ebffb3, transparent); animation: hub-shine 1.1s infinite; }
+@keyframes hub-shine { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@media (max-width: 720px) { .hub-skel-grid { grid-template-columns: 1fr; } .hub-skel-card:nth-child(n+2) { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-card, .hub-skel::after, .hub-skel-card::after { animation: none; }
+  .hub-card:hover, .hub-tab:hover, .hub-tab:active, .hub-btn:active, .hub-cta:active, .hub-nav a:active, .inv-history a:hover, .inv-row-link:hover { transform: none; }
+}

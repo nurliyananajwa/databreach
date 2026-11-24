@@ -16,6 +16,7 @@ import LiveUpdates from "@/components/app/LiveUpdates";
 import Tour from "@/components/app/Tour";
 import { Suspense } from "react";
 import Pending from "@/components/app/hub/Pending";
+import Motion from "@/components/app/Motion";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const me = await getCurrentUser();
@@ -60,6 +61,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <LiveUpdates userId={me.id} role={me.role} />
       {/* useSearchParams needs a Suspense boundary; the tour renders nothing until started */}
       <Suspense fallback={null}><Tour userId={me.id} role={me.role} /></Suspense>
+      <Suspense fallback={null}><Motion /></Suspense>
     </div>
   );
 }
