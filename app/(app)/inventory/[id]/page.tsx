@@ -4,6 +4,7 @@ import { requirePage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY, type Category, type FieldInput } from "@/lib/inventory";
 import PageHeader from "@/components/app/PageHeader";
+import type { Tab } from "@/components/app/PageTabs";
 import Icon from "@/components/app/hub/icons";
 import DataSetEditor from "../DataSetEditor";
 import ArchiveForm from "./ArchiveForm";
@@ -22,7 +23,7 @@ type Snapshot = {
 };
 
 export default async function Page({ params, searchParams }: {
-  params: Promise<{ id: string }>; searchParams: Promise<{ v?: string; saved?: string }>;
+  params: Promise<{ id: string }>; searchParams: Promise<{ v?: string; saved?: string; tab?: string }>;
 }) {
   const { id } = await params;
   const sp = await searchParams;
@@ -52,10 +53,18 @@ export default async function Page({ params, searchParams }: {
     ? (old.snapshot as Snapshot)
     : { ...set, fields: (fields ?? []) as Snapshot["fields"] };
 
+  const showHistory = sp.tab === "history" || Boolean(old);
+  const count = versions?.length ?? 0;
+  // Folder tabs: what is inside this data set.
+  const tabs: Tab[] = [
+    { href: `/inventory/${id}`, icon: "db", title: set.code, sub: archived ? "Archived" : `Version ${set.version_no}`, current: !showHistory },
+    { href: `/inventory/${id}?tab=history`, icon: "clock", title: "History", sub: `${count} version${count === 1 ? "" : "s"}`, current: showHistory },
+  ];
+
   return (
     <>
       <PageHeader
-        here="/inventory"
+        tabs={tabs}
         eyebrow={`Data inventory · ${set.code}`}
         title={set.name}
         intro={old
@@ -63,51 +72,62 @@ export default async function Page({ params, searchParams }: {
           : `Version ${set.version_no}, last changed ${kl.format(new Date(set.updated_at))}.`}
       />
       <main id="main" className="hub-main">
-        <Link href={old ? `/inventory/${id}` : "/inventory"} className="hub-back">← {old ? "Back to the current version" : "Back to the inventory"}</Link>
+        <Link href={old ? `/inventory/${id}?tab=history` : "/inventory"} className="hub-back">← {old ? "Back to the history" : "Back to the inventory"}</Link>
         {sp.saved === "new" && !old && <p role="status" className="hub-msg-ok inv-banner"><Icon name="check" className="size-4" />Data set created as version 1.</p>}
         {archived && !old && <p className="inv-banner inv-archived"><Icon name="lock" className="size-4" />Archived. Restore it to make changes.</p>}
 
-        <div className="inv-detail">
-          <div className="inv-main">
-            {lead && !old && !archived ? (
-              <DataSetEditor
-                people={people}
-                values={{
-                  id: set.id, name: set.name, storage_location: set.storage_location, access: set.access_description ?? "",
-                  purpose: set.purpose, retention: set.retention_period ?? "", owner: set.owner_id ?? "",
-                  processor: set.processor_name ?? "", records: set.approx_records?.toString() ?? "",
-                  fields: (fields ?? []).map((f): FieldInput => ({ id: f.id, name: f.field_name, category: f.category as Category, sensitive: f.is_sensitive })),
-                }}
-              />
-            ) : (
-              <ReadOnly snap={snap} owner={snap.owner_id ? who.get(snap.owner_id) ?? "A former user" : null} />
-            )}
+        {showHistory && !old ? (
+          <section className="hub-card inv-history-card" aria-labelledby="hist-h">
+            <h2 id="hist-h" className="inv-h"><Icon name="clock" />Version history</h2>
+            <p className="inv-sub">Every save is kept and can never be edited. Open a version to see the data set as it was.</p>
+            <ol className="inv-history">
+              {(versions ?? []).map((v) => {
+                const current = v.version_no === set.version_no;
+                return (
+                  <li key={v.version_no}>
+                    <Link href={current ? `/inventory/${id}` : `/inventory/${id}?v=${v.version_no}`}>
+                      <b>Version {v.version_no}{current ? " (current)" : ""}</b>
+                      <span>{v.changed_by ? who.get(v.changed_by) ?? "A former user" : "System"} · {kl.format(new Date(v.changed_at))}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        ) : (
+          <div className="inv-detail">
+            <div className="inv-main">
+              {lead && !old && !archived ? (
+                <DataSetEditor
+                  people={people}
+                  values={{
+                    id: set.id, name: set.name, storage_location: set.storage_location, access: set.access_description ?? "",
+                    purpose: set.purpose, retention: set.retention_period ?? "", owner: set.owner_id ?? "",
+                    processor: set.processor_name ?? "", records: set.approx_records?.toString() ?? "",
+                    fields: (fields ?? []).map((f): FieldInput => ({ id: f.id, name: f.field_name, category: f.category as Category, sensitive: f.is_sensitive })),
+                  }}
+                />
+              ) : (
+                <ReadOnly snap={snap} owner={snap.owner_id ? who.get(snap.owner_id) ?? "A former user" : null} />
+              )}
+            </div>
+            <aside className="inv-side">
+              <section className="hub-card" aria-labelledby="about-h">
+                <h2 id="about-h" className="inv-h"><Icon name="shield" />About this data set</h2>
+                <dl className="inv-about">
+                  <div><dt>Code</dt><dd>{set.code}</dd></div>
+                  <div><dt>Status</dt><dd>{archived ? "Archived" : "Active"}</dd></div>
+                  <div><dt>Version</dt><dd>{old ? `${old.version_no} of ${set.version_no}` : set.version_no}</dd></div>
+                  <div><dt>Last changed</dt><dd>{kl.format(new Date(set.updated_at))}</dd></div>
+                </dl>
+                <Link href={`/inventory/${id}?tab=history`} className="hub-back">See all {count} version{count === 1 ? "" : "s"}</Link>
+              </section>
+              {lead && !old && (
+                <section className="hub-card"><ArchiveForm id={set.id} archived={archived} /></section>
+              )}
+            </aside>
           </div>
-
-          <aside className="inv-side">
-            <section className="hub-card" aria-labelledby="hist-h">
-              <h2 id="hist-h" className="inv-h"><Icon name="clock" />Version history</h2>
-              <p className="inv-sub">Every save is kept and can never be edited.</p>
-              <ol className="inv-history">
-                {(versions ?? []).map((v) => {
-                  const current = v.version_no === set.version_no;
-                  const here = old ? v.version_no === old.version_no : current;
-                  return (
-                    <li key={v.version_no} aria-current={here ? "true" : undefined}>
-                      <Link href={current ? `/inventory/${id}` : `/inventory/${id}?v=${v.version_no}`}>
-                        <b>Version {v.version_no}{current ? " (current)" : ""}</b>
-                        <span>{v.changed_by ? who.get(v.changed_by) ?? "A former user" : "System"} · {kl.format(new Date(v.changed_at))}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ol>
-            </section>
-            {lead && !old && (
-              <section className="hub-card"><ArchiveForm id={set.id} archived={archived} /></section>
-            )}
-          </aside>
-        </div>
+        )}
       </main>
     </>
   );

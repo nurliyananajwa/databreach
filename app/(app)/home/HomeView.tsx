@@ -33,21 +33,15 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         ? { t: `${d.deadline.incidents?.code} needs attention.`, p: `${Math.floor(hoursLeft!)} hours left to notify the Commissioner. Open the incident to continue.` }
         : { t: `Hello, ${first}.`, p: open.length ? `${open.length} open incident${open.length > 1 ? "s" : ""}, no deadline running right now.` : "No open incidents. A good time to keep your data inventory up to date." };
 
-  // ---- folder tabs: open incidents first, then the main places ----
-  const tabs: Tab[] =
-    me.role === "staff"
-      ? [
-          { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
-          { href: "/report", icon: "plus", title: "Report", sub: "About 2 minutes" },
-          { href: "/my-reports", icon: "inbox", title: "My reports", sub: `${open.length} open` },
-          { href: "/tasks", icon: "check", title: "My tasks", sub: `${d.tasks.length} to do` },
-        ]
-      : [
-          { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true, metric: ["open", String(open.length)] },
-          ...open.slice(0, 2).map((i) => ({ href: "/incidents", icon: "alert" as IconName, title: i.code, sub: STATUS_LABEL[i.status] ?? i.status })),
-          { href: "/inventory", icon: "db", title: "Inventory", sub: `${d.sets} data set${d.sets === 1 ? "" : "s"}` },
-          { href: "/register", icon: "book", title: "Register", sub: "Kept 2 years" },
-        ];
+  // ---- folder tabs: what is inside Home. The top menu already lists every
+  // page, so the tabs show live news instead: one tab per open incident.
+  const tabs: Tab[] = [
+    { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true },
+    ...open.slice(0, 3).map((i) => ({
+      href: me.role === "staff" ? "/my-reports" : "/incidents",
+      icon: "alert" as IconName, title: i.code, sub: STATUS_LABEL[i.status] ?? i.status,
+    })),
+  ];
 
   const waitH = d.oldestDraft ? Math.floor((now - new Date(d.oldestDraft).getTime()) / 3.6e6) : 0;
   const unassessed = open.filter((i) => i.status === "reported").length;
