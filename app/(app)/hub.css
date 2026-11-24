@@ -193,7 +193,7 @@
 .hub-hero > div:first-child { max-width: 560px; min-width: 300px; }
 .hub-hero.big { align-items: center; padding-top: 10px; padding-bottom: 96px; }
 .hub-hero small { font-size: 13px; color: var(--on-band-2); }
-.hub-hero h1 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(40px, 5vw, 66px); letter-spacing: -.01em; line-height: 1; margin-top: 6px; color: var(--on-band); }
+.hub-hero h1 { font-family: "Fraunces Variable", Georgia, serif; font-weight: 500; font-size: clamp(40px, 5vw, 66px); letter-spacing: -.02em; line-height: 1; margin-top: 6px; color: var(--on-band); }
 .hub-hero p { color: var(--on-band-2); margin-top: 10px; max-width: 440px; line-height: 1.55; }
 .hub-hero .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 /* Home: role and status under the intro */
@@ -222,8 +222,8 @@
 /* settings: identity card on the left, detail rows on the right */
 .hub-set { display: grid; grid-template-columns: minmax(240px, 320px) minmax(0, 1fr); gap: 16px; align-items: start; }
 .hub-id { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 24px 24px; }
-.hub-id-av { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; font-family: "Instrument Serif", Georgia, serif; font-size: 44px; color: #fff; background: radial-gradient(circle at 30% 25%, #a585f5, var(--accent) 55%, #3d2280); box-shadow: 0 0 0 6px #eef1ff, 0 14px 30px #6d3fd840; }
-.hub-id .name { font-family: "Instrument Serif", Georgia, serif; font-size: 30px; line-height: 1.1; margin-top: 18px; }
+.hub-id-av { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; font-family: "Fraunces Variable", Georgia, serif; font-size: 44px; color: #fff; background: radial-gradient(circle at 30% 25%, #a585f5, var(--accent) 55%, #3d2280); box-shadow: 0 0 0 6px #eef1ff, 0 14px 30px #6d3fd840; }
+.hub-id .name { font-family: "Fraunces Variable", Georgia, serif; font-size: 30px; line-height: 1.1; margin-top: 18px; }
 .hub-id .mail { font-size: 13px; color: var(--muted); margin-top: 4px; word-break: break-all; }
 .hub-id .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 14px; }
 .hub-id .chips span { font-size: 12px; padding: 5px 10px; border-radius: 20px; background: #f1f3f9; color: #3d4048; }
@@ -279,7 +279,7 @@
 .hub-shield .pulse { stroke-dasharray: 260; stroke-dashoffset: 260; animation: hub-pulse 3.2s ease-in-out infinite; }
 @keyframes hub-float { 50% { translate: 0 -6px; } }
 .hub-ring-label { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); white-space: nowrap; background: #fff; border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--navy-2); box-shadow: 0 6px 16px #13206b1f; }
-.hub-ring-label b { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 18px; color: var(--navy); }
+.hub-ring-label b { font-family: "Fraunces Variable", Georgia, serif; font-weight: 500; font-size: 18px; color: var(--navy); }
 
 /* folder tabs: slanted paper-folder tabs that overlap like real files;
    the current one comes to the front and joins the sheet */
@@ -345,7 +345,7 @@
 /* card link: a small "View" label */
 .hub-view { margin-left: auto; flex: none; align-self: flex-start; padding: 5px 10px; border-radius: 9px; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); text-decoration: none; transition: background .2s, color .2s; }
 .hub-view:hover { background: var(--accent); color: #fff; }
-.hub-big { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 52px; letter-spacing: -.01em; line-height: 1; margin: 24px 0 20px; display: flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; }
+.hub-big { font-family: "Fraunces Variable", Georgia, serif; font-weight: 500; font-size: 52px; letter-spacing: -.01em; line-height: 1; margin: 24px 0 20px; display: flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; }
 .hub-big small { font-family: "Manrope Variable", system-ui, sans-serif; font-size: 15px; color: var(--muted); letter-spacing: 0; }
 .hub-dot { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 700; }
 .hub-dot.g { background: var(--accent); } .hub-dot.warn { background: var(--coral); }

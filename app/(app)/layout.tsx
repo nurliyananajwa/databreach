@@ -1,6 +1,6 @@
 import { BellLink } from "@/components/app/BellLink";
 import "@fontsource-variable/manrope/wght.css";
-import "@fontsource/instrument-serif/400.css"; // titles and big numbers, as on the landing page
+import "@fontsource-variable/fraunces/wght.css"; // titles and big numbers
 import "./hub.css";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
