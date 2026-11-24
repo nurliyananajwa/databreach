@@ -475,6 +475,28 @@ begin; select tests.login('other.manager@example.test'); set local role authenti
 select tests.must_fail('Another organisation cannot archive it', format($q$select public.set_data_set_status(%L, true)$q$, :'ds_new'));
 commit;
 
+-- ============================================================ 13. incident type (Sprint 3)
+select tests.check('Older reports default to type other', (select bool_and(incident_type = 'other') from public.incidents));
+begin; select tests.login('siti.staff@example.test'); set local role authenticated;
+select public.report_incident('Laptop left in a taxi', 'Work laptop with the HR folder left in a taxi.',
+  now() - interval '30 minutes', '{}', 'lost_stolen') as inc_type \gset
+select tests.check('Staff can report with a type', (select incident_type = 'lost_stolen' from public.incidents where id = :'inc_type'));
+select tests.must_fail('An unknown type is refused',
+  $q$select public.report_incident('x', 'y', now() - interval '1 minute', '{}', 'aliens')$q$);
+select tests.must_fail('Staff cannot change the type', format($q$select public.set_incident_type(%L, 'other')$q$, :'inc_type'));
+commit;
+begin; select tests.login('najwa.manager@example.test'); set local role authenticated;
+select tests.must_fail('The manager cannot change the type', format($q$select public.set_incident_type(%L, 'other')$q$, :'inc_type'));
+commit;
+begin; select tests.login('other.manager@example.test'); set local role authenticated;
+select tests.must_fail('Another organisation cannot change the type', format($q$select public.set_incident_type(%L, 'other')$q$, :'inc_type'));
+commit;
+begin; select tests.login('farid.lead@example.test'); set local role authenticated;
+select public.set_incident_type(:'inc_type', 'unauthorised_access');
+select tests.must_fail('The lead cannot set an unknown type', format($q$select public.set_incident_type(%L, 'aliens')$q$, :'inc_type'));
+commit;
+select tests.check('The lead can correct the type', (select incident_type = 'unauthorised_access' from public.incidents where id = :'inc_type'));
+
 select tests.check('Incident codes are unique and run in order',
   (select count(*) = count(distinct code) from public.incidents where code like 'INC-%'));
 
