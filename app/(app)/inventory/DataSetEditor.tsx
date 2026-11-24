@@ -1,13 +1,14 @@
 "use client";
 
-import { useActionState, useId, useRef, useState } from "react";
-import { useFormStatus } from "react-dom";
+import { startTransition, useActionState, useId, useRef, useState } from "react";
 import Icon from "@/components/app/hub/icons";
 import { CATEGORIES, CATEGORY, looksLikeRealData, type Category, type FieldInput } from "@/lib/inventory";
 import { saveDataSet, type SaveState } from "./actions";
 
 export type EditorValues = {
   id?: string;
+  /** The saved version these values come from; a new one after each save. */
+  version?: number;
   name: string; storage_location: string; access: string; purpose: string;
   retention: string; owner: string; processor: string; records: string;
   fields: FieldInput[];
@@ -15,8 +16,7 @@ export type EditorValues = {
 type Person = { id: string; name: string };
 type Row = FieldInput & { key: number };
 
-function Save({ isNew }: { isNew: boolean }) {
-  const { pending } = useFormStatus();
+function Save({ isNew, pending }: { isNew: boolean; pending: boolean }) {
   return (
     <button type="submit" className="hub-btn inv-save" disabled={pending} aria-busy={pending}>
       {pending ? "Saving…" : isNew ? "Create data set" : "Save changes"}
@@ -43,7 +43,7 @@ function Text({ label, name, value, onChange, hint, required, area, max }: {
 }
 
 export default function DataSetEditor({ values, people }: { values: EditorValues; people: Person[] }) {
-  const [state, action] = useActionState<SaveState, FormData>(saveDataSet, {});
+  const [state, action, pending] = useActionState<SaveState, FormData>(saveDataSet, {});
   const next = useRef(values.fields.length);
   const [rows, setRows] = useState<Row[]>(() =>
     values.fields.length ? values.fields.map((f, i) => ({ ...f, key: i })) : [{ name: "", category: "other", sensitive: false, key: next.current++ }]);
@@ -51,6 +51,26 @@ export default function DataSetEditor({ values, people }: { values: EditorValues
   const isNew = !values.id;
   const [v, setV] = useState(values);
   const set = (k: keyof EditorValues) => (x: string) => setV((o) => ({ ...o, [k]: x }));
+
+  // After a save the page sends the saved values again (new version number).
+  // Take them over, so new fields get their ids and the next save does not add
+  // them a second time.
+  const [seen, setSeen] = useState(values.version);
+  if (values.version !== seen) {
+    setSeen(values.version);
+    setV(values);
+    setRows(values.fields.map((f, i) => ({ ...f, key: i })));
+    next.current = values.fields.length;
+  }
+
+  // Submit without React's automatic form reset: the reset puts every box back
+  // to how the page first loaded (the Owner box showed "Nobody yet" after a
+  // save, and the next save would have removed the owner).
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    startTransition(() => action(data));
+  };
 
   const update = (key: number, patch: Partial<Row>) => setRows((r) => r.map((x) => (x.key === key ? { ...x, ...patch } : x)));
   const add = () => {
@@ -63,7 +83,7 @@ export default function DataSetEditor({ values, people }: { values: EditorValues
   const dupes = new Set(names.filter((n, i) => names.indexOf(n) !== i));
 
   return (
-    <form action={action} className="inv-editor">
+    <form onSubmit={submit} className="inv-editor">
       {values.id && <input type="hidden" name="id" value={values.id} />}
       <input type="hidden" name="fields" value={JSON.stringify(rows.map(({ key: _k, ...f }) => f))} />
 
@@ -133,7 +153,7 @@ export default function DataSetEditor({ values, people }: { values: EditorValues
       </section>
 
       <div className="inv-actions">
-        <Save isNew={isNew} />
+        <Save isNew={isNew} pending={pending} />
         {!isNew && <span className="inv-note">Every save is kept as a new version.</span>}
         {state.error && <p role="alert" className="hub-msg-err">{state.error}</p>}
         {state.ok && <p role="status" className="hub-msg-ok"><Icon name="check" className="size-4" />{state.ok}</p>}

@@ -12,7 +12,7 @@ import { activePeople } from "../people";
 
 export const metadata = { title: "Data set | PDPA Breach Response Tracker" };
 
-const kl = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" });
+const kl = new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 const num = new Intl.NumberFormat("en-MY");
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -69,7 +69,7 @@ export default async function Page({ params, searchParams }: {
         title={set.name}
         intro={old
           ? `You are looking at version ${old.version_no}, saved ${kl.format(new Date(old.changed_at))}. It cannot be changed.`
-          : `Version ${set.version_no}, last changed ${kl.format(new Date(set.updated_at))}.`}
+          : set.purpose}
       />
       <main id="main" className="hub-main">
         <Link href={old ? `/inventory/${id}?tab=history` : "/inventory"} className="hub-back">← {old ? "Back to the history" : "Back to the inventory"}</Link>
@@ -101,7 +101,7 @@ export default async function Page({ params, searchParams }: {
                 <DataSetEditor
                   people={people}
                   values={{
-                    id: set.id, name: set.name, storage_location: set.storage_location, access: set.access_description ?? "",
+                    id: set.id, version: set.version_no, name: set.name, storage_location: set.storage_location, access: set.access_description ?? "",
                     purpose: set.purpose, retention: set.retention_period ?? "", owner: set.owner_id ?? "",
                     processor: set.processor_name ?? "", records: set.approx_records?.toString() ?? "",
                     fields: (fields ?? []).map((f): FieldInput => ({ id: f.id, name: f.field_name, category: f.category as Category, sensitive: f.is_sensitive })),
