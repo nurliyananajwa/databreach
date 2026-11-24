@@ -32,3 +32,5 @@
 .pa-motion-control { color: #4a4f63; }
 .pa-motion-control button { border-color: #fff; background: #ffffffb3; color: #4a4f63; }
 .pa-motion-control button:hover { background: #fff; color: #1d1f2b; }
+/* keep the logo and the bottom controls readable over the numbers */
+.pa-data-vignette::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #e3d6ffee 0, #e3d6ff00 140px, #f3d6ea00 calc(100% - 110px), #f3d6eaee 100%); }
