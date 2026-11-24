@@ -84,7 +84,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ v
   return (
     <>
       <PageHeader
-        here="/inventory"
+       
         tabs={tabs}
         title="Data inventory"
         intro={lead

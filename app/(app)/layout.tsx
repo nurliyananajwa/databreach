@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Search lists every page this role may open, including ones not in the menu.
   const searchable = MENU.filter((m) => m.roles.includes(me.role)).map(({ href, label }) => ({ href, label }));
   const actions: Action[] = [
-    ...(me.role === "manager" ? [{ label: "Invite someone", icon: "users", href: "/users#invite-heading" } as Action] : []),
+    ...(me.role === "manager" ? [{ label: "Invite someone", icon: "users", href: "/users?view=invites#invite-heading" } as Action] : []),
     { label: "Mark all notifications as read", icon: "bell", run: "markRead" },
     { label: "Ask AI (coming soon)", icon: "sparkle", href: "/home?panel=ai" },
     { label: "Show the How it works tour", icon: "log", run: "tour" },

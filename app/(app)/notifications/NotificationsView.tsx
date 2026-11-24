@@ -12,7 +12,7 @@ export default function NotificationsView({ alerts }: { alerts: Alert[] }) {
   const unread = alerts.filter((a) => !a.read_at).length;
   return (
     <>
-      <PageHeader here="/notifications" title="Notifications" intro="Deadline reminders and things that need you. Newest first.">
+      <PageHeader title="Notifications" intro="Deadline reminders and things that need you. Newest first.">
         {unread > 0 && (
           <form action={markAllRead}>
             <button type="submit" className="hub-pill-light" style={{ cursor: "pointer", border: 0 }}>Mark all as read ({unread})</button>

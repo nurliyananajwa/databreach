@@ -8,7 +8,7 @@ export default async function Page() {
   await requirePage("/incidents");
   return (
     <>
-      <PageHeader here="/incidents" title="Incidents" intro="Every reported breach and where it is in the response." />
+      <PageHeader title="Incidents" intro="Every reported breach and where it is in the response." />
       <ComingSoon sprint={3} what="Incident list and the incident page: confirm exposed fields, run the assessment, record the decision, follow the deadlines." />
     </>
   );

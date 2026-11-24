@@ -591,3 +591,5 @@
 .inv-about { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin: 14px 0 6px; }
 .inv-about dt { font-size: 12px; color: var(--muted); }
 .inv-about dd { margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.hub-view { max-width: none; }
+.hub-pending-h { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }

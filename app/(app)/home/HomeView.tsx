@@ -33,11 +33,16 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         ? { t: `${d.deadline.incidents?.code} needs attention.`, p: `${Math.floor(hoursLeft!)} hours left to notify the Commissioner. Open the incident to continue.` }
         : { t: `Hello, ${first}.`, p: open.length ? `${open.length} open incident${open.length > 1 ? "s" : ""}, no deadline running right now.` : "No open incidents. A good time to keep your data inventory up to date." };
 
+  const view = panel === "feed" ? "feed" : panel === "ai" ? "ai" : "overview";
   // ---- folder tabs: what is inside Home. The top menu already lists every
   // page, so the tabs show live news instead: one tab per open incident.
   const tabs: Tab[] = [
-    { href: "/home", icon: "home", title: "Overview", sub: "Today", current: true },
-    ...open.slice(0, 3).map((i) => ({
+    { href: "/home", icon: "home", title: "Overview", sub: "Today", current: view === "overview" },
+    me.role === "manager"
+      ? { href: "/home?panel=feed", icon: "list", title: "Activity log", sub: d.audit.length ? `${d.audit.length} recent` : "Quiet so far", current: view === "feed" }
+      : { href: "/home?panel=feed", icon: "bell", title: "Alerts", sub: d.alerts.length ? `${d.alerts.length} unread` : "None unread", current: view === "feed", warn: d.alerts.some((a) => a.level !== "info") },
+    { href: "/home?panel=ai", icon: "sparkle", title: "AI helper", sub: "Coming soon", current: view === "ai" },
+    ...open.slice(0, 2).map((i) => ({
       href: me.role === "staff" ? "/my-reports" : "/incidents",
       icon: "alert" as IconName, title: i.code, sub: STATUS_LABEL[i.status] ?? i.status,
     })),
@@ -47,8 +52,29 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
   const unassessed = open.filter((i) => i.status === "reported").length;
   const top = open[0];
 
-  const side = panel === "ai" ? "ai" : "feed";
   const feedTitle = me.role === "manager" ? "Activity log" : "Alerts";
+  const feedSub = me.role === "manager" ? "Locked: entries can never be edited" : "Deadlines and reminders for you";
+  const feed = (max: number) => (
+    <div className="hub-ledger">
+      {me.role === "manager"
+        ? d.audit.length
+          ? d.audit.slice(0, max).map((a) => (
+              <div key={a.id} className="hub-row">
+                <time>{kl.format(new Date(a.created_at))}</time>
+                <p><b>{a.actor}</b> {lower(describeChange(a.table_name, a.action))}</p>
+              </div>
+            ))
+          : <Empty icon="list" title="Quiet so far" body="Every change anyone makes is listed here, and can never be edited." />
+        : d.alerts.length
+          ? d.alerts.slice(0, max).map((a) => (
+              <div key={a.id} className={`hub-row${a.level !== "info" ? " urgent" : ""}`}>
+                <time>{kl.format(new Date(a.created_at))}</time>
+                <p><b>{a.level !== "info" ? "Deadline" : "Reminder"}</b> {a.message}</p>
+              </div>
+            ))
+          : <Empty icon="bell" title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
+    </div>
+  );
 
   return (
     <>
@@ -74,6 +100,28 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
 
 
       <main id="main" className="hub-main">
+        {view === "feed" ? (
+          <section className="hub-card hub-view" aria-labelledby="feed-h">
+            <div className="hub-ch"><div>
+              <h2 id="feed-h"><Icon name={me.role === "manager" ? "list" : "bell"} />{feedTitle}</h2>
+              <p className="sub">{feedSub}</p>
+            </div></div>
+            {feed(20)}
+            {me.role === "manager" && d.audit.length > 0 && <Link href="/audit" className="hub-back">See the full audit log</Link>}
+          </section>
+        ) : view === "ai" ? (
+          <section className="hub-card hub-view" aria-labelledby="ai-h">
+            <div className="hub-ch"><div>
+              <h2 id="ai-h"><Icon name="sparkle" />AI report helper</h2>
+              <p className="sub">Waiting for the supervisor&apos;s approval</p>
+            </div></div>
+            <div className="hub-soon">
+              <span className="ic"><Icon name="log" /></span>
+              <strong>Coming soon</strong>
+              <p>Suggests the incident type and the data sets involved from a staff report. A person always confirms.</p>
+            </div>
+          </section>
+        ) : (
         <div className="hub-grid">
           {me.role === "staff" ? (
             <>
@@ -148,46 +196,16 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             </>
           )}
 
-          {/* right column: alerts or activity, plus the AI helper tab (coming soon) */}
+          {/* right column: alerts (or, for the Manager, the activity log) */}
           <section className="hub-card hub-side" style={{ animationDelay: ".26s" }} data-tour="side">
-            <nav className="hub-flip" aria-label="Side panel">
-              <Link href="/home" scroll={false} aria-current={side === "feed" ? "true" : undefined}>{feedTitle}</Link>
-              <Link href="/home?panel=ai" scroll={false} aria-current={side === "ai" ? "true" : undefined}>AI helper <span className="hub-tag">Soon</span></Link>
-            </nav>
             <div className="hub-ch">
               <div>
-                <h2><Icon name={side === "ai" ? "log" : me.role === "manager" ? "list" : "bell"} />{side === "ai" ? "AI report helper" : feedTitle}</h2>
-                <p className="sub">{side === "ai" ? "AI report helper" : me.role === "manager" ? <><Icon name="lock" className="size-3" /> Locked: entries can never be edited</> : "Deadlines and reminders for you"}</p>
+                <h2><Icon name={me.role === "manager" ? "list" : "bell"} />{feedTitle}</h2>
+                <p className="sub">{feedSub}</p>
               </div>
             </div>
-            {side === "ai" ? (
-              <div className="hub-soon">
-                <span className="ic"><Icon name="log" /></span>
-                <strong>Coming soon</strong>
-                <p>Suggests the incident type and the data sets involved from a staff report. A person always confirms.</p>
-              </div>
-            ) : (
-              <div className="hub-ledger">
-                {me.role === "manager"
-                  ? d.audit.length
-                    ? d.audit.map((a) => (
-                        <div key={a.id} className="hub-row">
-                          <time>{kl.format(new Date(a.created_at))}</time>
-                          <p><b>{a.actor}</b> {lower(describeChange(a.table_name, a.action))}</p>
-                        </div>
-                      ))
-                    : <Empty icon="list" title="Quiet so far" body="Every change anyone makes is listed here, and can never be edited." />
-                  : d.alerts.length
-                    ? d.alerts.map((a) => (
-                        <div key={a.id} className={`hub-row${a.level !== "info" ? " urgent" : ""}`}>
-                          <time>{kl.format(new Date(a.created_at))}</time>
-                          <p><b>{a.level !== "info" ? "Deadline" : "Reminder"}</b> {a.message}</p>
-                        </div>
-                      ))
-                    : <Empty icon="bell" title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
-              </div>
-            )}
-            {side === "feed" && me.role === "manager" && d.audit.length > 0 && <Link href="/audit" className="hub-back">See the full audit log</Link>}
+            {feed(5)}
+            {me.role === "manager" && d.audit.length > 0 && <Link href="/audit" className="hub-back">See the full audit log</Link>}
           </section>
 
           {me.role !== "staff" && (
@@ -198,7 +216,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                     <div className="hub-figs">
                       <p className="hub-big">{top.people !== null ? <CountUp value={top.people} /> : "?"}<small>people affected</small></p>
                       <dl>
-                        <div><dt>Data places</dt><dd>{top.places}</dd></div>
+                        <div><dt>Data sets</dt><dd>{top.places}</dd></div>
                         <div><dt>Stage</dt><dd>{STATUS_LABEL[top.status] ?? top.status}</dd></div>
                       </dl>
                     </div>
@@ -217,6 +235,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             </>
           )}
         </div>
+        )}
       </main>
     </>
   );
