@@ -109,7 +109,7 @@
 .hub-tour-actions { display: flex; gap: 8px; align-items: center; margin-top: 14px; }
 .hub-tour-actions button { font: inherit; font-size: 13px; padding: 8px 14px; border-radius: 20px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; }
 .hub-tour-actions .skip { border: 0; padding-left: 0; color: var(--muted); margin-right: auto; text-decoration: underline; text-underline-offset: 3px; }
-.hub-tour-actions .next { background: var(--navy); border-color: var(--navy); color: #fff; }
+.hub-tour-actions .next { background: var(--accent); border-color: var(--accent); color: #fff; }
 .hub-tour-foot { font-size: 12px !important; color: var(--muted) !important; margin-top: 10px !important; }
 @media (prefers-reduced-motion: reduce) { .hub-tour-spot, .hub-tour-card { transition: none; animation: none; } }
 
