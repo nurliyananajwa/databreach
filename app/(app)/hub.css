@@ -199,6 +199,44 @@
 .hub-hero p { color: var(--on-band-2); margin-top: 10px; max-width: 440px; line-height: 1.55; }
 .hub-hero .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 /* Home: role and status under the intro */
+/* account menu: the avatar opens who you are, Settings and Sign out */
+.hub-acct { position: relative; }
+.hub-acct .hub-chip { cursor: pointer; padding: 4px 10px 4px 4px; gap: 6px; }
+.hub-acct .hub-chip:hover { background: #ffffff26; }
+.hub-acct .hub-chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.hub-acct-chev { width: 14px; height: 14px; transform: rotate(90deg); transition: transform .2s; }
+.hub-acct .hub-chip[aria-expanded="true"] .hub-acct-chev { transform: rotate(-90deg); }
+.hub-acct-panel { position: absolute; right: 0; top: calc(100% + 10px); z-index: 30; width: 270px; padding: 8px; border-radius: 18px; background: #fff; color: var(--ink); box-shadow: 0 24px 48px #0b123566; animation: hub-pop .18s ease-out; }
+.hub-acct-panel[hidden] { display: none; }
+@keyframes hub-pop { from { opacity: 0; transform: translateY(-6px); } }
+.hub-acct-panel .who { display: flex; gap: 12px; align-items: center; padding: 10px 10px 14px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+.hub-acct-panel .who > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.hub-acct-panel .who b { font-weight: 600; font-size: 14px; }
+.hub-acct-panel .who small { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hub-acct-panel .who em { font-style: normal; font-size: 12px; color: var(--accent); margin-top: 2px; }
+.hub-av.big { width: 40px; height: 40px; font-size: 16px; flex: none; }
+.hub-acct-panel a, .hub-acct-panel .hub-out { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px; border-radius: 10px; font-size: 14px; color: var(--ink); text-decoration: none; text-align: left; background: none; border: 0; cursor: pointer; }
+.hub-acct-panel a:hover, .hub-acct-panel .hub-out:hover { background: #f1f3f9; }
+.hub-acct-panel a:focus-visible, .hub-acct-panel .hub-out:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.hub-acct-panel .hub-out { color: #b3411f; }
+@media (prefers-reduced-motion: reduce) { .hub-acct-panel { animation: none; } .hub-acct-chev { transition: none; } }
+
+/* settings form */
+.hub-settings { max-width: 640px; }
+.hub-form { display: grid; gap: 18px; margin-top: 18px; }
+.hub-field { display: grid; gap: 6px; }
+.hub-field > span { font-size: 13px; font-weight: 600; }
+.hub-field input { font: inherit; font-size: 15px; padding: 11px 14px; border: 1px solid #d6dae6; border-radius: 12px; background: #fff; color: var(--ink); }
+.hub-field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px #2855ff26; }
+.hub-field input[aria-invalid="true"] { border-color: #d2401f; }
+.hub-field small { font-size: 12px; color: var(--muted); }
+.hub-field.readonly p { font-size: 15px; padding: 11px 14px; border-radius: 12px; background: #f4f5f9; color: #3d4048; }
+.hub-form-foot { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.hub-form-foot .hub-btn { margin-top: 0; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 500; }
+.hub-form-foot .hub-btn:disabled { opacity: .6; }
+.hub-msg-ok { font-size: 13px; color: #1c6b3a; }
+.hub-msg-err { font-size: 13px; color: #b3411f; }
+
 /* the one thing to do now, under the intro */
 .hub-cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 12px 20px; border-radius: 30px; background: #fff; color: var(--navy); font-size: 14px; font-weight: 600; text-decoration: none; box-shadow: 0 10px 24px #00000040; transition: transform .2s, box-shadow .2s; }
 .hub-cta:hover { transform: translateY(-1px); box-shadow: 0 14px 28px #00000055; }

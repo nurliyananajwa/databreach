@@ -9,7 +9,7 @@ import { MENU, menuFor, ROLE_LABEL } from "@/lib/roles";
 import { signOut } from "@/app/sign-in/actions";
 import HubNav from "@/components/app/HubNav";
 import Icon from "@/components/app/hub/icons";
-import SignOutButton from "@/components/app/SignOutButton";
+import AccountMenu from "@/components/app/AccountMenu";
 import SearchButton, { type Action } from "@/components/app/SearchButton";
 import { markAllRead } from "@/app/(app)/notifications/actions";
 import LiveUpdates from "@/components/app/LiveUpdates";
@@ -51,13 +51,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <Icon name="sparkle" className="size-4" /><span className="lbl">Ask AI</span><span className="hub-tag">Soon</span>
               <Pending />
             </Link>
-            <span className="hub-chip">
-              <span className="role">{ROLE_LABEL[me.role]}</span>
-              <span className="hub-av" title={me.fullName}>{me.fullName.charAt(0)}</span>
-            </span>
-            <form action={signOut}>
-              <SignOutButton />
-            </form>
+            <AccountMenu name={me.fullName} email={me.email} role={ROLE_LABEL[me.role]} signOut={signOut} />
           </div>
         </header>
       </div>
