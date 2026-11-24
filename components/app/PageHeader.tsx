@@ -1,13 +1,17 @@
-// The top of every signed-in page: continues the pale band with a big, light title.
+import Link from "next/link";
+
+// The top of every signed-in page: continues the navy band with a big serif title.
 // Pages without their own hero (Users, Inventory...) get the same look for free.
 const today = new Intl.DateTimeFormat("en-MY", { weekday: "long", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" });
 
-export default function PageHeader({ title, intro, eyebrow, big = false, ring, meta, children }: {
+export default function PageHeader({ title, intro, eyebrow, big = false, ring, meta, action, children }: {
   title: string; intro?: string; eyebrow?: string; big?: boolean;
   /** Hours used on the 72-hour clock, or null for "all clear". Leave out for no ring. */
   ring?: number | null;
   /** Small status line under the intro (Home: role and status). */
   meta?: React.ReactNode;
+  /** The one thing to do now: a white button under the intro. */
+  action?: { href: string; label: string; urgent?: boolean; tour?: string };
   children?: React.ReactNode;
 }) {
   return (
@@ -18,6 +22,7 @@ export default function PageHeader({ title, intro, eyebrow, big = false, ring, m
           <h1>{title}</h1>
           {intro && <p>{intro}</p>}
           {meta && <div className="hub-meta">{meta}</div>}
+          {action && <Link href={action.href} className={`hub-cta${action.urgent ? " urgent" : ""}`} data-tour={action.tour}>{action.label}</Link>}
         </div>
         {ring !== undefined && <ClockRing used={ring} />}
         {children && <div className="actions">{children}</div>}

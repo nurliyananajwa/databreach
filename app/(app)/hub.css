@@ -199,6 +199,12 @@
 .hub-hero p { color: var(--on-band-2); margin-top: 10px; max-width: 440px; line-height: 1.55; }
 .hub-hero .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 /* Home: role and status under the intro */
+/* the one thing to do now, under the intro */
+.hub-cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 12px 20px; border-radius: 30px; background: #fff; color: var(--navy); font-size: 14px; font-weight: 600; text-decoration: none; box-shadow: 0 10px 24px #00000040; transition: transform .2s, box-shadow .2s; }
+.hub-cta:hover { transform: translateY(-1px); box-shadow: 0 14px 28px #00000055; }
+.hub-cta.urgent { background: #d2401f; color: #fff; } /* deeper coral so white text passes contrast (4.7:1) */
+.hub-cta::after { content: ""; width: 7px; height: 7px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); }
+.hub-meta + .hub-cta { margin-top: 16px; }
 .hub-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; font-size: 12px; }
 .hub-meta span { background: var(--glass); border: 1px solid var(--glass-line); border-radius: 20px; padding: 6px 12px; color: var(--on-band); }
 .hub-meta b { font-weight: 600; }
@@ -259,6 +265,17 @@
 .hub-ch .sub { grid-row: 2; grid-column: 1 / -1; }
 .hub-ch h2 { font-weight: 600; font-size: 15px; display: flex; gap: 8px; align-items: center; }
 .hub-ch h2 svg { width: 17px; height: 17px; color: var(--accent); }
+/* the card title is the link to its page; a small chevron shows it can be opened */
+.hub-title-link { position: relative; display: inline-flex; align-items: center; gap: 8px; color: inherit; text-decoration: none; border-radius: 6px; }
+.hub-title-link .go { width: 15px !important; height: 15px !important; color: var(--muted) !important; transition: transform .2s, color .2s; }
+.hub-title-link:hover { color: var(--accent); }
+.hub-title-link:hover .go { transform: translateX(3px); color: var(--accent) !important; }
+.hub-title-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* share of something that is not time */
+.hub-meter { height: 8px; border-radius: 8px; background: #e7eaf3; overflow: hidden; margin-top: 6px; }
+.hub-meter i { display: block; height: 100%; border-radius: 8px; background: var(--accent); transform-origin: left; animation: hub-grow .8s cubic-bezier(.2,.8,.2,1) .2s both; }
+@keyframes hub-grow { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .hub-meter i { animation: none; } }
 .hub-ch .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .hub-go { margin-left: auto; width: 32px; height: 32px; flex: none; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; color: var(--ink); text-decoration: none; transition: background .2s, color .2s, transform .25s; }
 .hub-go:hover { background: var(--ink); color: #fff; }
