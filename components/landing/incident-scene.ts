@@ -23,6 +23,10 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
     let w = 600, h = 610, elapsed = reduced || !context ? 7.6 : 0;
     let last = 0, frame = 0, inView = true, disposed = false, published = "";
     const ctx = context!;
+    // dot colours follow the theme (app/globals.css)
+    const theme = getComputedStyle(canvas);
+    const dotColour = theme.getPropertyValue("--accent-light").trim() || "#8b6cf0";
+    const breachColour = theme.getPropertyValue("--coral").trim() || "#ff6b4d";
     function publish() {
         const state = { stage: elapsed < 1.8 ? 0 : elapsed < 3 ? 1 : elapsed < 6.4 ? 2 : 3, paused, reduced, complete: elapsed >= 7.6 };
         const key = JSON.stringify(state);
@@ -82,7 +86,7 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
             return { ...q(x, y, z), p, i };
         }).sort((a, b) => b.z - a.z).forEach(({ x, y, k, p, i }) => {
             const s = (p.accent ? 4 : 2.6) * k;
-            ctx.fillStyle = p.accent ? '#ff6b4d' : '#8b6cf0';
+            ctx.fillStyle = p.accent ? breachColour : dotColour;
             ctx.fillRect(x - s / 2, y - s / 2, s, s);
             if (escape > .6 && gather < .65 && i % 18 === 0) {
                 ctx.fillStyle = '#7a6ba3';

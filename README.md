@@ -17,8 +17,9 @@ IMS568 Capstone, Faculty of Information Science, UiTM Puncak Perdana.
 | Sprint | Work | Status |
 |---|---|---|
 | 1 | Database, sign-in, roles, security rules (RLS), users, audit log | Done |
-| – | Landing page, dashboard design (Breach Response Hub), Next.js 16 | Done |
+| – | Landing page (breach story animation), sign-in page and app design in one lilac theme, Next.js 16 | Done |
 | – | Interactive dashboard: search (Ctrl + K), live updates, How it works tour, deadline timeline | Done |
+| – | Account menu and Settings (change your own name) | Done |
 | 2 | Data inventory | Next |
 | 3 | Incidents, assessment, deadlines | Planned |
 | 4 | Tasks, notification drafts and approval, breach register | Planned |
@@ -42,7 +43,9 @@ People join only by invitation from a manager. A page a role may not use answers
 - **Next.js 16** (App Router, TypeScript, Turbopack) and **React 19**
 - **Supabase**: PostgreSQL with row-level security, Auth, Vault, pg_cron
 - **Tailwind CSS 4** and plain CSS for the custom design
-- Fonts: Manrope (app), Instrument Sans and Instrument Serif (landing page)
+- Fonts: Fraunces (headings and big numbers) and Manrope (everything else)
+- **Theme:** all brand colours and fonts are CSS variables in `app/globals.css`, so a
+  new colour scheme is a change in one place
 
 ## Run it on your laptop
 
@@ -94,18 +97,21 @@ app/
   (app)/                   Everything behind sign-in
     layout.tsx             Top bar, menu, bell; the shared frame
     hub.css                The app's design (header, tabs, cards)
+    settings/              Your own profile (change your name)
     home/                  Dashboard for each role
     users/                 Invite people, change roles (Manager)
     notifications/         Alerts for the signed-in person
     reports/ …             Other pages, filled in sprint by sprint
-  globals.css              Base styles for every page
+  globals.css              The theme (brand colours, fonts) and base styles for every page
 components/
-  app/                     Top menu, page header, bell, sign-out button
+  app/                     Top menu, account menu, page header, bell, search, tour
   app/hub/                 Dashboard parts: cards, icons, count-up numbers, loading bar
-  landing/                 Landing page sections, the 72-hour story and their styles
+  landing/                 Landing page: the breach story animation and its styles
 lib/
   auth.ts                  Who is signed in; page guards (requirePage)
   roles.ts                 The one list that drives both the menu and the page guards
+  names.ts                 First name for greetings (skips titles like Dr. or Puan)
+  activity.ts              Plain-English lines for the activity log
   supabase/                Database client and settings check
 proxy.ts                   Refreshes the session; sends signed-out visitors to sign-in
 supabase/
@@ -124,7 +130,7 @@ mockups/                   Design mockups kept for the record (not part of the a
   encrypted (pgcrypto), with the key in Supabase Vault.
 - **Locked history:** the audit log, decisions and inventory versions can only be
   added to, never edited; incidents are kept for 2 years after closing.
-- **Tested:** 115 database tests, including attacks by each role (see `supabase/README.md`).
+- **Tested:** 122 database tests, including attacks by each role (see `supabase/README.md`).
 
 ## Before going live (Sprint 5)
 

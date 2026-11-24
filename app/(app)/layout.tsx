@@ -35,7 +35,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="hub">
       <a href="#main" className="sr-only focus:not-sr-only">Skip to content</a>
-      {/* The pale band starts here; each page's header continues it. */}
+      {/* The gradient band starts here; each page's header continues it. */}
       <div className="hub-frame">
       <div className="hub-band hub-band-top">
         <header className="hub-bar">

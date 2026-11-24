@@ -43,8 +43,8 @@ function ClockRing({ used }: { used: number | null }) {
       <svg viewBox="0 0 240 240" className="hub-ring-svg">
         <circle cx="120" cy="120" r={R} fill="none" stroke="#ffffffa6" strokeWidth="12" />
         {used !== null && (
-          <circle className="arc" cx="120" cy="120" r={R} fill="none" stroke={hot ? "#ff6b4d" : "#8b6cf0"} strokeWidth="12" strokeLinecap="round"
-            strokeDasharray={`${(h / 72) * C} ${C}`} transform="rotate(-90 120 120)" style={{ ["--c" as string]: C }} />
+          <circle className="arc" cx="120" cy="120" r={R} fill="none" strokeWidth="12" strokeLinecap="round"
+            strokeDasharray={`${(h / 72) * C} ${C}`} transform="rotate(-90 120 120)" style={{ ["--c" as string]: C, stroke: hot ? "var(--coral)" : "var(--accent-light)" }} />
         )}
         {Array.from({ length: 12 }, (_, i) => (
           <line key={i} x1="120" y1="8" x2="120" y2={i % 3 ? 14 : 18} stroke="#ffffffe6" strokeWidth="2" strokeLinecap="round" transform={`rotate(${i * 30} 120 120)`} />
@@ -61,17 +61,17 @@ function GlassShield() {
   return (
     <svg className="hub-shield" viewBox="62 26 136 176" aria-hidden="true">
       <defs>
-        <linearGradient id="g-shield" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".98" /><stop offset=".5" stopColor="#ddd0ff" stopOpacity=".8" /><stop offset="1" stopColor="#8b6cf0" stopOpacity=".85" /></linearGradient>
+        <linearGradient id="g-shield" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".98" /><stop offset=".5" style={{ stopColor: "color-mix(in srgb, var(--accent-light) 30%, #fff)" }} stopOpacity=".8" /><stop offset="1" style={{ stopColor: "var(--accent-light)" }} stopOpacity=".85" /></linearGradient>
         <radialGradient id="g-shine" cx=".3" cy=".25" r=".6"><stop offset="0" stopColor="#fff" stopOpacity=".9" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></radialGradient>
         <filter id="g-glow" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
         <clipPath id="g-clip"><path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" /></clipPath>
       </defs>
-      <path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" fill="url(#g-shield)" stroke="#7c55e6" strokeWidth="2.5" />
+      <path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" fill="url(#g-shield)" style={{ stroke: "var(--accent-light)" }} strokeWidth="2.5" />
       <path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" fill="url(#g-shine)" />
       <path d="M100 62 130 50" stroke="#fff" strokeWidth="4" strokeLinecap="round" opacity=".9" />
       <g clipPath="url(#g-clip)">
-        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#b9a3ff" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" filter="url(#g-glow)" opacity=".9" />
-        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#5a2fc0" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" style={{ stroke: "var(--accent-line)" }} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" filter="url(#g-glow)" opacity=".9" />
+        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" style={{ stroke: "var(--accent-hover)" }} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
       </g>
     </svg>
   );

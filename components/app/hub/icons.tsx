@@ -15,7 +15,6 @@ const P = {
   chart: <><path d="M4 20h16M7 16v-5M12 16V8M17 16v-8" /></>,
   list: <><path d="M9 6h11M9 12h11M9 18h11M4 6h.5M4 12h.5M4 18h.5" /></>,
   bell: <><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z" /><path d="M10 20a2 2 0 0 0 4 0" /></>,
-  arrow: <path d="M7 17 17 7M9 7h8v8" />,
   chev: <path d="m9 6 6 6-6 6" />,
   exit: <><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9" /></>,
   pen: <path d="M4 20h4L19 9l-4-4L4 16v4ZM13 7l4 4" />,
