@@ -2,6 +2,7 @@ import { requirePage, type CurrentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import HomeView from "./HomeView";
 import type { Deadline as ClockDeadline } from "@/components/app/hub/ClockExplorer";
+import { firstName } from "@/lib/names";
 
 export const metadata = { title: "Home | PDPA Breach Response Tracker" };
 
@@ -60,7 +61,7 @@ async function load(me: CurrentUser) {
     alerts: (alerts.data ?? []) as { id: string; message: string; level: string; created_at: string }[],
     audit: ((audit.data ?? []) as { id: number; table_name: string; action: string; created_at: string; actor_id: string | null }[]).map((a) => ({
       ...a,
-      actor: a.actor_id ? (people_.find((p) => p.id === a.actor_id)?.full_name.split(" ")[0] ?? "Someone") : "System",
+      actor: a.actor_id ? (firstName(people_.find((p) => p.id === a.actor_id)?.full_name) || "Someone") : "System",
     })),
   };
 }

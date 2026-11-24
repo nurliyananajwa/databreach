@@ -7,6 +7,7 @@ import { browserClient } from "@/lib/supabase/client";
 import { describeChange } from "@/lib/activity";
 import type { Role } from "@/lib/roles";
 import type { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
+import { firstName as greetName } from "@/lib/names";
 
 type Row = RealtimePostgresInsertPayload<Record<string, unknown>>;
 
@@ -41,7 +42,7 @@ export default function LiveUpdates({ userId, role }: { userId: string; role: Ro
       if (!id) return "System";
       if (!names.has(id)) {
         const { data } = await db.from("profiles").select("full_name").eq("id", id).maybeSingle();
-        names.set(id, data?.full_name?.split(" ")[0] ?? "Someone");
+        names.set(id, greetName(data?.full_name) || "Someone");
       }
       return names.get(id)!;
     };

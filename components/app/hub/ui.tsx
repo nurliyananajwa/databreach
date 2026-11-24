@@ -9,23 +9,38 @@ export function Card({ icon, title, sub, href, delay = 0, className = "", tour, 
     <section className={`hub-card ${className}`} style={{ animationDelay: `${delay}s` }} data-tour={tour}>
       <div className="hub-ch">
         <div>
-          <h2><Icon name={icon} />{title}</h2>
+          <h2>
+            {href ? (
+              <Link href={href} className="hub-title-link"><Icon name={icon} />{title}<Icon name="chev" className="go" /><Pending /></Link>
+            ) : (<><Icon name={icon} />{title}</>)}
+          </h2>
           {sub && <p className="sub">{sub}</p>}
         </div>
-        {href && <Link href={href} className="hub-go" aria-label={`Open ${title}`}><Icon name="arrow" className="size-4" /><Pending /></Link>}
       </div>
       {children}
     </section>
   );
 }
 
-// "Barcode" meter: n thin bars, the first `on` filled. Bars from `hotFrom` on turn red.
+// Hour-cell meter: ONLY for time. n small squares, one per hour, 24 per row,
+// the first `on` filled. Cells from `hotFrom` on turn coral.
+// For counts that are not hours (people, fields), use Meter instead.
 export function Bars({ n = 48, on, tone = "on", hotFrom }: { n?: number; on: number; tone?: "on" | "hot" | "ok"; hotFrom?: number }) {
   return (
     <div className="hub-bars" aria-hidden="true">
       {Array.from({ length: n }, (_, i) => (
-        <i key={i} className={i < on ? (hotFrom !== undefined && i >= hotFrom ? "hot" : tone) : ""} style={{ animationDelay: `${0.15 + i * 0.008}s` }} />
+        <i key={i} className={i < on ? (hotFrom !== undefined && i >= hotFrom ? "hot" : tone) : ""} style={{ animationDelay: `${0.15 + i * 0.012}s` }} />
       ))}
+    </div>
+  );
+}
+
+// A thin bar for a share of something that is not time (e.g. people active vs invited).
+export function Meter({ value, max, label }: { value: number; max: number; label: string }) {
+  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+  return (
+    <div className="hub-meter" role="img" aria-label={label}>
+      <i style={{ width: `${pct}%` }} />
     </div>
   );
 }
