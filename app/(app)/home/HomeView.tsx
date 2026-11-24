@@ -161,10 +161,14 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
 
           {/* right column: alerts or activity, plus the AI helper tab (coming soon) */}
           <section className="hub-card hub-side" style={{ animationDelay: ".26s" }} data-tour="side">
+            <nav className="hub-flip" aria-label="Side panel">
+              <Link href="/home" scroll={false} aria-current={side === "feed" ? "true" : undefined}>{feedTitle}</Link>
+              <Link href="/home?panel=ai" scroll={false} aria-current={side === "ai" ? "true" : undefined}>AI helper <span className="hub-tag">Soon</span></Link>
+            </nav>
             <div className="hub-ch">
               <div>
                 <h2><Icon name={side === "ai" ? "log" : me.role === "manager" ? "list" : "bell"} />{side === "ai" ? "AI report helper" : feedTitle}</h2>
-                <p className="sub">{side === "ai" ? "Coming soon" : me.role === "manager" ? <><Icon name="lock" className="size-3" /> Locked: entries can never be edited</> : "Deadlines and reminders for you"}</p>
+                <p className="sub">{side === "ai" ? "AI report helper" : me.role === "manager" ? <><Icon name="lock" className="size-3" /> Locked: entries can never be edited</> : "Deadlines and reminders for you"}</p>
               </div>
               {side === "feed" && me.role === "manager" && <Link href="/audit" className="hub-view" aria-label="View the audit log">View</Link>}
             </div>
@@ -195,7 +199,6 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                     : <Empty icon="bell" title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
               </div>
             )}
-            {side === "ai" && <Link href="/home" className="hub-back">← Back to {feedTitle.toLowerCase()}</Link>}
           </section>
 
           {me.role !== "staff" && (

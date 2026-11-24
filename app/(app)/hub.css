@@ -145,6 +145,15 @@
 .hub-row.urgent b { color: #b3411f; }
 .hub-row.urgent { box-shadow: inset 3px 0 0 var(--coral); padding-left: 10px; }
 .hub-card .sub svg { display: inline-block; width: 12px; height: 12px; vertical-align: -1px; margin-right: 3px; }
+/* side panel switch: two underlined labels, like a ledger's section tabs */
+.hub-flip { display: flex; gap: 18px; margin: -4px 0 14px; border-bottom: 1px solid var(--line); }
+.hub-flip a { display: flex; align-items: center; gap: 6px; padding: 0 0 10px; margin-bottom: -1px; font-size: 13px; color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; }
+.hub-flip a:hover { color: var(--ink); }
+.hub-flip a[aria-current="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
+.hub-flip .hub-tag { font-weight: 600; }
+/* the switch already names the panel, so its title is for screen readers only */
+.hub-side .hub-ch h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hub-side .hub-ch .sub { grid-row: 1; grid-column: 1; }
 .hub-back { display: inline-block; margin-top: 14px; font-size: 12px; color: var(--accent); text-decoration: none; }
 .hub-back:hover { text-decoration: underline; }
 
