@@ -1,4 +1,4 @@
-import { requirePage } from "@/lib/auth";
+import { requirePage, titleFor } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ROLE_LABEL, type Role } from "@/lib/roles";
 import PageHeader from "@/components/app/PageHeader";
@@ -6,7 +6,7 @@ import type { Tab } from "@/components/app/PageTabs";
 import Icon from "@/components/app/hub/icons";
 import { ActiveForm, InviteForm, RevokeForm, RoleForm } from "./forms";
 
-export const metadata = { title: "Users | PDPA Breach Response Tracker" };
+export const generateMetadata = titleFor("/users", "Users");
 
 const kl = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeZone: "Asia/Kuala_Lumpur" });
 

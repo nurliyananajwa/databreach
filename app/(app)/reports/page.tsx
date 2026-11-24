@@ -1,7 +1,7 @@
-import { requirePage } from "@/lib/auth";
+import { requirePage, titleFor } from "@/lib/auth";
 import PageHeader from "@/components/app/PageHeader";
 
-export const metadata = { title: "Reports | PDPA Breach Response Tracker" };
+export const generateMetadata = titleFor("/reports", "Reports");
 
 const PLANNED: [string, string][] = [
   ["Filter", "By incident type (lost or stolen, sent to the wrong person, someone got in, something else), by status, and by date range."],

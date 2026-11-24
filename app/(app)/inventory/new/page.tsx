@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { requireRole } from "@/lib/auth";
+import { requireRole, titleFor } from "@/lib/auth";
 import PageHeader from "@/components/app/PageHeader";
 import DataSetEditor from "../DataSetEditor";
 import { activePeople } from "../people";
 
-export const metadata = { title: "New data set | PDPA Breach Response Tracker" };
+export const generateMetadata = titleFor("/inventory/new", "New data set");
 
 export default async function Page() {
   const [, people] = await Promise.all([requireRole("dp_lead"), activePeople()]);

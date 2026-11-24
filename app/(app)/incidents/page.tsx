@@ -1,8 +1,8 @@
-import { requirePage } from "@/lib/auth";
+import { requirePage, titleFor } from "@/lib/auth";
 import PageHeader from "@/components/app/PageHeader";
 import ComingSoon from "@/components/app/ComingSoon";
 
-export const metadata = { title: "Incidents | PDPA Breach Response Tracker" };
+export const generateMetadata = titleFor("/incidents", "Incidents");
 
 export default async function Page() {
   await requirePage("/incidents");

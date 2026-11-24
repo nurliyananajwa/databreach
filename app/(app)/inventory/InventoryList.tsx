@@ -64,8 +64,8 @@ export default function InventoryList({ rows, title, sub }: { rows: Row[]; title
                   </th>
                   <td>{r.storage}</td>
                   <td>{r.owner ?? <span className="inv-flag warn">No owner</span>}</td>
-                  <td className="num">{r.fields}</td>
-                  <td className="num">{r.records === null ? "–" : num.format(r.records)}</td>
+                  <td className="num" data-label="fields">{r.fields}</td>
+                  <td className="num" data-label="records">{r.records === null ? "–" : num.format(r.records)}</td>
                 </tr>
               ))}
             </tbody>
