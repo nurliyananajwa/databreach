@@ -24,6 +24,7 @@ export const MENU: MenuItem[] = [
   { href: "/audit", label: "Audit log", roles: ["manager"] },
   // Opened from the bell in the top bar, not from the menu.
   { href: "/notifications", label: "Notifications", roles: ["staff", "dp_lead", "manager"], inMenu: false },
+  { href: "/settings", label: "Settings", roles: ["staff", "dp_lead", "manager"], inMenu: false },
 ];
 
 export function menuFor(role: Role) {

@@ -2,7 +2,7 @@
 -- (Real users join through Google sign-in + an invitation.)
 
 insert into public.organisations (id, name) values
- ('00000000-0000-0000-0000-0000000000a1', 'Greenleaf Family Clinic'),
+ ('00000000-0000-0000-0000-0000000000a1', 'Teras Payroll Solutions Sdn Bhd'),
  ('00000000-0000-0000-0000-0000000000b2', 'Harbour Logistics Sdn Bhd');
 
 insert into auth.users (id, email, raw_user_meta_data) values

@@ -366,6 +366,32 @@ begin
       select 1 from public.alerts where incident_id = v_id group by deadline_id, user_id, level having count(*) > 1));
 end $$;
 
+-- ============================================================ 11. settings: own name only
+begin;
+select tests.login('siti.staff@example.test'); set local role authenticated;
+select public.update_my_name('  Siti   Aminah ');
+reset role;
+select tests.check('A user can change their own name (spaces tidied)',
+  (select full_name = 'Siti Aminah' from public.profiles where id = '00000000-0000-0000-0000-000000000003'));
+select tests.check('Changing your name is written to the audit log',
+  exists (select 1 from public.audit_log where table_name = 'profiles' and record_id = '00000000-0000-0000-0000-000000000003' and action = 'update'));
+commit;
+begin; select tests.login('siti.staff@example.test'); set local role authenticated;
+select tests.must_fail('A one-letter name is refused', $q$ select public.update_my_name('S') $q$);
+select tests.must_fail('An empty name is refused', $q$ select public.update_my_name('   ') $q$);
+select tests.must_not_change('Staff still cannot change profiles directly (no role change through the side door)',
+  $q$ update public.profiles set role = 'manager' where id = auth.uid() returning 1 $q$);
+commit;
+begin; select tests.login('najwa.manager@example.test'); set local role authenticated;
+select public.update_my_name('Najwa Manager');
+reset role;
+select tests.check('Changing your name never touches anyone else',
+  (select full_name = 'Siti Aminah' from public.profiles where id = '00000000-0000-0000-0000-000000000003'));
+commit;
+begin; select tests.login('stranger@example.test'); set local role authenticated;
+select tests.must_fail('Someone without a profile cannot use it', $q$ select public.update_my_name('Hacker Name') $q$);
+commit;
+
 select tests.check('Incident codes are unique and run in order',
   (select count(*) = count(distinct code) from public.incidents where code like 'INC-%'));
 
