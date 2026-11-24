@@ -54,11 +54,11 @@
 .hub-band-page::after { /* the rounded top of the sheet */
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--sheet); background: var(--bg); border-radius: var(--sheet-r) var(--sheet-r) 0 0; z-index: 2;
 }
-.hub-bar { position: relative; z-index: 3; display: flex; align-items: center; gap: 14px; padding: 18px 30px; }
+.hub-bar { position: relative; z-index: 3; display: flex; align-items: center; gap: 24px; padding: 22px 36px; }
 .hub-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; color: var(--on-band); text-decoration: none; }
 .hub-logo i { width: 38px; height: 38px; border-radius: 12px; background: var(--glass); border: 1px solid var(--glass-line); display: grid; place-items: center; color: #fff; }
-.hub-nav { margin: 0 auto; display: flex; gap: 2px; padding: 4px; border-radius: 30px; background: #ffffff10; border: 1px solid #ffffff24; backdrop-filter: blur(10px); }
-.hub-nav a { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px; border-radius: 24px; color: var(--on-band-2); font-size: 13px; text-decoration: none; transition: background .25s, color .25s; }
+.hub-nav { margin: 0 auto; display: flex; gap: 0; padding: 4px; border-radius: 30px; background: #ffffff10; border: 1px solid #ffffff24; backdrop-filter: blur(10px); }
+.hub-nav a { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 10px; border-radius: 24px; color: var(--on-band-2); font-size: 13px; text-decoration: none; transition: background .25s, color .25s; }
 .hub-nav a:hover { background: #ffffff1a; color: var(--on-band); }
 .hub-nav a[aria-current="page"] { background: #fff; color: var(--ink); box-shadow: 0 4px 14px #13206b1f; }
 .hub-nav a .lbl { display: none; }
@@ -174,7 +174,9 @@
 .hub-search li.none { padding: 12px 10px; color: var(--muted); font-size: 14px; }
 .hub-search-foot { margin: 0; padding: 10px 18px 14px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); }
 
-.hub-chip { display: flex; align-items: center; gap: 8px; padding: 5px 5px 5px 14px; border-radius: 30px; background: var(--glass); border: 1px solid var(--glass-line); color: var(--on-band); font-size: 13px; }
+/* the role is already shown in the page header, so the chip is just the avatar */
+.hub-chip span.role { display: none; }
+.hub-chip { display: flex; align-items: center; gap: 8px; padding: 4px; border-radius: 30px; background: var(--glass); border: 1px solid var(--glass-line); color: var(--on-band); font-size: 13px; }
 .hub-av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #fff; background: var(--accent); flex: none; }
 .hub-out:disabled { opacity: .7; cursor: progress; text-decoration: none; }
 .hub-out { color: var(--on-band); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; padding: 10px 0; background: none; border: 0; cursor: pointer; font: inherit; }
@@ -341,10 +343,10 @@
   .hub-frame { border-radius: 0; min-height: 100vh; }
   .hub-hero > div:first-child { min-width: 0; }
   .hub-bar { flex-wrap: wrap; padding: 14px 18px; }
+  .hub-logo { font-size: 0; gap: 0; } /* just the shield on phones, so the top line fits */
   .hub-nav { order: 3; width: 100%; margin: 0; overflow-x: auto; }
   .hub-me { margin-left: auto; }
-  .hub-chip span.role { display: none; }
-  .hub-hero, .hub-main { padding-left: 18px; padding-right: 18px; }
+    .hub-hero, .hub-main { padding-left: 18px; padding-right: 18px; }
   .hub-hero { flex-direction: column; align-items: flex-start; }
   .hub-ring { width: 150px; height: 150px; margin: 4px 0 0; align-self: center; }
   .hub-shield { width: 70px; }

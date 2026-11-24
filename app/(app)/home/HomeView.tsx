@@ -9,6 +9,7 @@ import IncidentSteps from "@/components/app/hub/IncidentSteps";
 import { describeChange } from "@/lib/activity";
 import Pending from "@/components/app/hub/Pending";
 import type { HomeData } from "./page";
+import { firstName } from "@/lib/names";
 
 const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 const STEP: Record<string, number> = { reported: 0, assessing: 1, decided: 2, notified: 3, follow_up: 3, closed: 4 };
@@ -16,7 +17,7 @@ const STATUS_LABEL: Record<string, string> = { reported: "Reported", assessing: 
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeData; panel?: string }) {
-  const first = me.fullName.split(" ")[0];
+  const first = firstName(me.fullName);
   const open = d.incidents;
 
   // ---- the running clock (most urgent open incident) ----
@@ -29,7 +30,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
       ? { t: `Hello, ${first}.`, p: "Something wrong with personal data? Report it straight away, even if you are not sure. The Compliance Officer takes it from there." }
       : d.deadline
         ? { t: `${d.deadline.incidents?.code} needs attention.`, p: `${Math.floor(hoursLeft!)} hours left to notify the Commissioner. Open the incident to continue.` }
-        : { t: "Breach Response Hub", p: open.length ? `${open.length} open incident${open.length > 1 ? "s" : ""}, no deadline running right now.` : `Hello, ${first}. No open incidents. A good time to keep your data inventory up to date.` };
+        : { t: `Hello, ${first}.`, p: open.length ? `${open.length} open incident${open.length > 1 ? "s" : ""}, no deadline running right now.` : "No open incidents. A good time to keep your data inventory up to date." };
 
   // ---- folder tabs: open incidents first, then the main places ----
   const tabs: { href: string; icon: IconName; title: string; sub: string; current?: boolean; metric?: [string, string] }[] =
