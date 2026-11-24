@@ -20,8 +20,9 @@ IMS568 Capstone, Faculty of Information Science, UiTM Puncak Perdana.
 | – | Landing page (breach story animation), sign-in page and app design in one lilac theme, Next.js 16 | Done |
 | – | Interactive dashboard: search (Ctrl + K), live updates, How it works tour, deadline timeline | Done |
 | – | Account menu and Settings (change your own name) | Done |
-| 2 | Data inventory | Next |
-| 3 | Incidents, assessment, deadlines | Planned |
+| 2 | Data inventory: list with views (All, Sensitive, No owner, Archived), add and edit data sets and their fields, version history, archive and restore; Manager read-only | Done |
+| – | Folder tabs show views inside each page; Home says all clear once and lists what needs attention; transitions (slide between tabs, fade between pages, small pops); phone layout | Done |
+| 3 | Incidents, assessment, deadlines | Next |
 | 4 | Tasks, notification drafts and approval, breach register | Planned |
 | 5 | Reports, testing, deployment | Planned |
 
@@ -100,11 +101,15 @@ app/
     settings/              Your own profile (change your name)
     home/                  Dashboard for each role
     users/                 Invite people, change roles (Manager)
+    inventory/             Data inventory: list, new data set, one data set with its history
+    loading.tsx            Placeholder header and cards while a page loads
+    not-found.tsx          Page not found (also shown for pages outside your role)
     notifications/         Alerts for the signed-in person
     reports/ …             Other pages, filled in sprint by sprint
   globals.css              The theme (brand colours, fonts) and base styles for every page
 components/
-  app/                     Top menu, account menu, page header, bell, search, tour
+  app/                     Top menu, account menu, page header, folder tabs, bell, search, tour
+  app/Motion.tsx           Page and tab transitions (slide between tabs, fade between pages)
   app/hub/                 Dashboard parts: cards, icons, count-up numbers, loading bar
   landing/                 Landing page: the breach story animation and its styles
 lib/
@@ -112,6 +117,7 @@ lib/
   roles.ts                 The one list that drives both the menu and the page guards
   names.ts                 First name for greetings (skips titles like Dr. or Puan)
   activity.ts              Plain-English lines for the activity log
+  inventory.ts             Field categories and the check that refuses real values as field names
   supabase/                Database client and settings check
 proxy.ts                   Refreshes the session; sends signed-out visitors to sign-in
 supabase/
