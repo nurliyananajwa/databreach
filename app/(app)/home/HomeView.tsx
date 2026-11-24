@@ -51,6 +51,16 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
   const waitH = d.oldestDraft ? Math.floor((now - new Date(d.oldestDraft).getTime()) / 3.6e6) : 0;
   const unassessed = open.filter((i) => i.status === "reported").length;
   const top = open[0];
+  // Nothing happening: one "Breach response" card replaces the empty clock card
+  // and the empty incidents (or approvals) card, so "all clear" is said once.
+  const calm = me.role !== "staff" && !d.deadline && (me.role === "manager" ? d.approvals === 0 : open.length === 0);
+  // Small to-do list under the alerts, from real data only.
+  const attention: { href: string; text: string }[] = me.role === "staff" ? [] : [
+    ...(me.role === "dp_lead" && d.noOwner ? [{ href: "/inventory?view=no-owner", text: `${d.noOwner} data set${d.noOwner === 1 ? " has" : "s have"} no owner` }] : []),
+    ...(unassessed ? [{ href: "/incidents", text: `${unassessed} incident${unassessed === 1 ? "" : "s"} not assessed yet` }] : []),
+    ...(me.role === "dp_lead" && d.sets === 0 ? [{ href: "/inventory/new", text: "Your inventory is empty" }] : []),
+    ...(d.tasks.some((t) => t.due_at && new Date(t.due_at).getTime() < now) ? [{ href: "/tasks", text: "A task is overdue" }] : []),
+  ];
 
   const feedTitle = me.role === "manager" ? "Activity log" : "Alerts";
   const feedSub = me.role === "manager" ? "Locked: entries can never be edited" : "Deadlines and reminders for you";
@@ -94,7 +104,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
         }
         meta={<>
           <span>Signed in as <b>{me.role === "dp_lead" ? "Compliance Officer" : me.role === "manager" ? "Manager" : "Staff"}</b></span>
-          <span className={d.deadline ? "warn" : "ok"}>{d.deadline ? "Clock running" : "All clear"}</span>
+          {d.deadline && <span className="warn">Clock running</span>}
         </>}
       />
 
@@ -134,6 +144,16 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
             </>
           ) : (
             <>
+              {calm ? (
+                <Card tour="clock" icon="shield" title="Breach response" sub="No incident open, no 72-hour clock running" className="wide" delay={0.05}>
+                  <div className="hub-calm">
+                    <p>{me.role === "manager"
+                      ? "When the Compliance Officer drafts a notice, it waits here for your approval. The 72-hour clock keeps running while it waits."
+                      : "If something goes wrong with personal data, report it straight away. The 72-hour clock counts from when the business became aware, not from when it is reported."}</p>
+                    <Link href="/report" className="hub-btn soft">Report a breach<Pending /></Link>
+                  </div>
+                </Card>
+              ) : (<>
               <Card tour="clock" icon="clock" title="72-hour clock" sub={d.deadline ? `${d.deadline.incidents?.code} · due ${kl.format(new Date(d.deadline.due_at))}` : "Commissioner deadline"} href={d.deadline ? "/incidents" : undefined} delay={0.05}>
                 {d.deadline ? (
                   <>
@@ -149,7 +169,9 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                 )}
               </Card>
 
-              {me.role === "manager" ? (
+              </>)}
+
+              {me.role === "manager" ? (calm ? null :
                 <Card tour="approve" icon="stamp" title="Waiting for you" sub="Notice drafts to approve" href="/approvals" delay={0.12}>
                   {d.approvals ? (
                     <>
@@ -163,7 +185,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                   )}
                 </Card>
               ) : (
-                <Card tour="inventory" icon="db" title="Data inventory" sub="Where personal data is kept" href="/inventory" delay={0.12}>
+                <Card tour="inventory" icon="db" title="Data inventory" sub="Where personal data is kept" href="/inventory" className={calm ? "wide" : ""} delay={0.12}>
                   {d.sets ? (
                     <>
                       <p className="hub-big"><CountUp value={d.sets} /><small>data set{d.sets === 1 ? "" : "s"}</small>{d.noOwner > 0 && <Link href="/inventory" className="inv-flag warn hub-owner-warn">{d.noOwner} without an owner</Link>}</p>
@@ -177,12 +199,12 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
               )}
 
               {me.role === "manager" ? (
-                <Card icon="users" title="Your team" sub="People and roles" href="/users" delay={0.19}>
+                <Card icon="users" title="Your team" sub="People and roles" href="/users" className={calm ? "wide" : ""} delay={0.19}>
                   <p className="hub-big"><CountUp value={d.people} /><small>active</small><span className="hub-dot g">✓</span></p>
                   <div className="hub-legend"><span>Active</span><span>{d.invites} invite{d.invites === 1 ? "" : "s"} pending</span></div>
                   <Meter value={d.people} max={d.people + d.invites} label={`${d.people} active, ${d.invites} invited`} />
                 </Card>
-              ) : (
+              ) : calm ? null : (
                 <Card icon="alert" title="Open incidents" sub="Not closed yet" href="/incidents" delay={0.19}>
                   {open.length ? (
                     <>
@@ -204,8 +226,16 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
                 <p className="sub">{feedSub}</p>
               </div>
             </div>
-            {feed(5)}
+            {feed(me.role === "manager" ? 8 : 4)}
             {me.role === "manager" && d.audit.length > 0 && <Link href="/audit" className="hub-back">See the full audit log</Link>}
+            {me.role !== "staff" && (
+              <div className="hub-attn">
+                <h3>Needs your attention</h3>
+                {attention.length ? (
+                  <ul>{attention.map((a) => <li key={a.href}><Link href={a.href}>{a.text}<Icon name="chev" /></Link></li>)}</ul>
+                ) : <p>Nothing right now.</p>}
+              </div>
+            )}
           </section>
 
           {me.role !== "staff" && (

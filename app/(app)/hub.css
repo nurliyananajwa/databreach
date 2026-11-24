@@ -307,7 +307,7 @@
 .hub-grid { display: grid; gap: 16px; grid-template-columns: repeat(6, minmax(0, 1fr)) minmax(270px, 2fr); align-items: stretch; }
 .hub-grid > .hub-card { grid-column: span 2; }
 .hub-grid > .hub-card.wide { grid-column: span 3; }
-.hub-grid > .hub-side { grid-column: 7; grid-row: 1 / span 2; align-self: start; } /* fits its messages, no empty gap */
+.hub-grid > .hub-side { grid-column: 7; grid-row: 1 / span 2; align-self: stretch; } /* as tall as the two rows beside it: no gap */
 .hub-card { background: var(--card); border-radius: var(--r); padding: 18px 20px; box-shadow: 0 1px 2px #13206b0a, 0 10px 30px #13206b0d; animation: hub-up .6s cubic-bezier(.2,.8,.2,1) backwards; transition: transform .25s, box-shadow .25s; }
 .hub-card:hover { transform: translateY(-3px); box-shadow: 0 1px 2px #13206b0a, 0 18px 40px #13206b1a; }
 @keyframes hub-up { from { opacity: 0; transform: translateY(14px); } }
@@ -340,10 +340,10 @@
 .hub-bars i { aspect-ratio: 1; border-radius: 3px; background: #e4e6ee; animation: hub-cell .4s backwards; transition: transform .15s; }
 .hub-bars i.on { background: var(--accent); } .hub-bars i.hot { background: var(--coral); }
 @keyframes hub-cell { from { opacity: 0; transform: scale(.4); } }
-.hub-empty { margin: 18px 0 6px; }
-.hub-empty .ic { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; margin-bottom: 12px; }
-.hub-empty .ic svg { width: 20px; height: 20px; }
-.hub-empty strong { display: block; font-weight: 500; font-size: 19px; letter-spacing: -.02em; }
+.hub-empty { margin: 14px 0 4px; } /* quieter than cards with real numbers */
+.hub-empty .ic { width: 32px; height: 32px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; margin-bottom: 12px; }
+.hub-empty .ic svg { width: 16px; height: 16px; }
+.hub-empty strong { display: block; font-weight: 600; font-size: 15px; }
 .hub-empty p { color: var(--muted); font-size: 13px; margin-top: 6px; }
 .hub-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 10px 16px; border-radius: 30px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 500; text-decoration: none; transition: gap .2s, background .2s; }
 .hub-btn:hover { gap: 12px; background: var(--accent-hover); }
@@ -591,3 +591,14 @@
 .inv-about dd { margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; }
 .hub-view { max-width: none; }
 .hub-pending-h { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+
+/* Home: the calm "Breach response" card and the attention list under the alerts */
+.hub-calm p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 14px 0 4px; max-width: 56ch; }
+.hub-attn { margin-top: auto; padding-top: 16px; }
+.hub-attn h3 { font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+.hub-attn ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.hub-attn a { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; background: var(--warn-soft); color: var(--warn-text); font-size: 13px; font-weight: 600; text-decoration: none; }
+.hub-attn a svg { width: 14px; height: 14px; flex: none; }
+.hub-attn a:hover { filter: brightness(.97); }
+.hub-attn p { font-size: 13px; color: var(--muted); margin: 0; }
+@media (max-width: 1240px) { .hub-attn { margin-top: 12px; } }
