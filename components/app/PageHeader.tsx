@@ -66,12 +66,12 @@ function GlassShield() {
         <filter id="g-glow" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
         <clipPath id="g-clip"><path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" /></clipPath>
       </defs>
-      <path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" fill="url(#g-shield)" stroke="#fff" strokeWidth="2" />
+      <path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" fill="url(#g-shield)" stroke="#7c55e6" strokeWidth="2.5" />
       <path d="M130 34 76 56v46c0 42 24 74 54 90 30-16 54-48 54-90V56Z" fill="url(#g-shine)" />
       <path d="M100 62 130 50" stroke="#fff" strokeWidth="4" strokeLinecap="round" opacity=".9" />
       <g clipPath="url(#g-clip)">
-        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#6d3fd8" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" filter="url(#g-glow)" opacity=".7" />
-        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#b9a3ff" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" filter="url(#g-glow)" opacity=".9" />
+        <path className="pulse" d="M70 128h20l10-22 14 46 14-58 12 34h50" fill="none" stroke="#5a2fc0" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
       </g>
     </svg>
   );
