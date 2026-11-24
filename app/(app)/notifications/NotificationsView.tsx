@@ -1,10 +1,11 @@
+import { alertLabel } from "@/lib/incidents";
 import PageHeader from "@/components/app/PageHeader";
 import { Empty } from "@/components/app/hub/ui";
 import { markAllRead } from "./actions";
 
 const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 
-export type Alert = { id: string; message: string; level: string; read_at: string | null; created_at: string };
+export type Alert = { id: string; message: string; level: string; deadline_id: string | null; read_at: string | null; created_at: string };
 
 // Draws the Notifications page. Kept apart from page.tsx (which loads the
 // data) so it can also be checked with sample alerts.
@@ -27,7 +28,7 @@ export default function NotificationsView({ alerts }: { alerts: Alert[] }) {
                 <div key={a.id} className={`hub-msg${a.level !== "info" && !a.read_at ? " alert" : ""}`} style={{ opacity: a.read_at ? 0.6 : 1 }}>
                   <span className="hub-av" aria-hidden="true">!</span>
                   <div>
-                    <span className="meta"><b>{a.level !== "info" ? "Deadline" : "Reminder"}{!a.read_at && <span className="sr-only"> (unread)</span>}</b><time>{kl.format(new Date(a.created_at))}</time></span>
+                    <span className="meta"><b>{alertLabel(a)}{!a.read_at && <span className="sr-only"> (unread)</span>}</b><time>{kl.format(new Date(a.created_at))}</time></span>
                     <p>{a.message}</p>
                   </div>
                 </div>

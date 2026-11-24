@@ -496,6 +496,12 @@ select public.set_incident_type(:'inc_type', 'unauthorised_access');
 select tests.must_fail('The lead cannot set an unknown type', format($q$select public.set_incident_type(%L, 'aliens')$q$, :'inc_type'));
 commit;
 select tests.check('The lead can correct the type', (select incident_type = 'unauthorised_access' from public.incidents where id = :'inc_type'));
+select tests.check('A new report alerts the Compliance Officer',
+  exists (select 1 from public.alerts a join public.profiles p on p.id = a.user_id
+          where a.incident_id = :'inc_type' and p.role = 'dp_lead' and a.message like '%reported: Laptop left in a taxi'));
+select tests.check('A new report does not alert staff or the manager',
+  not exists (select 1 from public.alerts a join public.profiles p on p.id = a.user_id
+              where a.incident_id = :'inc_type' and p.role <> 'dp_lead'));
 
 select tests.check('Incident codes are unique and run in order',
   (select count(*) = count(distinct code) from public.incidents where code like 'INC-%'));

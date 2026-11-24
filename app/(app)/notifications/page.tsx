@@ -7,7 +7,7 @@ export const metadata = { title: "Notifications | PDPA Breach Response Tracker" 
 export default async function Page() {
   await requirePage("/notifications");
   const db = await createClient();
-  const { data, error } = await db.from("alerts").select("id, message, level, read_at, created_at").order("created_at", { ascending: false }).limit(50);
+  const { data, error } = await db.from("alerts").select("id, message, level, deadline_id, read_at, created_at").order("created_at", { ascending: false }).limit(50);
   if (error) console.error(`[notifications] query failed: ${error.message}`);
   return <NotificationsView alerts={(data ?? []) as Alert[]} />;
 }

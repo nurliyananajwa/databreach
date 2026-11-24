@@ -30,7 +30,7 @@ async function load(me: CurrentUser) {
     me.role === "manager" ? db.from("notifications").select("created_at", { count: "exact" }).eq("status", "pending_approval").order("created_at").limit(1) : Promise.resolve({ count: 0, data: [] }),
     me.role === "manager" ? db.from("profiles").select("id", { count: "exact", head: true }).eq("is_active", true) : Promise.resolve({ count: 0 }),
     me.role === "manager" ? db.from("invitations").select("id", { count: "exact", head: true }).is("accepted_at", null).is("revoked_at", null) : Promise.resolve({ count: 0 }),
-    db.from("alerts").select("id, message, level, created_at").is("read_at", null).order("created_at", { ascending: false }).limit(20),
+    db.from("alerts").select("id, message, level, deadline_id, created_at").is("read_at", null).order("created_at", { ascending: false }).limit(20),
     me.role === "manager" ? db.from("audit_log").select("id, table_name, action, created_at, actor_id").order("created_at", { ascending: false }).limit(20) : Promise.resolve({ data: [] }),
   ]);
   // A failed request would otherwise just look like "nothing here", so log it.
@@ -61,7 +61,7 @@ async function load(me: CurrentUser) {
     oldestDraft: ((approvals as { data?: { created_at: string }[] }).data ?? [])[0]?.created_at ?? null,
     people: people.count ?? 0,
     invites: invites.count ?? 0,
-    alerts: (alerts.data ?? []) as { id: string; message: string; level: string; created_at: string }[],
+    alerts: (alerts.data ?? []) as { id: string; message: string; level: string; deadline_id: string | null; created_at: string }[],
     audit: ((audit.data ?? []) as { id: number; table_name: string; action: string; created_at: string; actor_id: string | null }[]).map((a) => ({
       ...a,
       actor: a.actor_id ? (firstName(people_.find((p) => p.id === a.actor_id)?.full_name) || "Someone") : "System",

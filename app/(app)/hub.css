@@ -653,3 +653,47 @@
   .inv-table td.num::after { content: attr(data-label); margin-left: 4px; color: var(--muted); }
   .inv-table td.num { text-align: left; }
 }
+
+/* ---------- Report a breach (Sprint 3) ---------- */
+.rep-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; align-items: start; }
+.rep-side { display: grid; gap: 16px; }
+.rep-form { padding: 22px 24px; display: grid; gap: 22px; }
+.rep-form:hover, .rep-sent:hover { transform: none; }
+.rep-step { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; min-width: 0; }
+.rep-step legend { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; margin-bottom: 4px; padding: 0; }
+.rep-step legend .n { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; display: grid; place-items: center; flex: none; }
+.rep-step legend .opt { font-weight: 400; color: var(--muted); font-size: 13px; }
+.rep-step input:not([type="radio"]):not([type="checkbox"]), .rep-step textarea {
+  font: inherit; font-size: 14px; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; width: 100%;
+}
+.rep-step textarea { resize: vertical; line-height: 1.5; }
+.rep-step input:focus, .rep-step textarea:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.rep-hint { font-size: 12px; color: var(--muted); margin: 0; }
+.rep-warn { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--warn-text); background: var(--warn-soft); border-radius: 10px; padding: 9px 12px; margin: 0; }
+.rep-warn svg { flex: none; margin-top: 2px; }
+.rep-when { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.rep-when input { width: auto !important; }
+.rep-when .hub-btn { margin-top: 0; border: 0; cursor: pointer; font: inherit; font-size: 13px; }
+.rep-types { display: flex; flex-wrap: wrap; gap: 8px; }
+.rep-types label, .rep-sets label { position: relative; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; border: 1px solid var(--line); border-radius: 20px; padding: 7px 14px; cursor: pointer; background: #fff; transition: background .2s, border-color .2s, color .2s, transform .25s var(--spring, ease); }
+.rep-types input { position: absolute; opacity: 0; pointer-events: none; }
+.rep-types label:hover, .rep-sets label:hover { border-color: var(--accent-line); }
+.rep-types label.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.rep-types label:has(input:focus-visible), .rep-sets label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rep-types label:active, .rep-sets label:active { transform: scale(.96); }
+.rep-sets { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.rep-sets label { border-radius: 10px; }
+.rep-sets label.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-hover); font-weight: 600; }
+.rep-sets input { width: 16px; height: 16px; accent-color: var(--accent); }
+.rep-form .hub-btn[type="submit"] { margin-top: 0; border: 0; cursor: pointer; font: inherit; font-size: 14px; font-weight: 600; padding: 11px 20px; }
+.rep-next { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 8px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.rep-side-p { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin: 8px 0 0; }
+.rep-sent { display: grid; justify-items: start; gap: 8px; padding: 28px; }
+.rep-sent .ic { width: 44px; height: 44px; border-radius: 14px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+.rep-sent .ic svg { width: 22px; height: 22px; }
+.rep-sent .code { font-family: var(--font-display); font-size: 44px; line-height: 1; margin: 6px 0 0; }
+.rep-sent h2 { font-size: 18px; font-weight: 600; margin: 0; }
+.rep-sent p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 0; max-width: 56ch; }
+.rep-sent-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.rep-sent-actions .hub-btn { border: 0; cursor: pointer; font: inherit; font-size: 13px; }
+@media (max-width: 1000px) { .rep-grid { grid-template-columns: 1fr; } }

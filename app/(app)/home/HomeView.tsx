@@ -11,6 +11,7 @@ import { describeChange } from "@/lib/activity";
 import Pending from "@/components/app/hub/Pending";
 import type { HomeData } from "./page";
 import { firstName } from "@/lib/names";
+import { alertLabel } from "@/lib/incidents";
 
 const kl = new Intl.DateTimeFormat("en-MY", { weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kuala_Lumpur" });
 const STEP: Record<string, number> = { reported: 0, assessing: 1, decided: 2, notified: 3, follow_up: 3, closed: 4 };
@@ -79,7 +80,7 @@ export default function HomeView({ me, d, panel }: { me: CurrentUser; d: HomeDat
           ? d.alerts.slice(0, max).map((a) => (
               <div key={a.id} className={`hub-row${a.level !== "info" ? " urgent" : ""}`}>
                 <time>{kl.format(new Date(a.created_at))}</time>
-                <p><b>{a.level !== "info" ? "Deadline" : "Reminder"}</b> {a.message}</p>
+                <p><b>{alertLabel(a)}</b> {a.message}</p>
               </div>
             ))
           : <Empty icon="bell" title="No alerts" body="You'll be reminded 24 hours and 6 hours before a deadline." />}
