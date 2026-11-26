@@ -20,7 +20,7 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
     const pref = window.matchMedia("(prefers-reduced-motion: reduce)");
     let reduced = pref.matches;
     let paused = false;
-    let w = 600, h = 610, elapsed = reduced || !context ? 7.6 : 0;
+    let w = 600, h = 610, elapsed = reduced || !context ? 5.2 : 0;
     let last = 0, frame = 0, inView = true, disposed = false, published = "";
     const ctx = context!;
     // dot colours follow the theme (app/globals.css)
@@ -28,7 +28,7 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
     const dotColour = theme.getPropertyValue("--accent-light").trim() || "#8b6cf0";
     const breachColour = theme.getPropertyValue("--coral").trim() || "#ff6b4d";
     function publish() {
-        const state = { stage: elapsed < 1.8 ? 0 : elapsed < 3 ? 1 : elapsed < 6.4 ? 2 : 3, paused, reduced, complete: elapsed >= 7.6 };
+        const state = { stage: elapsed < 1.4 ? 0 : elapsed < 2 ? 1 : elapsed < 4.1 ? 2 : 3, paused, reduced, complete: elapsed >= 5.2 };
         const key = JSON.stringify(state);
         if (key !== published) {
             published = key;
@@ -38,7 +38,7 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
     const clamp = (v: number) => Math.max(0, Math.min(1, v)), ease = (v: number) => 1 - Math.pow(1 - clamp(v), 4), mix = (a: number, b: number, t: number) => a + (b - a) * t;
     const pieces = Array.from({ length: 96 }, (_, i) => {
         const x = (i % 4 - 1.5) * .14, y = (Math.floor(i / 4) % 4 - 1.5) * .14, z = (Math.floor(i / 16) - 2.5) * .1, a = i * 2.39996323;
-        return { x, y, z, ex: Math.cos(a) * (.46 + (i % 5) * .06), ey: Math.sin(a) * (.45 + (i % 7) * .035), ez: Math.sin(i * 1.8) * .5, rx: ((i % 8) / 7 - .5) * .76, ry: (Math.floor(i / 8) / 11 - .5) * 1.04, accent: i % 11 === 0 };
+        return { x, y, z, ex: Math.cos(a) * (.46 + (i % 5) * .06), ey: Math.sin(a) * (.45 + (i % 7) * .035), ez: Math.sin(i * 1.8) * .5, rx: ((i % 32) / 31 - .5) * .9, ry: (Math.floor(i / 32) - 1) * .21 + .09, accent: i % 11 === 0 };
     });
     function project(x: number, y: number, z: number, angle: number) {
         const c = Math.cos(angle), s = Math.sin(angle), xx = x * c + z * s, zz = -x * s + z * c, yy = y * .97 - zz * .24, depth = y * .24 + zz * .97, k = 3 / (3 + depth), size = Math.min(w * .69, h * .58, 340);
@@ -50,7 +50,7 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
         if (!context)
             return;
         ctx.clearRect(0, 0, w, h);
-        const escape = ease((elapsed - 1.8) / .68), gather = ease((elapsed - 3) / 3.4), fade = 1 - ease((elapsed - 6.1) / 1.1), angle = mix(-.52 + Math.sin(elapsed * .42) * .09, 0, gather), q = (x: number, y: number, z: number) => project(x, y, z, angle);
+        const escape = ease((elapsed - 1.4) / .46), gather = ease((elapsed - 2) / 2.5), fade = 1 - ease((elapsed - 4.1) / .9), angle = mix(-.52 + Math.sin(elapsed * .42) * .09, 0, gather), q = (x: number, y: number, z: number) => project(x, y, z, angle);
         ctx.save();
         ctx.translate(w / 2, h * .79);
         ctx.scale(1, .19);
@@ -89,21 +89,21 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
             ctx.fillStyle = p.accent ? breachColour : dotColour;
             ctx.fillRect(x - s / 2, y - s / 2, s, s);
             if (escape > .6 && gather < .65 && i % 18 === 0) {
-                ctx.fillStyle = '#7a6ba3';
+                ctx.fillStyle = '#f2eaff';
                 ctx.font = '10px Consolas,monospace';
                 ctx.fillText(String(1000 + i * 37), x + 8, y);
             }
         });
         ctx.globalAlpha = 1;
     }
-    function allowed() { return !disposed && !paused && !reduced && !document.hidden && inView && elapsed < 7.6; }
+    function allowed() { return !disposed && !paused && !reduced && !document.hidden && inView && elapsed < 5.2; }
     function tick(stamp: number) {
         frame = 0;
         if (!allowed())
             return;
         const delta = last ? Math.min((stamp - last) / 1000, .05) : 0;
         last = stamp;
-        elapsed = Math.min(7.6, elapsed + delta);
+        elapsed = Math.min(5.2, elapsed + delta);
         draw();
         if (allowed())
             frame = requestAnimationFrame(tick);
@@ -132,7 +132,7 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
     function replay() { if (reduced || !context || disposed)
         return; elapsed = 0; paused = false; sync(); }
     function preferenceChanged() { reduced = pref.matches; if (reduced)
-        elapsed = 7.6; sync(); }
+        elapsed = 5.2; sync(); }
     pref.addEventListener("change", preferenceChanged);
     document.addEventListener("visibilitychange", sync);
     const resizeObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(resize) : null;
@@ -141,20 +141,21 @@ export function createIncidentScene(canvas: HTMLCanvasElement, visual: HTMLEleme
         window.addEventListener("resize", resize, { passive: true });
     const intersectionObserver = typeof IntersectionObserver !== "undefined" ? new IntersectionObserver(([entry]) => {
         inView = entry.isIntersecting;
+        if (!inView && entry.boundingClientRect.bottom <= 0) elapsed = 5.2;
         sync();
     }, { threshold: .05 }) : null;
     intersectionObserver?.observe(visual);
     resize();
     sync();
     return {
-        toggle() { if (elapsed >= 7.6)
+        toggle() { if (elapsed >= 5.2)
             replay();
         else {
             paused = !paused;
             sync();
         } },
         replay,
-        finish() { elapsed = 7.6; sync(); },
+        finish() { elapsed = 5.2; sync(); },
         dispose() {
             disposed = true;
             if (frame)
