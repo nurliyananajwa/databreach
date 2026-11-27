@@ -1,30 +1,26 @@
 /* Sign-in page. Colours and fonts come from the theme in app/globals.css. */
-.pdpa-auth { position: relative; isolation: isolate; min-height: 100svh; color: var(--ink); background: var(--brand-gradient); font-family: var(--font-body); color-scheme: light; }
+.pdpa-auth { position: relative; isolation: isolate; min-height: 100svh; color: var(--ink); --ink: #172944; --ink-2: #48596f; --accent: #294b86; --accent-hover: #203d70; background: radial-gradient(ellipse at 86% 22%, #e1dfee, transparent 54%), radial-gradient(ellipse at 10% 80%, #bacde4, transparent 58%), #edf2f8; font-family: var(--font-body); color-scheme: light; }
 .pdpa-auth *, .pdpa-auth *::before, .pdpa-auth *::after { box-sizing: border-box; }
 .pdpa-auth :is(a, button, summary):focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
 
 .pa-shell { position: relative; z-index: 1; min-height: 100svh; padding: 0 44px; }
 .pa-header { position: absolute; top: 20px; left: 44px; right: 44px; display: flex; align-items: center; }
 .pa-brand { display: inline-flex; align-items: center; gap: 14px; color: var(--ink); text-decoration: none; font-size: 19px; font-weight: 700; line-height: 1.2; }
-.pa-brand small { display: block; margin-top: 3px; color: var(--ink-2); font-size: 14px; font-weight: 400; }
-.pa-brand-mark { display: grid; grid-template-columns: repeat(2, 9px); grid-template-rows: repeat(2, 9px); align-content: center; justify-content: center; gap: 4px; width: 44px; height: 44px; border-radius: 14px; background: var(--accent); }
-.pa-brand-mark i { display: block; border-radius: 2px; background: #fff; }
-.pa-brand-mark i:last-child { border-radius: 50%; background: var(--coral); }
 
 .pa-layout { display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; min-width: 0; min-height: 100svh; padding: 116px 0 100px; }
-.pa-panel { width: min(448px, 100%); min-width: 0; max-width: 100%; padding: 36px 32px 24px; border: 1px solid #fff; border-radius: 34px; background: linear-gradient(135deg, #ffffffeb, #ffffffd1); box-shadow: 0 30px 70px #6d3fd826, inset 0 1px 0 #fff; }
-.pa-panel h1 { margin: 0 0 9px; font-family: var(--font-display); font-size: 32px; font-weight: 500; line-height: 1.2; letter-spacing: -.02em; }
+.pa-panel { width: min(448px, 100%); min-width: 0; max-width: 100%; padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 40px) 24px; border: 1px solid #fff; border-radius: 24px; background: linear-gradient(135deg, #ffffffeb, #ffffffd1); box-shadow: 0 30px 70px #233d6722, inset 0 1px 0 #fff; }
+.pa-panel h1 { margin: 0 0 9px; font-family: inherit; font-size: clamp(36px, 4vw, 48px); font-weight: 650; line-height: 1.2; letter-spacing: -.02em; }
 .pa-description { max-width: 31ch; margin: 0; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
 
-.pa-google-form { margin-top: 40px; }
-.pa-google-button { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 60px; padding: 16px 20px; border: 1px solid var(--accent); border-radius: 999px; background: var(--accent); color: #fff; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 24px #6d3fd83d; transition: background-color .18s ease, box-shadow .18s ease; }
+.pa-google-form { margin-top: 30px; }
+.pa-google-button { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 54px; padding: 16px 20px; border: 1px solid var(--accent); border-radius: 14px; background: var(--accent); color: #fff; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 24px #24446c22; transition: background-color .18s ease, box-shadow .18s ease; }
 .pa-google-button svg { flex: none; width: 21px; height: 21px; }
 .pa-google-button > span:nth-child(2) { margin-right: auto; }
 .pa-google-button > span:last-child { margin-left: auto; }
-.pa-google-button:hover:not(:disabled) { background: var(--accent-hover); box-shadow: 0 12px 28px #6d3fd840; }
-.pa-google-button:active:not(:disabled) { background: #4f28a8; box-shadow: none; }
+.pa-google-button:hover:not(:disabled) { background: var(--accent-hover); box-shadow: 0 12px 28px #24446c35; }
+.pa-google-button:active:not(:disabled) { background: #162e52; box-shadow: none; }
 /* switched off until Google sign-in is turned on */
-.pa-google-button:disabled { border-color: var(--brand-1); background: #e7defb; color: #6b5f8f; box-shadow: none; cursor: not-allowed; }
+.pa-google-button:disabled { border-color: #c8d3df; background: #e3eaf1; color: #536377; box-shadow: none; cursor: not-allowed; }
 .pa-availability { margin: 16px 4px 0; color: var(--ink-2); font-size: 14px; line-height: 1.6; }
 .pa-return { display: flex; align-items: center; justify-content: center; width: fit-content; min-height: 44px; margin: 24px auto 0; padding: 8px 12px; color: var(--ink-2); text-decoration: none; font-size: 15px; font-weight: 600; }
 .pa-return:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
@@ -46,10 +42,8 @@
   .pa-shell { padding: 0 20px; }
   .pa-header { top: 20px; left: 20px; right: 20px; }
   .pa-brand { gap: 10px; font-size: 17px; }
-  .pa-brand small { font-size: 12px; }
-  .pa-brand-mark { width: 40px; height: 40px; border-radius: 12px; }
   .pa-layout { padding: 116px 0 112px; }
-  .pa-panel { padding: 30px 24px 20px; border-radius: 28px; }
+  .pa-panel { padding: 30px 24px 20px; border-radius: 20px; }
   .pa-panel h1 { font-size: 30px; }
   .pa-description { font-size: 16px; }
   .pa-google-button { gap: 10px; padding-inline: 16px; font-size: 15px; }
