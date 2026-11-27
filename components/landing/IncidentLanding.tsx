@@ -6,6 +6,12 @@ import { createIncidentScene, type SceneController, type SceneState } from "./in
 
 
 
+const example = [
+  { step: "Report", question: "What happened?", text: "A customer spreadsheet was emailed to the wrong recipient. A staff member records the discovery time and identifies the information involved.", fields: [["Incident", "Misdirected customer email"], ["Discovered", "Monday, 09:15"], ["Data involved", "Names and email addresses"]] },
+  { step: "Assign", question: "Who owns the response?", text: "The Compliance Officer takes ownership, coordinates containment and records the next action for the team.", fields: [["Owner", "Compliance Officer"], ["Action", "Request deletion confirmation"], ["Status", "In progress"]] },
+  { step: "Track", question: "What needs attention next?", text: "The officer reviews the notification deadline alongside the incident decisions and records when each action is completed.", fields: [["Task", "Review notification decision"], ["Internal review due", "Monday, 15:00"], ["Status", "Awaiting review"]] },
+];
+
 function Brand() {
   return <Link className="brand" href="/" aria-label="Data Breach System home">
     <span className="mark" aria-hidden="true"><i /><i /><i /><i /></span>
@@ -14,6 +20,8 @@ function Brand() {
 }
 
 export default function IncidentLanding() {
+  const [selected, setSelected] = useState(0);
+  const current = example[selected];
   const canvas = useRef<HTMLCanvasElement>(null);
   const visual = useRef<HTMLDivElement>(null);
   const controller = useRef<SceneController | null>(null);
@@ -52,19 +60,25 @@ export default function IncidentLanding() {
           </article>
         </div>
         <div className="hero-bottom">
-          <a className="more" href="#about">A little about the system <span aria-hidden="true">↓</span></a>
+          <a className="more" href="#about">Explore a sample incident <span aria-hidden="true">↓</span></a>
           {enhanced && <button className="motion" aria-pressed={state.paused} disabled={state.reduced} onClick={() => controller.current?.toggle()}>{motionLabel}</button>}
         </div>
       </section>
       <section className="about" id="about" aria-labelledby="about-title">
-        <div className="wrap about-inner">
-          <h2 id="about-title">From the first report.<br />To the final record.</h2>
-          <div className="about-copy">
-            <p>Keep incident details, response tasks and decisions in one workspace. So your team can focus on what happens next.</p>
-            <Link className="text-link" href="/sign-in">Go to sign in <span aria-hidden="true">↗</span></Link>
+        <div className="wrap case-layout">
+          <div className="case-intro">
+            <h2 id="about-title">Follow a sample incident.</h2>
+            <p>See how a team handles a misdirected customer email, from discovery to its next deadline.</p>
+            <div className="case-switch" role="group" aria-label="Response stage">
+              {example.map(({ step }, index) => <button type="button" key={step} aria-pressed={index === selected} onClick={() => setSelected(index)}>{step}</button>)}
+            </div>
           </div>
-        </div>
-      </section>
+          <article className="case-sheet" aria-live="polite">
+            <h3>{current.question}</h3>
+            <p>{current.text}</p>
+            <dl>{current.fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+          </article>
+        </div>      </section>
     </main>
     <footer className="wrap">
       <div><strong>Data Breach System</strong><p>An IMS568 final-year assignment project. Illustrative data only. This system does not provide legal advice or send notifications.</p></div>

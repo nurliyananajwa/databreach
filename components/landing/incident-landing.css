@@ -128,3 +128,27 @@
   .pdpa-landing *, .pdpa-landing *::before, .pdpa-landing *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .pdpa-landing[data-enhanced="true"] .intro { opacity: 1; }
 }
+
+/* The hero and the sample case share the typography of a working incident file. */
+.pdpa-landing { --font-display: var(--font-body); }
+.pdpa-landing h1 { font-weight: 720; letter-spacing: -.066em; line-height: 1.01; }
+.pdpa-landing .incident h2, .pdpa-landing .about h2 { font-weight: 700; letter-spacing: -.055em; }
+.pdpa-landing header { border-bottom: 1px solid #ffffff38; }
+.pdpa-landing .visual::before { inset: 4% 0; border-radius: 0; transform: none; background: repeating-linear-gradient(0deg,transparent 0 31px,#eeffff1c 31px 32px),repeating-linear-gradient(90deg,transparent 0 31px,#eeffff1c 31px 32px); mask-image: radial-gradient(ellipse,#000 34%, transparent 73%); }
+.pdpa-landing .visual::after { content: ""; position: absolute; inset: 15% 6%; z-index: -1; border-radius: 28% 70% 26% 65%; transform: rotate(-24deg); background: linear-gradient(150deg,#d6bcff15 10%,#e8d1ff80 47%,#abdeed22 49%,#75d9d655 80%); box-shadow: inset 1px 1px 1px #fff7; pointer-events: none; }
+.pdpa-landing .record-steps li { position: relative; }
+.pdpa-landing .record-steps li:not(:last-child)::after { content: ""; position: absolute; left: 11px; top: calc(50% + 14px); height: 26px; width: 1px; background: #e3fff587; }
+.pdpa-landing .incident { background: linear-gradient(125deg,#3b416983,#2a455da3); }
+.pdpa-landing .case-layout { display: grid; grid-template-columns: 1fr 1.08fr; gap: clamp(32px,7vw,110px); align-items: center; }
+.pdpa-landing .case-intro p, .pdpa-landing .case-sheet p { line-height: 1.65; max-width: 44ch; color: #455169; }
+.pdpa-landing .case-switch { display: inline-flex; max-width: 100%; flex-wrap: wrap; gap: 4px; padding: 4px; border: 1px solid #c8cfde; border-radius: 12px; }
+.pdpa-landing .case-switch button { color: #34415c; border: 0; background: transparent; border-radius: 8px; min-height: 44px; padding: 0 16px; }
+.pdpa-landing .case-switch button[aria-pressed="true"] { background: #424d83; color: white; }
+.pdpa-landing .case-switch button:focus-visible { outline-color: #4a5692; outline-offset: 1px; }
+.pdpa-landing .case-sheet { background: #fff; border: 1px solid #d7dbe6; border-top: 4px solid #568d99; border-radius: 12px; padding: clamp(20px,3vw,42px); box-shadow: 0 12px 34px #303c5d0e; }
+.pdpa-landing .case-sheet h3 { margin: 0; font-size: clamp(23px,2.1vw,32px); letter-spacing: -.045em; }
+.pdpa-landing .case-sheet dl { margin: 22px 0 0; }
+.pdpa-landing .case-sheet dl div { display: grid; grid-template-columns: minmax(82px,.65fr) 1fr; gap: 14px; border-top: 1px solid #e3e7ed; padding: 11px 0; font-size: 14px; }
+.pdpa-landing .case-sheet dt { color: #556177; }
+.pdpa-landing .case-sheet dd { margin: 0; font-weight: 650; }
+@media (max-width: 760px) { .pdpa-landing .case-layout { grid-template-columns: 1fr; } }
