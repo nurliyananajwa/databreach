@@ -15,12 +15,12 @@
 
 /* ---------- header ---------- */
 .pdpa-landing header { height: 110px; display: flex; justify-content: space-between; align-items: center; }
-.pdpa-landing .brand { display: flex; gap: 12px; align-items: center; text-decoration: none; }
+.pdpa-landing .brand { display: flex; gap: 10px; align-items: center; text-decoration: none; }
 .pdpa-landing .mark { display: grid; grid-template-columns: repeat(2, 10px); place-content: center; gap: 4px; width: 38px; height: 38px; border-radius: 12px; background: #f7f2ff22; border: 1px solid #fffc; }
 .pdpa-landing .mark i { height: 10px; border-radius: 2px; background: #fff; }
 .pdpa-landing .mark i:last-child { border-radius: 50%; background: var(--coral); }
 .pdpa-landing .brand strong { font-size: 17px; }
-.pdpa-landing .outline { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 12px 24px; border: 1px solid #ffffffd9; border-radius: 99px; background: #25355955; color: var(--ink); text-decoration: none; }
+.pdpa-landing .outline { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 17px; font-size: 14px; font-weight: 600; line-height: 1.2; border: 1px solid #ffffffd9; border-radius: 99px; background: #25355955; color: var(--ink); text-decoration: none; }
 .pdpa-landing .outline:hover { background: #374c77; }
 
 /* ---------- hero ---------- */
@@ -35,12 +35,12 @@
 
 .pdpa-landing h1 { font-size: clamp(44px, 5.6vw, 88px); line-height: 1.04; }
 .pdpa-landing h1 span { color: var(--accent); }
-.pdpa-landing .description { max-width: 33ch; margin: 30px 0 34px; font-size: 19px; line-height: 1.65; color: var(--ink-2); }
+.pdpa-landing .description { max-width: 40ch; margin: 22px 0 26px; font-size: 18px; line-height: 1.55; text-wrap: pretty; color: var(--ink-2); }
 .pdpa-landing .hero-actions { display: flex; gap: 22px; align-items: center; }
-.pdpa-landing .primary { display: inline-flex; gap: 24px; align-items: center; min-height: 58px; padding: 18px 25px; border: 0; border-radius: 99px; background: var(--accent); color: #2f3257; font-size: 15px; font-weight: 600; text-decoration: none; box-shadow: 0 14px 30px #6d3fd840; transition: transform .2s, background .2s; }
+.pdpa-landing .primary { display: inline-flex; gap: 14px; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; line-height: 1.2; border: 0; border-radius: 99px; background: var(--accent); color: #2f3257; font-size: 15px; font-weight: 600; text-decoration: none; box-shadow: 0 14px 30px #6d3fd840; transition: transform .2s, background .2s; }
 .pdpa-landing .primary:hover { background: #fff8e5; transform: translateY(-2px); }
 .pdpa-landing .primary:active { transform: none; }
-.pdpa-landing .arrow { font-size: 22px; font-weight: 400; }
+.pdpa-landing .arrow { font-size: 18px; line-height: 1; font-weight: 500; }
 
 /* the animated story */
 .pdpa-landing .visual { position: relative; height: clamp(420px, 64vh, 600px); min-width: 0; touch-action: pan-y; isolation: isolate; }
@@ -51,16 +51,16 @@
 .pdpa-landing .incident { position: absolute; left: 50%; top: 46%; width: min(340px, 90%); padding: 26px; border: 1px solid #e0f3ff94; border-top-color: #fff; border-left-color: #eafaffdb; border-radius: 22px; background: linear-gradient(132deg, #e5edff26, #2b355565 58%, #32798c35); color: var(--ink); box-shadow: 0 30px 55px -15px #15264d99, inset 0 1px 1px #fff9; backdrop-filter: blur(7px);
   opacity: 0; visibility: hidden; transform: translate(-50%, -43%) scale(.92); transition: opacity .9s ease, transform 1.3s cubic-bezier(.16, 1, .3, 1), visibility .9s; }
 .pdpa-landing .hero[data-stage="ready"] .incident { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-.pdpa-landing .incident h2 { margin: 2px 0 20px; font-size: 25px; line-height: 1.15; letter-spacing: -.04em; }
+.pdpa-landing .incident h2 { margin: 0 0 16px; font-size: 25px; line-height: 1.15; letter-spacing: -.04em; }
 .pdpa-landing .record-steps { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
-.pdpa-landing .record-steps li { display: flex; align-items: center; gap: 12px; min-height: 54px; border-top: 1px solid #eef7ff52; font-size: 16px; font-weight: 600; color: var(--ink); }
-.pdpa-landing .check { display: grid; place-items: center; flex: none; width: 23px; height: 23px; border: 1px solid #6d3fd855; border-radius: 50%; background: #d8ffecdd; color: #235a50; font-size: 12px; }
+.pdpa-landing .record-steps li { display: flex; align-items: center; gap: 12px; min-height: 54px; border-top: 1px solid #eef7ff35; font-size: 16px; font-weight: 600; color: var(--ink); }
+.pdpa-landing .check { display: grid; place-items: center; flex: none; width: 23px; height: 23px; border: 1px solid #c2edda77; border-radius: 50%; background: #d8ffecdd; color: #235a50; font-size: 12px; }
 
 /* bottom of the hero: scroll hint and motion control */
 .pdpa-landing .hero-bottom { position: absolute; bottom: 28px; left: clamp(24px, 5.3vw, 88px); right: clamp(24px, 5.3vw, 88px); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .pdpa-landing .more { display: flex; align-items: center; gap: 14px; min-height: 44px; font-size: 13px; text-decoration: none; color: var(--ink-2); }
 .pdpa-landing .more:hover { color: var(--ink); }
-.pdpa-landing .motion { min-height: 44px; padding: 10px 16px; border: 1px solid #ffffffd9; border-radius: 99px; background: #25355955; color: var(--ink-2); font-size: 12px; }
+.pdpa-landing .motion { min-height: 44px; padding: 0 15px; border: 1px solid #ffffff72; border-radius: 99px; background: #25355955; color: var(--ink-2); font-size: 12px; }
 .pdpa-landing .motion:hover { background: #374c77; }
 .pdpa-landing .motion:disabled { cursor: default; }
 
@@ -92,7 +92,7 @@
   .pdpa-landing .hero .intro { order: 2; }
   .pdpa-landing .intro { width: 100%; text-align: center; }
   .pdpa-landing h1 { font-size: clamp(58px, 10vw, 86px); }
-  .pdpa-landing .description { margin: 24px auto 30px; }
+  .pdpa-landing .description { margin: 18px auto 24px; }
   .pdpa-landing .hero-actions { justify-content: center; }
   .pdpa-landing .visual { width: min(600px, 100%); height: 390px; margin: 0 auto 12px; }
   .pdpa-landing .incident { top: 48%; }
@@ -106,17 +106,17 @@
   .pdpa-landing .brand { gap: 9px; }
   .pdpa-landing .brand strong { font-size: 15px; }
   .pdpa-landing .mark { width: 32px; height: 32px; }
-  .pdpa-landing .outline { padding: 11px 18px; font-size: 13px; }
+  .pdpa-landing .outline { padding-inline: 15px; font-size: 13px; }
   .pdpa-landing h1 { font-size: clamp(40px, 10vw, 58px); }
   .pdpa-landing .description { max-width: 29ch; font-size: 16px; }
   .pdpa-landing .hero-actions { gap: 18px; }
-  .pdpa-landing .primary { min-height: 54px; padding: 15px 22px; font-size: 14px; }
-  .pdpa-landing .visual { height: 302px; }
+  .pdpa-landing .primary { min-height: 48px; padding-inline: 21px; font-size: 15px; }
+  .pdpa-landing .visual { height: 318px; }
   .pdpa-landing .incident { width: min(320px, 94%); padding: 22px; }
   .pdpa-landing .incident h2 { font-size: 24px; }
   .pdpa-landing .hero-bottom { left: 24px; right: 24px; }
   .pdpa-landing .more { gap: 8px; font-size: 11px; }
-  .pdpa-landing .motion { padding-inline: 12px; font-size: 11px; }
+  .pdpa-landing .motion { padding-inline: 13px; font-size: 12px; }
   .pdpa-landing .about { padding-block: 64px 68px; }
   .pdpa-landing .about-inner { grid-template-columns: 1fr; gap: 28px; }
   .pdpa-landing .about-copy p { font-size: 17px; }
@@ -131,7 +131,7 @@
 
 /* The hero and the sample case share the typography of a working incident file. */
 .pdpa-landing { --font-display: var(--font-body); }
-.pdpa-landing h1 { font-weight: 720; letter-spacing: -.066em; line-height: 1.01; }
+.pdpa-landing h1 { font-weight: 720; letter-spacing: -.052em; line-height: 1.01; }
 .pdpa-landing .incident h2, .pdpa-landing .about h2 { font-weight: 700; letter-spacing: -.055em; }
 .pdpa-landing header { border-bottom: 1px solid #ffffff38; }
 .pdpa-landing .visual::before { inset: 4% 0; border-radius: 0; transform: none; background: repeating-linear-gradient(0deg,transparent 0 31px,#eeffff1c 31px 32px),repeating-linear-gradient(90deg,transparent 0 31px,#eeffff1c 31px 32px); mask-image: radial-gradient(ellipse,#000 34%, transparent 73%); }
@@ -142,7 +142,7 @@
 .pdpa-landing .case-layout { display: grid; grid-template-columns: 1fr 1.08fr; gap: clamp(32px,7vw,110px); align-items: center; }
 .pdpa-landing .case-intro p, .pdpa-landing .case-sheet p { line-height: 1.65; max-width: 44ch; color: #455169; }
 .pdpa-landing .case-switch { display: inline-flex; max-width: 100%; flex-wrap: wrap; gap: 4px; padding: 4px; border: 1px solid #c8cfde; border-radius: 12px; }
-.pdpa-landing .case-switch button { color: #34415c; border: 0; background: transparent; border-radius: 8px; min-height: 44px; padding: 0 16px; }
+.pdpa-landing .case-switch button { flex: 1; font-size: 14px; font-weight: 600; color: #34415c; border: 0; background: transparent; border-radius: 8px; min-height: 44px; padding: 0 16px; }
 .pdpa-landing .case-switch button[aria-pressed="true"] { background: #424d83; color: white; }
 .pdpa-landing .case-switch button:focus-visible { outline-color: #4a5692; outline-offset: 1px; }
 .pdpa-landing .case-sheet { background: #fff; border: 1px solid #d7dbe6; border-top: 4px solid #568d99; border-radius: 12px; padding: clamp(20px,3vw,42px); box-shadow: 0 12px 34px #303c5d0e; }
@@ -183,7 +183,7 @@
 @media (max-width: 580px) {
   .pdpa-landing .glass-ribbon { height: 310px; top: -3px; width: 105%; }
   .pdpa-landing .incident { width: min(290px,86%); padding: 18px; }
-  .pdpa-landing .record-leaf { height: 205px; width: 77%; }
+  .pdpa-landing .record-leaf { height: 196px; width: 77%; }
   .pdpa-landing .sequence { font-size: 10px; }
   .pdpa-landing .sequence li { gap: 4px; }
 }
