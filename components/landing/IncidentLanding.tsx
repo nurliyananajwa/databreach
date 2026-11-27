@@ -42,8 +42,11 @@ export default function IncidentLanding() {
     <header className="wrap"><Brand /><Link className="outline" href="/sign-in">Sign in <span aria-hidden="true">↗</span></Link></header>
     <main id="main">
       <section className="hero wrap" aria-labelledby="hero-title" data-stage={ready ? "ready" : state.stage === 0 ? "contained" : "escaping"}>
+        <div className="glass-ribbon" aria-hidden="true">
+          {Array.from({ length: 44 }, (_, i) => <i key={i} style={{ transform: `translateZ(${i * 1.7}px) rotateZ(${i * 1.2}deg) scale(${1 - i * .004})` }} />)}
+        </div>
         <div className="intro" onFocusCapture={() => controller.current?.finish()}>
-          <h1 id="hero-title">Manage your<br /><span>breach response.</span></h1>
+          <h1 id="hero-title">Coordinate your<br /><span>breach response.</span></h1>
           <p className="description">Report the incident, assign a Compliance Officer and keep notification deadlines in view.</p>
           <div className="hero-actions">
             <Link className="primary" href="/sign-in">Sign in <span className="arrow" aria-hidden="true">↗</span></Link>
@@ -51,6 +54,7 @@ export default function IncidentLanding() {
           <p className="sr-only" role="status" aria-atomic="true">{ready ? "Incident reported. Officer assigned. Deadline tracked. Sign in to open your workspace." : "The opening shows data escaping, then gathering into an incident record."}</p>
         </div>
         <div className="visual" ref={visual} aria-label="Breach response illustration">
+          <div className="record-leaf leaf-back" aria-hidden="true" /><div className="record-leaf leaf-front" aria-hidden="true" />
           <canvas ref={canvas} aria-hidden="true" />
           <article className="incident" aria-label="Illustrative incident record" aria-hidden={!ready}>
             <h2>Incident record</h2>
@@ -60,6 +64,9 @@ export default function IncidentLanding() {
           </article>
         </div>
         <div className="hero-bottom">
+          <ol className="sequence" aria-label="Animation sequence">
+            {["Contained", "Breach detected", "Record assembled"].map((label, i) => <li key={label} aria-current={i === (ready ? 2 : state.stage === 0 ? 0 : 1) ? "step" : undefined}>{label}</li>)}
+          </ol>
           <a className="more" href="#about">Explore a sample incident <span aria-hidden="true">↓</span></a>
           {enhanced && <button className="motion" aria-pressed={state.paused} disabled={state.reduced} onClick={() => controller.current?.toggle()}>{motionLabel}</button>}
         </div>
@@ -78,7 +85,8 @@ export default function IncidentLanding() {
             <p>{current.text}</p>
             <dl>{current.fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
           </article>
-        </div>      </section>
+        </div>
+      </section>
     </main>
     <footer className="wrap">
       <div><strong>Data Breach System</strong><p>An IMS568 final-year assignment project. Illustrative data only. This system does not provide legal advice or send notifications.</p></div>
