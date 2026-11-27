@@ -41,7 +41,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="hub-band hub-band-top">
         <header className="hub-bar">
           <Link href="/home" className="hub-logo">
-            <i><Icon name="shield" className="size-5" /></i>PDPA Tracker
+            <img src="/icon.svg" width="38" height="38" alt="" />Breachfolio
           </Link>
           <HubNav items={items} />
           <div className="hub-me">

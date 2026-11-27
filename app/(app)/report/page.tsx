@@ -4,7 +4,7 @@ import PageHeader from "@/components/app/PageHeader";
 import ReportForm from "./ReportForm";
 import Icon from "@/components/app/hub/icons";
 
-export const metadata = { title: "Report a breach | PDPA Breach Response Tracker" };
+export const metadata = { title: "Report a breach | Breachfolio" };
 
 export default async function Page() {
   const db = await createClient();

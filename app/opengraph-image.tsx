@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 // The picture shown when the link is shared (WhatsApp, Telegram, reports).
-export const alt = "PDPA Breach Response Tracker: respond to a personal data breach within the legal deadlines";
+export const alt = "Breachfolio: respond to a personal data breach within the legal deadlines";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -31,7 +31,7 @@ export default async function OpenGraphImage() {
     (
       <div style={{ width: "100%", height: "100%", display: "flex", background: "#17213a", color: "#fff", padding: 72, fontFamily: "Atkinson" }}>
         <div style={{ display: "flex", flexDirection: "column", width: 560, justifyContent: "space-between" }}>
-          <div style={{ fontSize: 28, opacity: 0.8 }}>PDPA Breach Response Tracker</div>
+          <div style={{ fontSize: 28, opacity: 0.8 }}>Breachfolio</div>
           <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.02, letterSpacing: -2 }}>A data breach just happened. What do you do?</div>
           <div style={{ fontSize: 26, opacity: 0.7 }}>Record your data. Meet the 72-hour deadline. Keep the proof.</div>
         </div>

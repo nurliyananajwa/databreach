@@ -2,7 +2,7 @@ import { requirePage } from "@/lib/auth";
 import PageHeader from "@/components/app/PageHeader";
 import ComingSoon from "@/components/app/ComingSoon";
 
-export const metadata = { title: "Tasks | PDPA Breach Response Tracker" };
+export const metadata = { title: "Tasks | Breachfolio" };
 
 export default async function Page() {
   await requirePage("/tasks");

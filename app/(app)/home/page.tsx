@@ -4,7 +4,7 @@ import HomeView from "./HomeView";
 import type { Deadline as ClockDeadline } from "@/components/app/hub/ClockExplorer";
 import { firstName } from "@/lib/names";
 
-export const metadata = { title: "Home | PDPA Breach Response Tracker" };
+export const metadata = { title: "Home | Breachfolio" };
 
 type RawIncident = {
   id: string; code: string; title: string; status: string; reported_by: string; reported_at: string; individuals_affected: number | null;

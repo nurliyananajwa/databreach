@@ -2,7 +2,7 @@ import Link from "next/link";
 import PageHeader from "@/components/app/PageHeader";
 import Icon from "@/components/app/hub/icons";
 
-export const metadata = { title: "Page not found | PDPA Breach Response Tracker" };
+export const metadata = { title: "Page not found | Breachfolio" };
 
 // Shown for a wrong address, and for pages your role cannot open (on purpose
 // the same message, so it does not reveal that the page exists).

@@ -13,9 +13,9 @@ const example = [
 ];
 
 function Brand() {
-  return <Link className="brand" href="/" aria-label="Data Breach System home">
-    <span className="mark" aria-hidden="true"><i /><i /><i /><i /></span>
-    <span><strong>Data Breach System</strong></span>
+  return <Link className="brand" href="/" aria-label="Breachfolio home">
+    <img src="/icon.svg" width="38" height="38" alt="" />
+    <span><strong>Breachfolio</strong></span>
   </Link>;
 }
 
@@ -89,7 +89,7 @@ export default function IncidentLanding() {
       </section>
     </main>
     <footer className="wrap">
-      <div><strong>Data Breach System</strong><p>An IMS568 final-year assignment project. Illustrative data only. This system does not provide legal advice or send notifications.</p></div>
+      <div><strong>Breachfolio</strong><p>An IMS568 final-year assignment project. Illustrative data only. This system does not provide legal advice or send notifications.</p></div>
       <a className="top-link" href="#top">Back to top <span aria-hidden="true">↑</span></a>
     </footer>
   </div>;

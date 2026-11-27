@@ -19,7 +19,7 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
   return <main className="pdpa-auth">
     <div className="pa-shell">
       <header className="pa-header">
-        <Link href="/" className="pa-brand" aria-label="PDPA Breach Response Tracker home"><span className="pa-brand-mark" aria-hidden="true"><i/><i/><i/><i/></span><span>PDPA<small>Breach Response Tracker</small></span></Link>
+        <Link href="/" className="pa-brand" aria-label="Breachfolio home"><img src="/icon.svg" width="40" height="40" alt="" /><span>Breachfolio</span></Link>
       </header>
       <div className="pa-layout">
         <section className="pa-panel" aria-labelledby="pa-sign-in">

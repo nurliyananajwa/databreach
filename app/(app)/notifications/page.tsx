@@ -2,7 +2,7 @@ import { requirePage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import NotificationsView, { type Alert } from "./NotificationsView";
 
-export const metadata = { title: "Notifications | PDPA Breach Response Tracker" };
+export const metadata = { title: "Notifications | Breachfolio" };
 
 export default async function Page() {
   await requirePage("/notifications");

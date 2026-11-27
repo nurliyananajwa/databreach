@@ -6,11 +6,11 @@ const site = process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL_URL ? `http
 
 export const metadata: Metadata = {
   metadataBase: new URL(site),
-  title: "PDPA Breach Response Tracker",
+  title: "Breachfolio",
   description:
     "Record the personal data your business holds, respond to a breach within the legal deadlines, and keep a complete breach register.",
   openGraph: {
-    title: "PDPA Breach Response Tracker",
+    title: "Breachfolio",
     description: "Record your data. Meet the 72-hour deadline. Keep the proof.",
     type: "website",
     locale: "en_MY",

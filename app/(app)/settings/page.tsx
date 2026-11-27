@@ -5,7 +5,7 @@ import type { Tab } from "@/components/app/PageTabs";
 import Icon from "@/components/app/hub/icons";
 import SettingsView from "./SettingsView";
 
-export const metadata = { title: "Settings | PDPA Breach Response Tracker" };
+export const metadata = { title: "Settings | Breachfolio" };
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const [me, sp] = await Promise.all([requirePage("/settings"), searchParams]);
